@@ -25,6 +25,5 @@ public:
 public:
 
 	vec2 p[38];
-	
 
 };
