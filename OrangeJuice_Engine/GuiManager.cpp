@@ -38,14 +38,24 @@ bool GuiManager::Start()
 
 update_status GuiManager::PreUpdate(float dt)
 {
-
+	bool ret = true;
 	ImGui_ImplOpenGL2_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("Options"))
+		{
+			if (ImGui::MenuItem("Exit")) ret = false;
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
 	ImGui::ShowDemoWindow();
 
-	return UPDATE_CONTINUE;
+	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
