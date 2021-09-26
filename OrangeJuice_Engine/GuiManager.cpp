@@ -47,13 +47,16 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("Options"))
 		{
-			if (ImGui::MenuItem("Exit")) ret = false;
+			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
+			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
 
-	ImGui::ShowDemoWindow();
+	if (show_demo_window)
+		ImGui::ShowDemoWindow(&show_demo_window);
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
