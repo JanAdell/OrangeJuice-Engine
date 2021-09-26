@@ -4,6 +4,9 @@
 #include "Module.h"
 #include "Globals.h"
 
+#include "MathGeoLib/MathBuildConfig.h"
+#include "MathGeoLib/MathGeoLib.h"
+
 class GuiManager : public Module
 {
 public:
