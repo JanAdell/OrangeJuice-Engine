@@ -20,7 +20,6 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-
 private:
 
 	bool show_demo_window = false;

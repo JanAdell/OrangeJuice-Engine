@@ -1,21 +1,21 @@
 #include "Globals.h"
 #include <time.h> 
 #include "Application.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleScene.h"
 
 #include "Primitive.h"
 
 
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
 
-ModuleSceneIntro::~ModuleSceneIntro()
+ModuleScene::~ModuleScene()
 {}
 
 // Load assets
-bool ModuleSceneIntro::Start()
+bool ModuleScene::Start()
 {
 	LOG("Loading Intro assets");
 	bool ret = true;	
@@ -27,7 +27,7 @@ bool ModuleSceneIntro::Start()
 }
 
 // Load assets
-bool ModuleSceneIntro::CleanUp()
+bool ModuleScene::CleanUp()
 {
 	LOG("Unloading Intro scene");
 
@@ -35,12 +35,16 @@ bool ModuleSceneIntro::CleanUp()
 }
 
 // Update
-update_status ModuleSceneIntro::Update(float dt)
+update_status ModuleScene::Update(float dt)
 {
+	/*Plane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();*/
+	
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneIntro::OnCollision()
+void ModuleScene::OnCollision()
 {
 	
 
