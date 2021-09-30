@@ -45,10 +45,30 @@ update_status GuiManager::PreUpdate(float dt)
 
 	if (ImGui::BeginMainMenuBar())
 	{
-		if (ImGui::BeginMenu("Options"))
+		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
+			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
 			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("View"))
+		{
+			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
+			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
+			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
+			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
+			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+
 
 			ImGui::EndMenu();
 		}
