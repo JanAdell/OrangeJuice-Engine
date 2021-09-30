@@ -24,6 +24,10 @@ private:
 
 	bool show_demo_window = false;
 	bool show_window = false;
+	bool fullscreen = false;
+	bool resizable = false;
+	bool borderless = false;
+	bool full_desktop = false;
 	
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;

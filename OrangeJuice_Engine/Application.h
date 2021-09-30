@@ -18,8 +18,8 @@ struct HardwareSpecs
 public:
 
 	SDL_version sdl_version;
-	int cpus = 0;
 	float system_ram = 0;
+	int cpus = 0;
 	int cpu_chache = 0;
 	bool rdtsc;
 	bool mmx;

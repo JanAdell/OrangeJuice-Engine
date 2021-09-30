@@ -69,6 +69,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 		if (ImGui::Begin("Configuration", &show_demo_window), window_flags)
 		{
+			//-------- APPLICATION TAB
 			if (ImGui::CollapsingHeader("Application"))
 			{
 				static char str0[128] = "Orange Juice Engine";
@@ -86,6 +87,7 @@ update_status GuiManager::PreUpdate(float dt)
 				ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
 			}
 
+			//-------- HARDWARE TAB
 			if (ImGui::CollapsingHeader("Hardware"))
 			{
 				ImGui::TextWrapped("SDL version:");
@@ -157,8 +159,76 @@ update_status GuiManager::PreUpdate(float dt)
 				ImGui::Text("GPU Drivers version:");
 				ImGui::SameLine();
 				ImGui::TextColored({ 255, 255, 0, 255 }, "%s", glGetString(GL_VERSION));
-			}
-		}
+			}//hardware tab
+
+			//-------- WINDOW TAB
+			if (ImGui::CollapsingHeader("Window"))
+			{
+				bool active = true;
+				float brightness = 1.0f;
+				int width = 0;
+				int height = 0;
+				ImGui::Checkbox("Active", &active);
+				ImGui::TextWrapped("Icon:  *default*");
+				ImGui::SliderFloat("Brightness", &brightness, 0, 1);
+				ImGui::SliderInt("Width", &width, 0, 3820);
+				ImGui::SliderInt("Height", &height, 0, 2048);
+				ImGui::TextWrapped("Refresh Rate: ");
+
+				if (ImGui::Checkbox("Fullscreen", &fullscreen))
+				{
+					if (fullscreen)
+					{
+						SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN);
+						fullscreen = true;
+					}
+
+					else
+						fullscreen = false;
+				}
+
+				ImGui::SameLine();
+				if (ImGui::Checkbox("Resizable", &resizable))
+				{
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Restart to apply");
+					if (resizable)
+					{
+						SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_RESIZABLE);
+						resizable = true;
+					}
+					else
+						resizable = false;
+				}
+
+				if (ImGui::Checkbox("Borderless", &borderless))
+				{
+					if (borderless)
+					{
+						SDL_SetWindowBordered(App->window->window, SDL_FALSE);
+						borderless = true;
+					}
+					else
+					{
+						SDL_SetWindowBordered(App->window->window, SDL_TRUE);
+						borderless = false;
+					}
+				}
+
+				ImGui::SameLine();
+				if (ImGui::Checkbox("Full Desktop", &full_desktop))
+				{
+					if (full_desktop)
+					{
+						SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+						full_desktop = true;
+					}
+					else
+						full_desktop = false;
+				}
+			}//window tab
+		}//config window
+
 		ImGui::End();
 	}
 
