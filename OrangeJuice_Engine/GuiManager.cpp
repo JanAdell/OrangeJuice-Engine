@@ -85,6 +85,37 @@ update_status GuiManager::PreUpdate(float dt)
 				uint max = 144;
 				ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
 			}
+
+			if (ImGui::CollapsingHeader("Hardware"))
+			{
+				ImGui::TextWrapped("SDL Version: %i.%i.%i", App->system_specs.sdl_version.major, App->system_specs.sdl_version.minor, App->system_specs.sdl_version.patch);
+				ImGui::TextWrapped("CPUs: %i", App->system_specs.cpus);
+				ImGui::TextWrapped("System RAM: %f", App->system_specs.system_ram);
+				ImGui::TextWrapped("Caps: ");
+				if (App->system_specs.altivec)
+					ImGui::TextWrapped("AltiVec");
+				if (App->system_specs.rdtsc)
+					ImGui::TextWrapped("RDTSC");
+				if (App->system_specs.mmx)
+					ImGui::TextWrapped("MMX");
+				if (App->system_specs.sse)
+					ImGui::TextWrapped("SSE");
+				if (App->system_specs.sse2)
+					ImGui::TextWrapped("SSE2");
+				if (App->system_specs.sse3)
+					ImGui::TextWrapped("SSE3");
+				if (App->system_specs.sse41)
+					ImGui::TextWrapped("SSE41");
+				if (App->system_specs.sse42)
+					ImGui::TextWrapped("SSE42");
+				if (App->system_specs.three_d_now)
+					ImGui::TextWrapped("3DNow");
+				if (App->system_specs.avx)
+					ImGui::TextWrapped("AVX");
+				ImGui::Text("GPU vendor: %s", glGetString(GL_VENDOR));
+				ImGui::Text("GPU Model: %s", glGetString(GL_RENDERER));
+				ImGui::Text("GPU Drivers version: %s", glGetString(GL_VERSION));
+			}
 		}
 		ImGui::End();
 	}

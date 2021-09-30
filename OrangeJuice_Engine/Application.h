@@ -13,6 +13,27 @@
 #include "GuiManager.h"
 #include "Timer.h"
 
+struct HardwareSpecs
+{
+public:
+
+	SDL_version sdl_version;
+	int cpus = 0;
+	float system_ram = 0;
+	int cpu_chache = 0;
+	bool rdtsc;
+	bool mmx;
+	bool sse;
+	bool sse2;
+	bool sse3;
+	bool sse41;
+	bool sse42;
+	bool three_d_now;
+	bool avx;
+	bool avx2;
+	bool altivec;
+
+};
 
 class Application
 {
@@ -57,6 +78,7 @@ public:
 	bool CleanUp();
 
 	void RequestBrowser(const char*);
+	HardwareSpecs system_specs;
 
 private:
 
