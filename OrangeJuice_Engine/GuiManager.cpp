@@ -47,36 +47,48 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
 			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
 
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("View"))
-		{
-			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
-			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
-			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+		if (ImGui::BeginMenu("View")) ImGui::EndMenu();
 
+		if (ImGui::BeginMenu("Help")) ImGui::EndMenu();
 
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help"))
-		{
-			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
-			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
-			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
-
-
-			ImGui::EndMenu();
-		}
 		ImGui::EndMainMenuBar();
 	}
 
 	if (show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+
+		if (ImGui::Begin("Configuration", &show_demo_window), window_flags)
+		{
+			if (ImGui::CollapsingHeader("Application"))
+			{
+				static char str0[128] = "Orange Juice Engine";
+				ImGui::Text("App Name:     ");
+				ImGui::SameLine(); ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
+				ImGui::Text("Organitzation:");
+				ImGui::SameLine();
+
+				if (ImGui::Button("UPC CITM", ImVec2(357, 0))) App->RequestBrowser("https://www.citm.upc.edu/");
+
+				if (ImGui::CollapsingHeader("FPS"))
+				{
+					uint min = 0;
+					uint max = 144;
+					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
+				}
+			}
+		}
+		ImGui::End();
+	}
+
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
