@@ -61,20 +61,20 @@ bool Application::Init()
 	}
 
 	//Hardware specs from the pc executing the program
-	SDL_GetVersion(&system_specs.sdl_version);
-	system_specs.cpus = SDL_GetCPUCount();
-	system_specs.system_ram = SDL_GetSystemRAM() / 1000.0f;
-	system_specs.cpu_chache = SDL_GetCPUCacheLineSize();
-	system_specs.altivec = SDL_HasAltiVec();
-	system_specs.rdtsc = SDL_HasRDTSC();
-	system_specs.mmx = SDL_HasMMX();
-	system_specs.sse = SDL_HasSSE();
-	system_specs.sse2 = SDL_HasSSE2();
-	system_specs.sse3 = SDL_HasSSE3();
-	system_specs.sse41 = SDL_HasSSE41();
-	system_specs.sse42 = SDL_HasSSE42();
-	system_specs.three_d_now = SDL_Has3DNow();
-	system_specs.avx = SDL_HasAVX();
+	SDL_GetVersion(&systemSpecs.sdlVersion);
+	systemSpecs.cpus = SDL_GetCPUCount();
+	systemSpecs.systemRam = SDL_GetSystemRAM() / 1000.0f;
+	systemSpecs.cpu_chache = SDL_GetCPUCacheLineSize();
+	systemSpecs.altivec = SDL_HasAltiVec();
+	systemSpecs.rdtsc = SDL_HasRDTSC();
+	systemSpecs.mmx = SDL_HasMMX();
+	systemSpecs.sse = SDL_HasSSE();
+	systemSpecs.sse2 = SDL_HasSSE2();
+	systemSpecs.sse3 = SDL_HasSSE3();
+	systemSpecs.sse41 = SDL_HasSSE41();
+	systemSpecs.sse42 = SDL_HasSSE42();
+	systemSpecs.threeDnow = SDL_Has3DNow();
+	systemSpecs.avx = SDL_HasAVX();
 	
 	ms_timer.Start();
 	return ret;
@@ -83,8 +83,8 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	frame_count++;
-	last_sec_frame_count++;
+	frameCount++;
+	lastSecFrameCount++;
 	dt = (float)ms_timer.Read() / 1000.0f;
 	if (dt > maxFrames)
 		dt = maxFrames;
@@ -94,20 +94,20 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
-	if (last_sec_frame_time.Read() > 1000)
+	if (lastSecFrameTime.Read() > 1000)
 	{
-		last_sec_frame_time.Start();
-		prev_last_sec_frame_count = last_sec_frame_count;
-		last_sec_frame_count = 0;
+		lastSecFrameTime.Start();
+		prevLastSecFrameCount = lastSecFrameCount;
+		lastSecFrameCount = 0;
 	}
 
-	avg_fps = float(frame_count) / startup_time.Read() / 10000;
-	uint last_frame_ms = frame_time.Read();
-	frames_on_last_update = prev_last_sec_frame_count;
+	avgFps = float(frameCount) / startupTime.Read() / 10000;
+	uint last_frame_ms = frameTime.Read();
+	framesOnLastUpdate = prevLastSecFrameCount;
 
-	if (framerate_cap > 0 && last_frame_ms < framerate_cap)
+	if (framerateCap > 0 && last_frame_ms < framerateCap)
 	{
-		SDL_Delay(framerate_cap - last_frame_ms);
+		SDL_Delay(framerateCap - last_frame_ms);
 	}
 }
 

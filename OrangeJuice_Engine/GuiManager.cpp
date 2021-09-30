@@ -92,60 +92,60 @@ update_status GuiManager::PreUpdate(float dt)
 			{
 				ImGui::TextWrapped("SDL version:");
 				ImGui::SameLine();
-				ImGui::TextColored({ 255, 255, 0, 255 }, "%i.%i.%i", App->system_specs.sdl_version.major, App->system_specs.sdl_version.minor, App->system_specs.sdl_version.patch);
-				ImGui::TextWrapped("CPUs:", App->system_specs.cpus);
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%i.%i.%i", App->systemSpecs.sdlVersion.major, App->systemSpecs.sdlVersion.minor, App->systemSpecs.sdlVersion.patch);
+				ImGui::TextWrapped("CPUs:", App->systemSpecs.cpus);
 				ImGui::SameLine();
-				ImGui::TextColored({ 255, 255, 0, 255 }, "%i", App->system_specs.cpus);
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%i", App->systemSpecs.cpus);
 				ImGui::TextWrapped("System Ram:");
 				ImGui::SameLine();
-				ImGui::TextColored({ 255, 255, 0, 255 }, "%f", App->system_specs.system_ram);
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%f", App->systemSpecs.systemRam);
 				ImGui::TextWrapped("Caps:");
-				if (App->system_specs.altivec)
+				if (App->systemSpecs.altivec)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "AltiVec,");
 				}
-				if (App->system_specs.rdtsc)
+				if (App->systemSpecs.rdtsc)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "RDTSC,");
 				}
-				if (App->system_specs.mmx)
+				if (App->systemSpecs.mmx)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "MMX,");
 				}
-				if (App->system_specs.sse)
+				if (App->systemSpecs.sse)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE,");
 				}
-				if (App->system_specs.sse2)
+				if (App->systemSpecs.sse2)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE2,");
 				}
-				if (App->system_specs.sse3)
+				if (App->systemSpecs.sse3)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE3,");
 				}
-				if (App->system_specs.sse41)
+				if (App->systemSpecs.sse41)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE41,");
 				}
-				if (App->system_specs.sse42)
+				if (App->systemSpecs.sse42)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE42,");
 				}
-				if (App->system_specs.three_d_now)
+				if (App->systemSpecs.threeDnow)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "3DNow,");
 				}
-				if (App->system_specs.avx)
+				if (App->systemSpecs.avx)
 				{
 					ImGui::SameLine();
 					ImGui::TextColored({ 255, 255, 0, 255 }, "AVX,");

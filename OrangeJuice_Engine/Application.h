@@ -17,8 +17,8 @@ struct HardwareSpecs
 {
 public:
 
-	SDL_version sdl_version;
-	float system_ram = 0;
+	SDL_version sdlVersion;
+	float systemRam = 0;
 	int cpus = 0;
 	int cpu_chache = 0;
 	bool rdtsc;
@@ -28,7 +28,7 @@ public:
 	bool sse3;
 	bool sse41;
 	bool sse42;
-	bool three_d_now;
+	bool threeDnow;
 	bool avx;
 	bool avx2;
 	bool altivec;
@@ -54,16 +54,16 @@ private:
 public:
 
 	Timer					ptimer;
-	Timer					startup_time;
-	Timer					frame_time;
-	Timer					last_sec_frame_time;
-	uint					frame_count = 0u;
-	uint					last_sec_frame_count = 0u;
-	uint					prev_last_sec_frame_count = 0u;
-	uint					frames_on_last_update = 0u;
+	Timer					startupTime;
+	Timer					frameTime;
+	Timer					lastSecFrameTime;
+	uint					frameCount = 0u;
+	uint					lastSecFrameCount = 0u;
+	uint					prevLastSecFrameCount = 0u;
+	uint					framesOnLastUpdate = 0u;
 	uint					maxFrames = 60u;
-	uint16_t				framerate_cap = 0u;
-	float					avg_fps = 0.0f;
+	uint16_t				framerateCap = 0u;
+	float					avgFps = 0.0f;
 	float					dt;
 
 	std::list<uint>		lastFrames[100];
@@ -78,7 +78,7 @@ public:
 	bool CleanUp();
 
 	void RequestBrowser(const char*);
-	HardwareSpecs system_specs;
+	HardwareSpecs systemSpecs;
 
 private:
 
