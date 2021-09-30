@@ -71,19 +71,18 @@ update_status GuiManager::PreUpdate(float dt)
 			if (ImGui::CollapsingHeader("Application"))
 			{
 				static char str0[128] = "Orange Juice Engine";
+				
 				ImGui::Text("App Name:     ");
 				ImGui::SameLine(); ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
+				
 				ImGui::Text("Organitzation:");
 				ImGui::SameLine();
-
 				if (ImGui::Button("UPC CITM", ImVec2(357, 0))) App->RequestBrowser("https://www.citm.upc.edu/");
 
-				if (ImGui::CollapsingHeader("FPS"))
-				{
-					uint min = 0;
-					uint max = 144;
-					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
-				}
+				ImGui::Text("FPS:");
+				uint min = 0;
+				uint max = 144;
+				ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
 			}
 		}
 		ImGui::End();
