@@ -47,7 +47,7 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
+			if (ImGui::MenuItem("Configuration")) show_window = true;
 			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
@@ -61,7 +61,8 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::EndMainMenuBar();
 	}
 
-	if (show_demo_window)
+	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
+	if (show_window)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);

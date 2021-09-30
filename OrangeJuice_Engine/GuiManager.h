@@ -23,6 +23,7 @@ public:
 private:
 
 	bool show_demo_window = false;
+	bool show_window = false;
 	
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
