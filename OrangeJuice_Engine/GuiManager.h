@@ -19,11 +19,13 @@ public:
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
+	void AboutWindow(bool show_about_window);
 
 private:
 
 	bool show_demo_window = false;
-	bool show_window = false;
+	bool show_config_window = false;
+	bool show_about_window = false;
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;

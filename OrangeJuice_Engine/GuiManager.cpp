@@ -47,7 +47,7 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Configuration")) show_window = true;
+			if (ImGui::MenuItem("Configuration")) show_config_window = true;
 			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
@@ -56,13 +56,22 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 		if (ImGui::BeginMenu("View")) ImGui::EndMenu();
 
-		if (ImGui::BeginMenu("Help")) ImGui::EndMenu();
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Repository"))
+				App->RequestBrowser("https://github.com/JanAdell/OrangeJuice-Engine");
+
+			if (ImGui::MenuItem("About",NULL, show_about_window)) show_about_window = !show_about_window;;
+				
+
+			ImGui::EndMenu();
+		}
 
 		ImGui::EndMainMenuBar();
 	}
 
 	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
-	if (show_window)
+	if (show_config_window)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
@@ -227,11 +236,16 @@ update_status GuiManager::PreUpdate(float dt)
 						full_desktop = false;
 				}
 			}//window tab
+			
 		}//config window
-
+		
 		ImGui::End();
 	}
 
+	if (show_about_window)
+	{
+		AboutWindow(show_about_window);
+	}
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
@@ -260,4 +274,20 @@ bool GuiManager::CleanUp()
 	SDL_DestroyWindow(App->window->window);
 	SDL_Quit();
 	return true;
+}
+
+void GuiManager::AboutWindow(bool show_about_win)
+{
+	ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+
+	if (ImGui::Begin("About", &show_about_win))
+	{
+		ImGui::Text("Orange Juice Engine v0.1");
+		ImGui::NewLine();
+		ImGui::Text("A 3D engine created by Jan Adell Mill and Oscar Reguera Parera");
+		ImGui::NewLine();
+		
+	}
+	ImGui::End();
 }
