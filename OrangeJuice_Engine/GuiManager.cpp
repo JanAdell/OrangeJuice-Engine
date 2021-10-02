@@ -76,7 +76,7 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin("Configuration", &show_demo_window), window_flags)
+		if (ImGui::Begin("Configuration", &show_config_window), window_flags)
 		{
 			//-------- APPLICATION TAB
 			if (ImGui::CollapsingHeader("Application"))
@@ -281,7 +281,7 @@ void GuiManager::AboutWindow(bool show_about_win)
 	ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
-	if (ImGui::Begin("About", &show_about_win))
+	if (ImGui::Begin("About", &show_about_win), window_flags)
 	{
 		ImGui::Text("Orange Juice Engine v0.1");
 		ImGui::NewLine();
