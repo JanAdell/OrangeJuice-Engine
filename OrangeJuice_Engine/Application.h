@@ -77,6 +77,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void GetFrames(int& frames, float& miliseconds);
 	void RequestBrowser(const char*);
 	HardwareSpecs systemSpecs;
 

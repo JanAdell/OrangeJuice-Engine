@@ -155,3 +155,8 @@ void Application::RequestBrowser(const char* url)
 {
 	ShellExecuteA(GetActiveWindow(), "open", url, NULL, NULL, SW_SHOWNORMAL);
 }
+
+void Application::GetFrames(int& frames, float& miliseconds)
+{
+	frames = framesOnLastUpdate - 1;
+}

@@ -145,11 +145,34 @@ void GuiManager::ConfigWindow()
 		ImGui::SameLine();
 		if (ImGui::Button("UPC CITM", ImVec2(357, 0))) App->RequestBrowser("https://www.citm.upc.edu/");
 
-		ImGui::Text("FPS:");
 		uint min = 0;
 		uint max = 144;
 		ImGui::SliderScalar(" Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
-	}
+
+		ImGui::Text("Limit FPS:");
+		int frames;
+		float milisec;
+		App->GetFrames(frames, milisec);
+
+		if (fpsLog.size() > 100)
+		{
+			fpsLog.erase(fpsLog.begin());
+			//fpsLog.pop_back();
+			//msLog.pop_back();
+		}
+
+		fpsLog.push_back(frames);
+		msLog.push_back(milisec);
+
+		LOG("%i", fpsLog.size());
+
+		char title[25];
+		sprintf_s(title, 25, "Framerate %.1f", fpsLog[fpsLog.size() - 1]);
+		ImGui::PlotHistogram("##framerate", &fpsLog[0], fpsLog.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+		/*sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
+		ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));*/
+
+		}
 
 	//-------- HARDWARE TAB
 	if (ImGui::CollapsingHeader("Hardware"))
@@ -293,8 +316,7 @@ void GuiManager::ConfigWindow()
 				fullscreen = true;
 			}
 
-			else
-				fullscreen = false;
+			else fullscreen = false;
 		}
 
 		ImGui::SameLine();
@@ -307,8 +329,7 @@ void GuiManager::ConfigWindow()
 				SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_RESIZABLE);
 				resizable = true;
 			}
-			else
-				resizable = false;
+			else resizable = false;
 		}
 
 		if (ImGui::Checkbox(" Borderless", &borderless))
@@ -333,8 +354,7 @@ void GuiManager::ConfigWindow()
 				SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 				full_desktop = true;
 			}
-			else
-				full_desktop = false;
+			else full_desktop = false;
 		}
 	}//window tab
 

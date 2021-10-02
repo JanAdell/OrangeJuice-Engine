@@ -34,6 +34,9 @@ private:
 	
 	float brightness = 1.0f;
 
+	std::vector<float> fpsLog;
+	std::vector<float> msLog;
+
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
 
