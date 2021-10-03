@@ -57,6 +57,9 @@ public:
 	Timer					startupTime;
 	Timer					frameTime;
 	Timer					lastSecFrameTime;
+	Timer					msTime;
+	uint					lastFrameMs;
+	uint					frameMs;
 	uint					frameCount = 0u;
 	uint					lastSecFrameCount = 0u;
 	uint					prevLastSecFrameCount = 0u;

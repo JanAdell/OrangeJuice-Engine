@@ -94,6 +94,12 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	if (frameCount == frameCount++)
+	{
+		frameMs = msTime.Read();
+		msTime.Start();
+	}
+	
 	if (lastSecFrameTime.Read() > 1000)
 	{
 		lastSecFrameTime.Start();
@@ -102,12 +108,12 @@ void Application::FinishUpdate()
 	}
 
 	avgFps = float(frameCount) / startupTime.Read() / 10000;
-	uint last_frame_ms = frameTime.Read();
+	lastFrameMs = frameTime.Read();
 	framesOnLastUpdate = prevLastSecFrameCount;
 
-	if (framerateCap > 0 && last_frame_ms < framerateCap)
+	if (framerateCap > 0 && lastFrameMs < framerateCap)
 	{
-		SDL_Delay(framerateCap - last_frame_ms);
+		SDL_Delay(framerateCap - lastFrameMs);
 	}
 }
 
@@ -156,7 +162,8 @@ void Application::RequestBrowser(const char* url)
 	ShellExecuteA(GetActiveWindow(), "open", url, NULL, NULL, SW_SHOWNORMAL);
 }
 
-void Application::GetFrames(int& frames, float& miliseconds)
+void Application::GetFrames(int& frames, float& millisec)
 {
 	frames = framesOnLastUpdate - 1;
+	millisec = frameMs;
 }
