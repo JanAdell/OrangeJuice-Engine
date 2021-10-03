@@ -7,8 +7,7 @@
 #include "MathGeoLib/MathBuildConfig.h"
 #include "MathGeoLib/MathGeoLib.h"
 #include "ConsoleManager.h"
-
-#include "json.hpp"
+#include "parson/parson.h"
 
 class GuiManager : public Module
 {
@@ -49,6 +48,7 @@ private:
 	AppConsole console;
 	ImGuiTextBuffer text;
 
+	JSON_Value* root;
 };
 
 

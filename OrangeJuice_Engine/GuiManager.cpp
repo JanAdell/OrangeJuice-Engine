@@ -10,11 +10,8 @@
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
 
-#include "json.hpp"
 #include <fstream>
 #include <iomanip>
-
-using json = nlohmann::json;
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -153,12 +150,22 @@ void GuiManager::ConfigWindow()
 		ifs >> j;
 
 		std::string str0 = j["info"]["name"].get<std::string>();*/
-
-		static char str1;
 		//std::strcpy(&str1, str0.c_str());
 
-		ImGui::Text("App Name:     ");
-		ImGui::SameLine(); ImGui::InputText(" ", &str1, IM_ARRAYSIZE(&str1));
+		const char* str1 = "NONE";
+		struct stat buffer;
+		if (stat("config.json", &buffer) == 0) 
+		{
+			root = json_parse_file((std::string("config.json")).data());
+
+			str1 = json_object_get_string(json_object_get_object(json_value_get_object(root),"info"), "name");
+		}
+
+		
+				
+
+		ImGui::Text("App Name:    %s ", str1);
+		//ImGui::SameLine(); ImGui::InputText(" ", *str1, IM_ARRAYSIZE(&str1));
 
 		ImGui::Text("Organitzation:");
 		ImGui::SameLine();

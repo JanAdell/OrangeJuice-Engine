@@ -173,6 +173,7 @@
     <ClCompile Include="MathGeoLib\Time\Clock.cpp">
       <Filter>MathGeoLib</Filter>
     </ClCompile>
+    <ClCompile Include="parson\parson.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -226,7 +227,6 @@
     <ClInclude Include="ModuleWindow.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="MathGeoLib\Algorithm\GJK.h">
       <Filter>MathGeoLib</Filter>
@@ -456,6 +456,7 @@
     <ClInclude Include="MathGeoLib\Time\Clock.h">
       <Filter>MathGeoLib</Filter>
     </ClInclude>
+    <ClInclude Include="parson\parson.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
