@@ -6,6 +6,7 @@
 
 #include "MathGeoLib/MathBuildConfig.h"
 #include "MathGeoLib/MathGeoLib.h"
+#include "ConsoleManager.h"
 
 #include "json.hpp"
 
@@ -23,12 +24,15 @@ public:
 	bool CleanUp();
 	void AboutWindow();
 	void ConfigWindow();
+	void ShowAppConsole(bool show_console);
+	void GetLog(const char* log);
 
 private:
 
 	bool show_demo_window = false;
 	bool show_config_window = false;
 	bool show_about_window = false;
+	bool show_console_window = false;
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;
@@ -42,7 +46,8 @@ private:
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
 	
-	
+	AppConsole console;
+	ImGuiTextBuffer text;
 
 };
 

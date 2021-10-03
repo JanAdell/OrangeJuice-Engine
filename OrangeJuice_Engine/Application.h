@@ -71,6 +71,8 @@ public:
 
 	std::list<uint>		lastFrames[100];
 
+	bool					is_console;
+
 public:
 
 	Application();

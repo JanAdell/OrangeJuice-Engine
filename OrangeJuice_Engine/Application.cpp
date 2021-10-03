@@ -46,6 +46,8 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	is_console = true;
+
 	// Call Init() in all modules
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == true; ++item)
 	{
@@ -145,6 +147,9 @@ update_status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
+
+	is_console = false;
+
 	for (std::list<Module*>::reverse_iterator item = list_modules.rbegin(); item != list_modules.rend() && ret == true; ++item)
 	{
 		ret = (*item)->CleanUp();

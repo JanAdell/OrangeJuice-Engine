@@ -26,6 +26,9 @@
 
 #if defined(WIN32) || defined(WIN8PHONE)
 #include "../Math/InclWindows.h"
+#elif !defined (WIN8RT)
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #endif
 
 #if defined(ANDROID)

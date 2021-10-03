@@ -5,7 +5,6 @@
 #include "SDL/include/SDL.h"
 #include "SDL/include/SDL_opengl.h"
 
-
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "GuiManager.h"
@@ -102,13 +101,13 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 		ImGui::End();
 	}
-
+		
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
 {
-
+	ShowAppConsole(show_console_window);
 	return UPDATE_CONTINUE;
 }
 
@@ -382,3 +381,15 @@ void GuiManager::ConfigWindow()
 	}//window tab
 
 }//config window
+
+void GuiManager::ShowAppConsole(bool show_console)
+{
+	console.Draw("Orange Juice Engine", &show_console);
+
+}//console 
+
+void GuiManager::GetLog(const char* log)
+{
+	console.AddLog(log);
+
+}//console logs

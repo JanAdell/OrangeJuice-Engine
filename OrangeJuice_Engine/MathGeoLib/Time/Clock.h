@@ -16,28 +16,38 @@
 /** @file Clock.h
 	@brief The Clock class. Supplies timing facilities. */
 
-#ifdef __EMSCRIPTEN__
+//#ifdef __EMSCRIPTEN__
 
 // The native type for high-resolution timing is double, use
 // that instead of uint64, which is not natively supported but
 // must be emulated, which is slow.
-#define MATH_TICK_IS_FLOAT
-#include <limits>
+//#define MATH_TICK_IS_FLOAT
+//#include <limits>
+//#endif
+
+#ifdef WIN32
+#define Polygon Polygon_unused
+#include <Windows.h>
+#undef Polygon
 #endif
 
 #include "../Math/MathNamespace.h"
+
+#include <intrin.h>
+
+#pragma intrinsic(__rdtsc)
 
 MATH_BEGIN_NAMESPACE
 
 /// A tick is the basic unit of the high-resolution timer. If MATH_TICK_IS_FLOAT is defined,
 /// then tick_t is a floating-point type. Otherwise a 64-bit unsigned integer is used instead.
-#ifdef MATH_TICK_IS_FLOAT
+/*#ifdef MATH_TICK_IS_FLOAT
 typedef double tick_t;
 const tick_t TICK_INF = std::numeric_limits<double>::infinity();
-#else
+#else*/
 typedef unsigned long long tick_t;
-const tick_t TICK_INF = 0xFFFFFFFFFFFFFFFFULL;
-#endif
+//const tick_t TICK_INF = 0xFFFFFFFFFFFFFFFFULL;
+//#endif
 
 /** @brief High-resolution timing and system time.
 
