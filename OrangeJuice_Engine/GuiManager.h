@@ -7,6 +7,8 @@
 #include "MathGeoLib/MathBuildConfig.h"
 #include "MathGeoLib/MathGeoLib.h"
 
+#include "json.hpp"
+
 class GuiManager : public Module
 {
 public:
@@ -39,6 +41,8 @@ private:
 
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
+	
+	
 
 };
 

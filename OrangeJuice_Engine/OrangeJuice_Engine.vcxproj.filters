@@ -99,6 +99,7 @@
     <ClInclude Include="ModuleWindow.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
@@ -107,5 +108,8 @@
     <Filter Include="Modules">
       <UniqueIdentifier>{0c7e4bf5-1fda-4e38-a60d-b364eb5501cc}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Game\config.json" />
   </ItemGroup>
 </Project>

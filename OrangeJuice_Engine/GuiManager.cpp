@@ -5,10 +5,17 @@
 #include "SDL/include/SDL.h"
 #include "SDL/include/SDL_opengl.h"
 
+
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
+
+#include "json.hpp"
+#include <fstream>
+#include <iomanip>
+
+using json = nlohmann::json;
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -42,6 +49,7 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+	
 
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -79,6 +87,7 @@ update_status GuiManager::PreUpdate(float dt)
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 			ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 			ConfigWindow();
+			
 		}
 		ImGui::End();
 	}
@@ -136,10 +145,21 @@ void GuiManager::ConfigWindow()
 	//-------- APPLICATION TAB
 	if (ImGui::CollapsingHeader("Application"))
 	{
-		static char str0[128] = "Orange Juice Engine";
+		/*json j;
+
+		std::ifstream ifs("config.json");
+		if (!ifs.is_open())
+			LOG("Error to load file", SDL_GetError());
+
+		ifs >> j;
+
+		std::string str0 = j["info"]["name"].get<std::string>();*/
+
+		static char str1;
+		//std::strcpy(&str1, str0.c_str());
 
 		ImGui::Text("App Name:     ");
-		ImGui::SameLine(); ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
+		ImGui::SameLine(); ImGui::InputText(" ", &str1, IM_ARRAYSIZE(&str1));
 
 		ImGui::Text("Organitzation:");
 		ImGui::SameLine();
