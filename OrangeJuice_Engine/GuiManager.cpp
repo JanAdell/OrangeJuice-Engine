@@ -58,7 +58,11 @@ update_status GuiManager::PreUpdate(float dt)
 
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("View")) ImGui::EndMenu();
+		if (ImGui::BeginMenu("View")) 
+		{
+			if (ImGui::MenuItem("Console")) show_console_window = true;
+			ImGui::EndMenu();
+		}
 
 		if (ImGui::BeginMenu("Help"))
 		{
@@ -72,6 +76,15 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 
 		ImGui::EndMainMenuBar();
+	}
+
+	if (show_console_window) 
+	{
+		if (ImGui::Begin("Console", &show_console_window), window_flags)
+		{
+			ShowAppConsole(&show_console_window);
+		}
+		ImGui::End();
 	}
 
 	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
@@ -104,7 +117,6 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
-	ShowAppConsole(show_console_window);
 	return UPDATE_CONTINUE;
 }
 
