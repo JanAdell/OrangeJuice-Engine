@@ -54,12 +54,64 @@ update_status ModuleScene::Update(float dt)
 	p.Render();
 	
 	// checking drawing 
-	glLineWidth(5.0f);
+	/*glLineWidth(5.0f);
 	glBegin(GL_LINES);
 	glVertex3f(0.f, 0.f, 0.f);
 	glVertex3f(0.f, 10.f, 0.f);
 	glEnd();
-	glLineWidth(5.0f);
+	glLineWidth(5.0f);*/
+
+	//Direct mode drawing
+	glBegin(GL_TRIANGLES);
+	//1
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	//2
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	//3
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	//4
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	//5
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(0.f, 2.f, 2.f);
+	//6
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(0.f, 2.f, 2.f);
+	//7
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	//8
+	glVertex3f(0.f, 2.f, 2.f);
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	//9
+	glVertex3f(0.f, 2.f, 2.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	//10
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(0.f, 2.f, 2.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	//11
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	//12
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	glEnd();
 
 	return UPDATE_CONTINUE;
 }
