@@ -5,6 +5,18 @@
 
 #include "Primitive.h"
 
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_opengl3.h"
+#include "ImGui/imgui_impl_sdl.h"
+#include "SDL/include/SDL.h"
+#include "SDL/include/SDL_opengl.h"
+#include "GuiManager.h"
+#include "ModuleRenderer3D.h"
+
+
+
+#include "../OrangeJuice_Engine/MathGeoLib/MathGeoLib.h"
+#include "../OrangeJuice_Engine/MathGeoLib/MathBuildConfig.h"
 
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -41,6 +53,14 @@ update_status ModuleScene::Update(float dt)
 	p.axis = true;
 	p.Render();
 	
+	// checking drawing 
+	glLineWidth(5.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 10.f, 0.f);
+	glEnd();
+	glLineWidth(5.0f);
+
 	return UPDATE_CONTINUE;
 }
 
