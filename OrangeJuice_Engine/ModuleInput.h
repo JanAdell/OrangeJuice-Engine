@@ -1,6 +1,10 @@
-#pragma once
+#ifndef _MODULEINPUT_
+#define _MODULEINPUT_
+
 #include "Module.h"
 #include "Globals.h"
+
+#include <string>
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -82,3 +86,5 @@ private:
 	bool fileDrop = false;
 	std::string file;
 };
+
+#endif
