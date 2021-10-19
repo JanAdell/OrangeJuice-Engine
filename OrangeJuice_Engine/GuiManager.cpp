@@ -343,7 +343,11 @@ void GuiManager::ConfigWindow()
 				fullscreen = true;
 			}
 
-			else fullscreen = false;
+			else 
+			{
+				SDL_SetWindowFullscreen(App->window->window, SDL_FALSE);
+				fullscreen = false;
+			}
 		}
 
 		ImGui::SameLine();
@@ -385,7 +389,7 @@ void GuiManager::ConfigWindow()
 		}
 	}//window tab
 
-	//-------- Renderer TAB
+	//-------- RENDERER TAB
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
 		if (ImGui::Checkbox("GL Depth", &App->renderer3D->glDepthOn))
