@@ -22,6 +22,15 @@ public:
 public:
 	bool vsync;
 
+	bool glDepthOn = true;
+	bool glCullingOn = true;
+	bool glLightingOn = true;
+	bool glMatColorOn = true;
+	bool glTex2dOn = true;
+	bool glSmoothLineOn = true;
+	bool glHardOn = true;
+	bool glWireframeOn = false;
+
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;

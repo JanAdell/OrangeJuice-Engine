@@ -385,6 +385,38 @@ void GuiManager::ConfigWindow()
 		}
 	}//window tab
 
+	//-------- Renderer TAB
+	if (ImGui::CollapsingHeader("Renderer"))
+	{
+		if (ImGui::Checkbox("GL Depth", &App->renderer3D->glDepthOn))
+			(&App->renderer3D->glDepthOn) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+
+		else if (ImGui::Checkbox("GL Cull Face", &App->renderer3D->glCullingOn))
+			(App->renderer3D->glCullingOn) ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+
+		else if (ImGui::Checkbox("GL Lighting", &App->renderer3D->glLightingOn))
+			(App->renderer3D->glLightingOn) ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
+
+		else if (ImGui::Checkbox("GL Color Material", &App->renderer3D->glMatColorOn))
+			(App->renderer3D->glMatColorOn) ? glEnable(GL_COLOR_MATERIAL) : glDisable(GL_COLOR_MATERIAL);
+
+		else if (ImGui::Checkbox("GL Texture 2D", &App->renderer3D->glTex2dOn))
+			(App->renderer3D->glTex2dOn) ? glEnable(GL_TEXTURE_2D) : glDisable(GL_TEXTURE_2D);
+
+		else if (ImGui::Checkbox("GL Line Smooth", &App->renderer3D->glSmoothLineOn))
+			(App->renderer3D->glSmoothLineOn) ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH);
+
+		else if (ImGui::Checkbox("Hard Poly", &App->renderer3D->glHardOn))
+			(App->renderer3D->glHardOn) ? glShadeModel(GL_FLAT) : glShadeModel(GL_SMOOTH);
+
+		else if (ImGui::Checkbox("Wireframe mode", &App->renderer3D->glWireframeOn))
+		{
+			if (App->renderer3D->glWireframeOn)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
+
 }//config window
 
 void GuiManager::ShowAppConsole(bool show_console)
