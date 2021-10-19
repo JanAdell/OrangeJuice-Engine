@@ -111,12 +111,30 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 		ImGui::End();
 	}
+
+	//PROVE
+	const char* f_path = App->input->DragAndDrop();
+	if (f_path != nullptr)
+	{
+		LOG("%s", f_path);
+	}
 		
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
 {
+	ShowAppConsole(show_console_window);
+
+	// Vertical line at the center of the grid to mark (0,0,0)
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 5.f, 0.f);
+	glEnd();
+	glLineWidth(1.5f);
+	//
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -125,6 +143,7 @@ update_status GuiManager::PostUpdate(float dt)
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	//SDL_GL_SwapWindow(App->window->window);
+
 	return UPDATE_CONTINUE;
 }
 

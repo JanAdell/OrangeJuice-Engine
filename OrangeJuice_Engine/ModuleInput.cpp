@@ -106,6 +106,11 @@ update_status ModuleInput::PreUpdate(float dt)
 			quit = true;
 			break;
 
+			case SDL_DROPFILE:
+			file = e.drop.file;
+			fileDrop = true;
+			break;
+
 			case SDL_WINDOWEVENT:
 			{
 				if(e.window.event == SDL_WINDOWEVENT_RESIZED)

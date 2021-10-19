@@ -58,6 +58,17 @@ public:
 		return mouse_y_motion;
 	}
 
+	const char* DragAndDrop()
+	{
+		if (fileDrop)
+		{
+			fileDrop = false;
+			return file.c_str();
+		}
+
+		return nullptr;
+	}
+
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];
@@ -67,4 +78,7 @@ private:
 	int mouse_x_motion;
 	int mouse_y_motion;
 	//int mouse_z_motion;
+
+	bool fileDrop = false;
+	std::string file;
 };
