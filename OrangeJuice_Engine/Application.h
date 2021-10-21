@@ -11,7 +11,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "GuiManager.h"
-#include "Timer.h"
+#include "ModuleMesh.h"
 
 struct HardwareSpecs
 {
@@ -43,6 +43,7 @@ public:
 	ModuleScene* scene;
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
+	ModuleMesh* mesh;
 	GuiManager* gui;
 
 

@@ -7,6 +7,8 @@
 #include "MathGeoLib/MathBuildConfig.h"
 #include "MathGeoLib/MathGeoLib.h"
 #include "ConsoleManager.h"
+#include "Geometry.h"
+
 #include "parson/parson.h"
 
 class GuiManager : public Module
@@ -25,6 +27,7 @@ public:
 	void ConfigWindow();
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
+	void DrawGeometry();
 
 private:
 
@@ -36,6 +39,9 @@ private:
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
+
+	uint idVertex = 0;
+	uint idIndex = 0;
 	
 	float brightness = 1.0f;
 

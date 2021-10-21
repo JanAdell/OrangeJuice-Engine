@@ -113,10 +113,11 @@ update_status GuiManager::PreUpdate(float dt)
 	}
 
 	//PROVE
-	const char* f_path = App->input->DragAndDrop();
-	if (f_path != nullptr)
+	const char* file = App->input->DragAndDrop();
+	if (file != nullptr)
 	{
-		LOG("%s", f_path);
+		App->mesh->LoadFile(file);
+		LOG("%s", file);
 	}
 		
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
@@ -140,9 +141,9 @@ update_status GuiManager::Update(float dt)
 
 update_status GuiManager::PostUpdate(float dt)
 {
+	DrawGeometry();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	//SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
 }
@@ -453,3 +454,11 @@ void GuiManager::GetLog(const char* log)
 	console.AddLog(log);
 
 }//console logs
+
+void GuiManager::DrawGeometry()
+{
+	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+	{
+		(*it)->Draw();
+	}
+}
