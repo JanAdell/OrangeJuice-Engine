@@ -2,23 +2,9 @@
 #define _MODULEMESH_H_
 
 #include "Globals.h"
-//#include "glew/include/GL/glew.h"
-//#include <gl/GL.h>
 #include "Geometry.h"
 #include "Module.h"
 #include <vector>
-
-struct Mesh_data
-{
-	uint idIndex = 0; // index in VRAM
-	uint numIndex = 0;
-	uint* index = nullptr;
-
-	uint idVertex = 0; // unique vertex in VRAM
-	uint numVertex = 0;
-	float* vertex = nullptr;
-};
-
 
 class ModuleMesh : public Module
 {
@@ -33,8 +19,10 @@ public:
 	bool LoadFile(const char* fileName);
 
 public:
-	Mesh_data* data;
 	std::vector<Geometry*> geometry;
+
+private:
+	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
 };
 
 #endif //_MODULEMESH_H_ 
