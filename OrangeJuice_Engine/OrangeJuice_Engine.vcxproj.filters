@@ -177,6 +177,7 @@
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Primitive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -464,6 +465,7 @@
     </ClInclude>
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="par_shapes.h" />
+    <ClInclude Include="Primitive.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

@@ -144,7 +144,6 @@ update_status GuiManager::Update(float dt)
 
 update_status GuiManager::PostUpdate(float dt)
 {
-	DrawGeometry();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -457,11 +456,3 @@ void GuiManager::GetLog(const char* log)
 	console.AddLog(log);
 
 }//console logs
-
-void GuiManager::DrawGeometry()
-{
-	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
-	{
-		(*it)->Draw();
-	}
-}

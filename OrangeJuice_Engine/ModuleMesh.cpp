@@ -52,15 +52,15 @@ bool ModuleMesh::LoadFile(const char* file_name)
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Mesh_data* mesh = new Mesh_data();
-			mesh->numVertex = scene->mMeshes[i]->mNumVertices * 3;
-			mesh->numVertex = scene->mMeshes[i]->mNumVertices;
-			mesh->vertex = new float[mesh->numVertex * 3];
-			memcpy(mesh->vertex, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->numVertex * 3);
-
+			data = new Mesh_data();
+			data->numVertex = scene->mMeshes[i]->mNumVertices;
+			data->numIndex = scene->mMeshes[i]->mNumFaces * 3;
+			data->vertex = new float[data->numVertex * 3];
+			memcpy(data->vertex, scene->mMeshes[i]->mVertices, sizeof(float) * data->numVertex * 3);
+			data->index = new uint[data->numIndex * 3];
+			LOG("New mesh with %d vertices", data->vertex);
 			if (scene->mMeshes[i]->HasFaces())
 			{
-				mesh->numIndex = scene->mMeshes[i]->mNumFaces * 3;
 				for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
 				{
 					if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
@@ -68,11 +68,11 @@ bool ModuleMesh::LoadFile(const char* file_name)
 						LOG("WARNING, geometry face with != 3 indices!");
 					}
 					else
-						memcpy(&mesh->index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+						memcpy(&data->index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
 				}
 
 			}
-			Geometry* newGeometry = new Geometry(mesh->vertex, mesh->index, scene->mMeshes[i]->mNumVertices, scene->mMeshes[i]->mNumFaces);
+			Geometry* newGeometry = new Geometry(data->vertex, data->index, scene->mMeshes[i]->mNumVertices, scene->mMeshes[i]->mNumFaces);
 
 			geometry.push_back(newGeometry);
 			LOG("New mesh created from %s", file_name);

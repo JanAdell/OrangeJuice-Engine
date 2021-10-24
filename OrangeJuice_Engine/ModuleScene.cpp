@@ -45,9 +45,9 @@ bool ModuleScene::CleanUp()
 // Update
 update_status ModuleScene::Update(float dt)
 {
-	//BasePlane p(0, 1, 0, 0);
-	//p.axis = true;
-	//p.Render();
+	BasePlane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();
 	
 	// checking drawing 
 	/*glLineWidth(5.0f);
@@ -112,8 +112,25 @@ update_status ModuleScene::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
+update_status ModuleScene::PostUpdate(float dt)
+{
+	DrawGeometry();
+
+	
+	
+	return UPDATE_CONTINUE;
+}
+
 void ModuleScene::OnCollision()
 {
 	
 
+}
+
+void ModuleScene::DrawGeometry()
+{
+	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+	{
+		(*it)->Draw();
+	}
 }

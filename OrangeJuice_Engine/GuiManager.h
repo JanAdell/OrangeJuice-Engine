@@ -27,7 +27,6 @@ public:
 	void ConfigWindow();
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
-	void DrawGeometry();
 
 private:
 
