@@ -139,5 +139,7 @@ void ModuleScene::DrawGeometry()
 	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
 	{
 		(*it)->Draw();
+
+		if (debugDraw) (*it)->DebugDraw();
 	}
 }
