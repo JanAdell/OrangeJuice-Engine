@@ -1,3 +1,6 @@
+#include "glew/include/GL/glew.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_opengl3.h"
 #include "ImGui/imgui_impl_sdl.h"
