@@ -13,6 +13,7 @@ struct Geometry
 	Geometry();
 	~Geometry();
 	void Draw();
+	void DebugDraw();
 
 	uint idVertices = 0;
 	uint numVertices = 0;

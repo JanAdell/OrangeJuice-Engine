@@ -30,6 +30,7 @@ bool ModuleScene::Start()
 	
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
+	App->mesh->LoadFile("../Assets/BakerHouse.fbx");
 
 	return ret;
 }
@@ -49,6 +50,11 @@ update_status ModuleScene::Update(float dt)
 	p.axis = true;
 	p.Render();
 	
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		debugDraw = !debugDraw;
+	}
+
 	// checking drawing 
 	/*glLineWidth(5.0f);
 	glBegin(GL_LINES);
@@ -58,7 +64,7 @@ update_status ModuleScene::Update(float dt)
 	glLineWidth(5.0f);*/
 
 	//Direct mode drawing
-	glBegin(GL_TRIANGLES);
+	/*glBegin(GL_TRIANGLES);
 	//1
 	glVertex3f(0.f, 0.f, 2.f);
 	glVertex3f(0.f, 0.f, 0.f);
@@ -108,6 +114,7 @@ update_status ModuleScene::Update(float dt)
 	glVertex3f(0.f, 0.f, 0.f);
 	glVertex3f(2.f, 2.f, 0.f);
 	glEnd();
+	*/
 
 	return UPDATE_CONTINUE;
 }

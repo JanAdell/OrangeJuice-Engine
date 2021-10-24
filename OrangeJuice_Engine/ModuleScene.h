@@ -2,7 +2,6 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Geometry.h"
-#include "par_shapes.h"
 #include "Primitive.h"
 
 #define MAX_SNAKE 2
@@ -28,6 +27,7 @@ public:
 
 private:
 
+	bool debugDraw = false;
 	uint idVertex = 0;
 	uint idIndex = 0;
 };

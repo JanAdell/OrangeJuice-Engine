@@ -50,7 +50,7 @@ void Geometry::Draw()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glDrawElements(GL_TRIANGLES, numIndices * 3, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -61,5 +61,28 @@ void Geometry::Draw()
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	glDrawArrays(GL_LINES, 0, numNormals * 3);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+
+
+void Geometry::DebugDraw()
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+	for (uint i = 0; i < numVertices * 3; i += 3)
+	{
+		glColor3f(3.0f, 0.0f, 1.0f);
+		glBegin(GL_LINES);
+		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+		glVertex3f(vertices[i] + normals[i] * 2, vertices[i + 1] + normals[i + 1] * 2, vertices[i + 2] + normals[i + 2] * 2);
+		glEnd();
+		glColor3f(1.0f, 1.0f, 1.0f);
+	}
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
