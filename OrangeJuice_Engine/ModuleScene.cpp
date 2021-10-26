@@ -46,6 +46,16 @@ bool ModuleScene::CleanUp()
 // Update
 update_status ModuleScene::Update(float dt)
 {
+
+	// Vertical line at the center of the grid to mark (0,0,0)
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 5.f, 0.f);
+	glEnd();
+	glLineWidth(1.5f);
+	//
+
 	BasePlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();

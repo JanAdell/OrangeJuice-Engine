@@ -12,9 +12,12 @@
 #include "ModuleWindow.h"
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
+#include "json.hpp"
 
 #include <fstream>
 #include <iomanip>
+
+using json = nlohmann::json;
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -71,6 +74,12 @@ update_status GuiManager::PreUpdate(float dt)
 		{
 			if (ImGui::MenuItem("Repository"))
 				App->RequestBrowser("https://github.com/JanAdell/OrangeJuice-Engine");
+
+			if (ImGui::MenuItem("Last release"))
+				App->RequestBrowser("https://github.com/JanAdell/OrangeJuice-Engine/releases");
+
+			if (ImGui::MenuItem("Report a bug"))
+				App->RequestBrowser("https://github.com/JanAdell/OrangeJuice-Engine/issues");
 
 			if (ImGui::MenuItem("About",NULL, show_about_window)) show_about_window = !show_about_window;;
 				
@@ -129,15 +138,6 @@ update_status GuiManager::PreUpdate(float dt)
 update_status GuiManager::Update(float dt)
 {
 	ShowAppConsole(show_console_window);
-
-	// Vertical line at the center of the grid to mark (0,0,0)
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 5.f, 0.f);
-	glEnd();
-	glLineWidth(1.5f);
-	//
 	
 	return UPDATE_CONTINUE;
 }
@@ -182,6 +182,12 @@ void GuiManager::AboutWindow()
 
 void GuiManager::ConfigWindow()
 {
+	json j;
+	std::ifstream ifs("config.json");
+	if (!ifs.is_open())
+		LOG("Error to load file", SDL_GetError());
+
+	ifs >> j;
 	//-------- APPLICATION TAB
 	if (ImGui::CollapsingHeader("Application"))
 	{
@@ -377,7 +383,7 @@ void GuiManager::ConfigWindow()
 
 			else 
 			{
-				SDL_SetWindowFullscreen(App->window->window, SDL_FALSE);
+				SDL_SetWindowFullscreen(App->window->window, 0);
 				fullscreen = false;
 			}
 		}
@@ -392,7 +398,11 @@ void GuiManager::ConfigWindow()
 				SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_RESIZABLE);
 				resizable = true;
 			}
-			else resizable = false;
+			else 
+			{
+				SDL_SetWindowFullscreen(App->window->window, 0);
+				resizable = false;
+			}
 		}
 
 		if (ImGui::Checkbox(" Borderless", &borderless))
