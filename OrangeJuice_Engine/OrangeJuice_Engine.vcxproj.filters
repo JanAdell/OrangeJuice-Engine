@@ -178,6 +178,7 @@
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -466,6 +467,7 @@
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="par_shapes.h" />
     <ClInclude Include="Primitive.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
