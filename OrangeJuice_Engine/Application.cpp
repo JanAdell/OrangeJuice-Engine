@@ -22,10 +22,10 @@ Application::Application()
 	AddModule(camera);
 	AddModule(input);
 	AddModule(mesh);
-	AddModule(gui);
 
 	// Scenes
 	AddModule(scene);
+	AddModule(gui);
 
 	// Renderer last!
 	AddModule(renderer3D);
