@@ -11,14 +11,10 @@ Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_i
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
 
-	glGenBuffers(1, (uint*)&(idNormals));
-	glBindBuffer(GL_ARRAY_BUFFER, idNormals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(int) * numNormals, normals, GL_STATIC_DRAW);
 }
 
 Geometry::Geometry(Geometry* geo)
-	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), numVertices(geo->numVertices), numIndices(geo->numIndices), numNormals(geo->numNormals),
-	uvCoord(geo->uvCoord), numCoords(geo->numCoords), textureID(geo->textureID)
+	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), numVertices(geo->numVertices), numIndices(geo->numIndices), numNormals(geo->numNormals), uvCoord(geo->uvCoord), numCoords(geo->numCoords), textureID(geo->textureID)
 {
 	glGenBuffers(1, (uint*)&(idVertices));
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
@@ -27,10 +23,6 @@ Geometry::Geometry(Geometry* geo)
 	glGenBuffers(1, (uint*)&(idIndices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (uint*)&(idNormals));
-	glBindBuffer(GL_ARRAY_BUFFER, idNormals);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numNormals * 3, normals, GL_STATIC_DRAW);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)

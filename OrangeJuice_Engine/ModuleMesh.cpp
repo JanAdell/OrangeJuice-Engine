@@ -91,6 +91,7 @@ bool ModuleMesh::LoadFile(const char* file_name)
 			//Load vertex
 			data->numVertices = scene->mMeshes[i]->mNumVertices;
 			data->vertices = new float[data->numVertices * 3];
+			data->textureID = textID;
 			memcpy(data->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * data->numVertices * 3);
 			LOG("New mesh with %d vertices", data->vertices);
 
@@ -117,12 +118,16 @@ bool ModuleMesh::LoadFile(const char* file_name)
 			}
 			if (scene->mMeshes[i]->HasTextureCoords(0))
 			{
-				texCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
+				//texCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
+				data->numCoords = scene->mMeshes[i]->mNumVertices * 2;
+				data->uvCoord = new float[data->numCoords];
 				for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
 
-					texCoords[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
-					texCoords[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
-					LOG("Texture coords: %f", texCoords[k]);
+					//texCoords[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
+					//texCoords[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
+					data->uvCoord[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
+					data->uvCoord[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
+					//LOG("Texture coords: %f", texCoords[k]);
 				}
 			}
 			Geometry* geo = new Geometry(data);

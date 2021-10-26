@@ -128,7 +128,18 @@ update_status GuiManager::PreUpdate(float dt)
 	const char* file = App->input->DragAndDrop();
 	if (file != nullptr)
 	{
-		App->mesh->LoadFile(file);
+		std::string ext(file);
+		ext = ext.substr(ext.find_last_of('.') + 1);
+		for (size_t i = 0; i < ext.length(); i++)
+		{
+			ext[i] = std::tolower(ext[i]);
+		}
+
+		if(ext == "fbx")
+			App->mesh->LoadFile(file);
+
+		else
+			App->mesh->LoadTexture(file);
 		LOG("%s", file);
 	}
 		
