@@ -53,6 +53,8 @@ update_status ModuleScene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		debugDraw = !debugDraw;
+		
+		if (debugDraw == true) LOG("debugDraw on, showing normals.");
 	}
 
 	// checking drawing 
