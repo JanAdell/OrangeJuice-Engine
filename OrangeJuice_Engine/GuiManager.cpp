@@ -162,6 +162,16 @@ bool GuiManager::CleanUp()
 	return true;
 }
 
+bool GuiManager::Save(nlohmann::json & j) const
+{
+	return true;
+}
+
+bool GuiManager::Load(nlohmann::json & j)
+{
+	return true;
+}
+
 void GuiManager::AboutWindow()
 {
 	ImGui::Text("Orange Juice Engine v0.1");
@@ -183,7 +193,7 @@ void GuiManager::ConfigWindow()
 		root = json_parse_file((std::string("config.json")).data());
 
 		str1 = json_object_get_string(json_object_get_object(json_value_get_object(root),"info"), "name");
-		str2 = json_object_get_string(json_object_get_object(json_value_get_object(root), "info"), "Organisation");
+		str2 = json_object_get_string(json_object_get_object(json_value_get_object(root), "info"), "Organization");
 				
 		ImGui::Text("App Name:    %s ", str1);
 		

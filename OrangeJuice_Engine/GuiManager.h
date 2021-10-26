@@ -28,6 +28,9 @@ public:
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
 
+	bool Save(nlohmann::json& j) const override;
+	bool Load(nlohmann::json& j) override;
+
 private:
 
 	bool show_demo_window = false;
