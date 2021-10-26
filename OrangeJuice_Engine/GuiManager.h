@@ -42,7 +42,7 @@ private:
 	uint idVertex = 0;
 	uint idIndex = 0;
 	
-	float brightness = 1.0f;
+	//float brightness = 1.0f;
 
 	std::vector<float> fpsLog;
 	std::vector<float> msLog;

@@ -1,4 +1,6 @@
 #include "Application.h"
+#include <fstream>
+#include <iomanip>
 
 Application::Application()
 {
@@ -81,6 +83,7 @@ bool Application::Init()
 	systemSpecs.avx = SDL_HasAVX();
 	
 	ms_timer.Start();
+	Load();
 	return ret;
 }
 
@@ -152,6 +155,8 @@ bool Application::CleanUp()
 
 	is_console = false;
 
+	Save();
+
 	for (std::list<Module*>::reverse_iterator item = list_modules.rbegin(); item != list_modules.rend() && ret == true; ++item)
 	{
 		ret = (*item)->CleanUp();
@@ -173,4 +178,43 @@ void Application::GetFrames(int& frames, float& millisec)
 {
 	frames = framesOnLastUpdate - 1;
 	millisec = frameMs;
+}
+
+bool Application::Save()
+{
+	bool ret = true;
+	using jsonf = nlohmann::json;
+	jsonf jsonfile;
+
+	for (std::list<Module*>::reverse_iterator item = list_modules.rbegin(); item != list_modules.rend() && ret == true; ++item)
+	{
+		ret = (*item)->Save(jsonfile);
+	}
+	std::fstream file("Save.json");
+	file << jsonfile;
+	LOG("Save()");
+	return ret;
+}
+
+bool Application::Load()
+{
+	bool ret = true;
+
+	nlohmann::json j;
+	std::ifstream ifs("Save.json");
+	if (!ifs.is_open())
+	{
+		LOG("Error to load file", SDL_GetError());
+	}
+	else
+	{
+		ifs >> j;
+
+		for (std::list<Module*>::reverse_iterator item = list_modules.rbegin(); item != list_modules.rend() && ret == true; ++item)
+		{
+			ret = (*item)->Load(j);
+		}
+		LOG("Load()");
+	}
+	return ret;
 }

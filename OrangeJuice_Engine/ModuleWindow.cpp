@@ -92,3 +92,24 @@ void ModuleWindow::SetTitle(const char* title)
 {
 	SDL_SetWindowTitle(window, title);
 }
+
+bool ModuleWindow::Save(nlohmann::json & j) const
+{
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	j["Window"]["sizeW"] = w;
+	j["Window"]["sizeH"] = h;
+	j["Window"]["brightness"] = brightness;
+	return true;
+}
+
+bool ModuleWindow::Load(nlohmann::json & j)
+{
+	int w = j["Window"]["sizeW"].get<int>();
+	int h = j["Window"]["sizeH"].get<int>();
+	brightness = j["Window"]["brightness"].get<float>();
+
+	SDL_SetWindowBrightness(window, brightness);
+	SDL_SetWindowSize(window, w, h);
+	return true;
+}

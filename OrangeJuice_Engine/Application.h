@@ -83,6 +83,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	bool Save();
+	bool Load();
+
 	void GetFrames(int& frames, float& miliseconds);
 	void RequestBrowser(const char*);
 	HardwareSpecs systemSpecs;

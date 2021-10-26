@@ -468,6 +468,7 @@
     <ClInclude Include="par_shapes.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

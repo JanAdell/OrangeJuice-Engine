@@ -305,10 +305,10 @@ void GuiManager::ConfigWindow()
 		int height = 0;
 		ImGui::Checkbox(" Active", &App->renderer3D->vsync);
 		ImGui::TextWrapped("Icon:  *default*");
-		ImGui::SliderFloat(" Brightness", &brightness, 0, 1);
+		ImGui::SliderFloat(" Brightness", &App->window->brightness, 0, 1);
 		ImGui::SliderInt(" Width", &width, 0, 3820);
 		ImGui::SliderInt(" Height", &height, 0, 2048);
-		SDL_SetWindowBrightness(App->window->window, brightness);
+		SDL_SetWindowBrightness(App->window->window, App->window->brightness);
 		
 		const char* items[] = { "800x600", "1024x768", "1152x864", "1176x664","1280x720", "1280x768", "1280x800", "1280x960", "1280x1024", "1360x768", "1440x900", "1920x1080" };
 		static int item_current = 9;

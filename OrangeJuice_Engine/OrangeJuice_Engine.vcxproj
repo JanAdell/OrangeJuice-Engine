@@ -84,6 +84,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="ConsoleManager.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="glmath.h" />
