@@ -178,7 +178,6 @@
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Primitive.cpp" />
-    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -467,8 +466,13 @@
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="par_shapes.h" />
     <ClInclude Include="Primitive.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="DevIL\include\IL\il.h">
+      <Filter>devIL</Filter>
+    </ClInclude>
+    <ClInclude Include="DevIL\include\IL\ilu.h">
+      <Filter>devIL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
@@ -479,6 +483,9 @@
     </Filter>
     <Filter Include="MathGeoLib">
       <UniqueIdentifier>{15e3e2d1-cecd-4435-b301-d2c2e58215c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="devIL">
+      <UniqueIdentifier>{41a700f8-57f5-44df-9fc7-2c6766ff8d5f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,14 @@ struct Geometry
 	uint idNormals = 2;
 	uint numNormals = 0;
 	float* normals = nullptr;
+	int parIndices = 0;
+	uint numCoords = 0;
+	float* uvCoord = nullptr;
+	float r, g, b, a;
+	int textureID = 0;
+	uint idCoords = 0;
+	
+
 };
 
 #endif //_GEOMETRY_H

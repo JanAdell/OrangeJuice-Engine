@@ -2,9 +2,12 @@
 #define _MODULEMESH_H_
 
 #include "Globals.h"
+#include "glew/include/GL/glew.h"
+#include <gl/GL.h>
 #include "Geometry.h"
 #include "Module.h"
 #include <vector>
+
 
 class ModuleMesh : public Module
 {
@@ -17,6 +20,7 @@ public:
 	bool CleanUp();
 
 	bool LoadFile(const char* fileName);
+	GLuint LoadTexture(const char* p_tex);
 
 public:
 	std::vector<Geometry*> geometry;

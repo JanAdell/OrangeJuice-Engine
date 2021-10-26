@@ -17,7 +17,8 @@ Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_i
 }
 
 Geometry::Geometry(Geometry* geo)
-	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), numVertices(geo->numVertices), numIndices(geo->numIndices), numNormals(geo->numNormals)
+	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), numVertices(geo->numVertices), numIndices(geo->numIndices), numNormals(geo->numNormals),
+	uvCoord(geo->uvCoord), numCoords(geo->numCoords), textureID(geo->textureID)
 {
 	glGenBuffers(1, (uint*)&(idVertices));
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
@@ -30,6 +31,23 @@ Geometry::Geometry(Geometry* geo)
 	glGenBuffers(1, (uint*)&(idNormals));
 	glBindBuffer(GL_ARRAY_BUFFER, idNormals);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numNormals * 3, normals, GL_STATIC_DRAW);
+
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+		LOG("Error Storing Indices! %s\n", gluErrorString(error));
+
+	if (textureID != 0)
+	{
+		//alloc texture coords
+		glGenBuffers(1, (uint*)&(idCoords));
+		glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 2, uvCoord, GL_STATIC_DRAW);
+
+		error = glGetError();
+		if (error != GL_NO_ERROR)
+			LOG("Error Storing textures! %s\n", gluErrorString(error));
+
+	}
 }
 
 Geometry::Geometry()
@@ -50,20 +68,22 @@ void Geometry::Draw()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	if (textureID != 0)
+	{
+		//Bind textures
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+	}
+
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, idNormals);
-
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glDrawArrays(GL_LINES, 0, numNormals * 3);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
-
 
 
 void Geometry::DebugDraw()
