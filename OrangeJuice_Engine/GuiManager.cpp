@@ -56,6 +56,13 @@ update_status GuiManager::PreUpdate(float dt)
 
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("View")) 
 		{
 			if (ImGui::MenuItem("Console")) show_console_window = true;
@@ -89,6 +96,8 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 		ShowAppConsole(&show_console_window);
 	}
+
+	if (show_primitives_window) PrimitivesWindow();
 
 	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
 	
@@ -160,6 +169,10 @@ update_status GuiManager::PostUpdate(float dt)
 
 bool GuiManager::CleanUp()
 {
+
+	fpsLog.clear();
+	msLog.clear();
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -488,3 +501,116 @@ void GuiManager::GetLog(const char* log)
 	console.AddLog(log);
 
 }//console logs
+
+void GuiManager::PrimitivesWindow()
+{
+	if (show_primitives_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		par_shapes_mesh* m = nullptr;
+		if (ImGui::Begin("Create Primitives", &show_primitives_window))
+		{
+			static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+			static int scale[3] = { 1,1,1 };
+			static int translation[3] = { 1,1,1 };
+			static int rad = 0;
+			static float axis[3] = { 0,0,0 };
+			if (ImGui::CollapsingHeader("Primitives"))
+			{
+				ImGui::SliderInt3("Size", scale, 1, 10);
+				ImGui::SliderInt3("Translation", translation, 0, 100);
+				ImGui::TextWrapped("Rotation");
+				ImGui::Separator();
+				ImGui::SliderInt("Radiant", &rad, 0, 360);
+				const char* items[] = { "X", "Y", "Z" };
+				static int item_current = 0;
+				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
+				switch (item_current)
+				{
+				case 0:
+					axis[0] = 1;
+					axis[1] = 0;
+					axis[2] = 0;
+					break;
+				case 1:
+					axis[0] = 0;
+					axis[1] = 1;
+					axis[2] = 0;
+					break;
+				case 2:
+					axis[0] = 0;
+					axis[1] = 0;
+					axis[2] = 1;
+					break;
+				}
+				DegToRad(rad);
+				ImGui::ColorEdit4("Color", col);
+				if (ImGui::Button("  Cube  "))
+					CreatePrimitives(m, Primitives::CUBE, col, scale, translation, rad, axis);
+				else if (ImGui::Button(" Sphere "))
+					CreatePrimitives(m, Primitives::SPHERE, col, scale, translation, rad, axis);
+				else if (ImGui::Button("  Cone  "))
+					CreatePrimitives(m, Primitives::CONE, col, scale, translation, rad, axis);
+				else if (ImGui::Button("Cylinder"))
+					CreatePrimitives(m, Primitives::CYILINDER, col, scale, translation, rad, axis);
+				else if (ImGui::Button(" Plane  "))
+					CreatePrimitives(m, Primitives::PLANE, col, scale, translation, rad, axis);
+
+			}
+			ImGui::End();
+
+		}
+	}
+}
+
+void GuiManager::DrawGeometry()
+{
+	//	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+//	{
+//		/*(*it)->Draw();
+//		if (debug_draw)
+//			(*it)->DebugDraw();*/
+//	}
+//	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
+//	{
+//		(*it)->DrawPrimitives();
+//		if (debug_draw)
+//			(*it)->DebugDraw();
+//	}
+}
+
+void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float col[4], int scale[3], int translation[3], float rad, const float* axis)
+{
+	switch (prim)
+	{
+	case Primitives::CUBE:
+		p_mesh = par_shapes_create_cube();
+		break;
+	case Primitives::SPHERE:
+		p_mesh = par_shapes_create_subdivided_sphere(5);
+		break;
+	case Primitives::CONE:
+		p_mesh = par_shapes_create_cone(30, 3);
+		break;
+	case Primitives::CYILINDER:
+		p_mesh = par_shapes_create_cylinder(30, 3);
+		break;
+	case Primitives::PLANE:
+		p_mesh = par_shapes_create_plane(30, 3);
+		break;
+	default:
+		LOG("Unknown primtive selected");
+		break;
+	}
+
+	par_shapes_scale(p_mesh, scale[0], scale[1], scale[2]);
+	par_shapes_translate(p_mesh, translation[0], translation[1], translation[2]);
+	par_shapes_rotate(p_mesh, rad, axis);
+
+	GameObject* game_object = new GameObject();
+	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
+	geo->CreatePrimitive(p_mesh, col[0], col[1], col[2], col[3]);
+	App->scene->gameObjects.push_back(game_object);
+	App->camera->GoAroundGeometry(geo);
+}

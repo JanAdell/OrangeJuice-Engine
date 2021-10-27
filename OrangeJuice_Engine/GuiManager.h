@@ -10,6 +10,14 @@
 #include "Geometry.h"
 
 #include "parson/parson.h"
+#include "par_shapes.h"
+
+#include <vector>
+
+
+typedef unsigned char GLubyte;
+typedef float GLfloat;
+
 
 class GuiManager : public Module
 {
@@ -23,9 +31,14 @@ public:
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
+
 	void AboutWindow();
 	void ConfigWindow();
 	void ShowAppConsole(bool show_console);
+	void PrimitivesWindow();
+	void DrawGeometry();
+	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
+
 	void GetLog(const char* log);
 
 	bool Save(nlohmann::json& j) const override;
@@ -37,6 +50,8 @@ private:
 	bool show_config_window = false;
 	bool show_about_window = false;
 	bool show_console_window = false;
+	bool show_primitives_window = false;
+
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;
@@ -55,6 +70,8 @@ private:
 	
 	AppConsole console;
 	ImGuiTextBuffer text;
+
+	Primitives prim = Primitives::UKNOWN;
 
 	JSON_Value* root;
 };

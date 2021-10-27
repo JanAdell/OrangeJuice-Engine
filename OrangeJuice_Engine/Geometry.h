@@ -5,19 +5,32 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Globals.h"
-
+#include "par_shapes.h"
 #include "Image.h"
+
+enum  class Primitives
+{
+	CUBE,
+	SPHERE,
+	CONE,
+	CYILINDER,
+	PLANE,
+	UKNOWN,
+};
 
 class Geometry: public Component
 {
 public:
-	Geometry(float* ver, uint* ind, float* norm, uint numVert, uint numInd, uint numNorm, GameObject* parent = nullptr);
-	Geometry(Geometry* geo, GameObject* parent);
-	Geometry(GameObject* parent);
+
+	Geometry(GameObject* parent = nullptr);
 	~Geometry();
 	void DebugDraw();
 
+	void CreatePrimitive(par_shapes_mesh* p_mesh, float col0 = 255, float col1 = 255, float col2 = 255, float col3 = 255);
+	void DrawPrimitives();
+
 	void Update() override;
+
 	void LoadData(aiMesh* mesh);
 	
 
@@ -39,6 +52,9 @@ public:
 	float r, g, b, a;
 	
 	Image* texture = nullptr;
+
+	bool is_primitive = false;
+	par_shapes_mesh* primitive_mesh = nullptr;
 
 public:
 

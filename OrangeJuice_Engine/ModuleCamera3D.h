@@ -21,6 +21,8 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
+	void GoAroundGeometry(const Geometry* geom);
+
 
 private:
 
@@ -29,6 +31,7 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference, ViewVector;
+	float camera_speed = 0.01;
 
 private:
 

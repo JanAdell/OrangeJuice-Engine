@@ -158,3 +158,28 @@ void ModuleCamera3D::CalculateViewMatrix()
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
 }
+
+void ModuleCamera3D::GoAroundGeometry(const Geometry* geom)
+{
+	math::AABB box(float3(0, 0, 0), float3(0, 0, 0));
+	std::vector <float3> vertex;
+
+	for (int i = 0; i < geom->numVertices * 3; i += 3)
+	{
+		vertex.push_back(float3(geom->vertices[i], geom->vertices[i + 1], geom->vertices[i + 2]));
+	}
+
+	box.Enclose(&vertex[0], geom->numVertices);
+
+
+	Position.x = box.maxPoint.x * 2;
+	Position.y = box.maxPoint.y * 2;
+	Position.z = box.maxPoint.z * 2;
+
+	Reference.x = box.CenterPoint().x;
+	Reference.y = box.CenterPoint().y;
+	Reference.z = box.CenterPoint().z;
+
+
+	LookAt(Reference);
+}

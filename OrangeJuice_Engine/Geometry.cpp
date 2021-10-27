@@ -1,32 +1,43 @@
 #include "Geometry.h"
+
 #include "Assimp/include/scene.h"
 
-Geometry::Geometry(float* ver, uint* ind, float* norm, uint numVert, uint numInd, uint numNorm, GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
-	vertices(ver), indices(ind), normals(norm), numVertices(numVert), numIndices(numInd), numNormals(numNorm) 
-{
-	
-}
-
-Geometry::Geometry(Geometry* geo, GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
-	vertices(geo->vertices), indices(geo->indices), normals(geo->normals), numVertices(geo->numVertices), numIndices(geo->numIndices), numNormals(geo->numNormals), texture(geo->texture)
-{
-	
-}
+//Primitives constructor
 
 Geometry::Geometry(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
 {
-	
+	r = g = b = a = 255;
+	isEnable = true;
 }
-
 Geometry::~Geometry()
 {
-	delete[] vertices;
-	delete[] indices;
+}
+
+void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
+{
+	primitive_mesh = p_mesh;
+	numVertices = p_mesh->npoints;
+	parIndices = p_mesh->ntriangles;
+	numIndices = p_mesh->ntriangles * 3;
+
+	vertices = p_mesh->points;
+	indices = p_mesh->triangles;
+	normals = p_mesh->normals;
+
+	r = col0;
+	g = col1;
+	b = col2;
+	a = col3;
+
+	LoadBuffers();
+
+	LOG("PENE");
 }
 
 
+//DebugDraw for all geometries
 void Geometry::DebugDraw()
-{
+{//TODO: Fix normals in the primitive geometries
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
@@ -36,7 +47,7 @@ void Geometry::DebugDraw()
 		glColor3f(3.0f, 0.0f, 1.0f);
 		glBegin(GL_LINES);
 		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
-		glVertex3f(vertices[i] + normals[i] * 2, vertices[i + 1] + normals[i + 1] * 2, vertices[i + 2] + normals[i + 2] * 2);
+		glVertex3f(vertices[i] + normals[i] * 10, vertices[i + 1] + normals[i + 1] * 10, vertices[i + 2] + normals[i + 2] * 10);
 		glEnd();
 		glColor3f(1.0f, 1.0f, 1.0f);
 	}
@@ -46,14 +57,30 @@ void Geometry::DebugDraw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void Geometry::Update()
+//Draw primitives geometries
+void Geometry::DrawPrimitives()
 {
+
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glDrawElements(GL_TRIANGLES, parIndices * 3, GL_UNSIGNED_INT, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
+}
+
+void Geometry::Update()
+{
+	glPushAttrib(GL_CURRENT_BIT);
+	glColor4f(r, g, b, a);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	if (texture != nullptr)
 	{
 		if (texture->textureId != 0)
@@ -66,11 +93,13 @@ void Geometry::Update()
 			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 		}
 	}
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+	else
+		glColor4f(r, g, b, a);
 
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//DebugDraw();
+	glPopAttrib();
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -101,7 +130,6 @@ void Geometry::LoadData(aiMesh* mesh)
 			normals = new float[mesh->mNumVertices * 3];
 			memcpy(normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
 		}
-
 	}
 	LoadBuffers();
 }

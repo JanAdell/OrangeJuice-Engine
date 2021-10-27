@@ -80,6 +80,7 @@ update_status ModuleScene::PostUpdate(float dt)
 		(*object)->Update();
 
 	}
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
