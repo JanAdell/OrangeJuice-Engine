@@ -208,11 +208,11 @@ void GuiManager::ConfigWindow()
 		root = json_parse_file((std::string("config.json")).data());
 
 		str1 = json_object_get_string(json_object_get_object(json_value_get_object(root),"info"), "name");
-		str2 = json_object_get_string(json_object_get_object(json_value_get_object(root), "info"), "Organization");
+		str2 = json_object_get_string(json_object_get_object(json_value_get_object(root), "info"), "Organisation");
 				
 		ImGui::Text("App Name:    %s ", str1);
 		
-		ImGui::Text("Organitzation:");
+		ImGui::Text("Organitsation:");
 		ImGui::SameLine();
 		if (ImGui::Button(str2, ImVec2(357, 0))) App->RequestBrowser("https://www.citm.upc.edu/");
 
