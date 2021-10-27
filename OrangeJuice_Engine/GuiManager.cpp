@@ -13,6 +13,7 @@
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
 #include "json.hpp"
+#include "ModuleMesh.h"
 
 #include <fstream>
 #include <iomanip>
@@ -140,6 +141,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 		else
 			App->mesh->LoadTexture(file);
+
 		LOG("%s", file);
 	}
 		

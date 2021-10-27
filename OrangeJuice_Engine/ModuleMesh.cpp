@@ -9,6 +9,8 @@
 #include "DevIL/include/IL/ilu.h"
 #include "DevIL/include/IL/ilut.h"
 
+#include "Image.h"
+
 #pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
 #pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
 #pragma comment(lib, "DevIL/lib/x86/Release/ILUT.lib")
@@ -72,26 +74,17 @@ bool ModuleMesh::LoadFile(const char* file_name)
 	int textID = 0;
 
 	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
-
-	if (scene->HasMaterials())
-		if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-		{
-
-			aiString textPath;
-			scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &textPath);
-			textID = LoadTexture(textPath.C_Str());
-		}
-
+	
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Geometry* data = new Geometry();
+			Geometry* data = new Geometry(nullptr);
 			//Load vertex
 			data->numVertices = scene->mMeshes[i]->mNumVertices;
 			data->vertices = new float[data->numVertices * 3];
-			data->textureID = textID;
+			
 			memcpy(data->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * data->numVertices * 3);
 			LOG("New mesh with %d vertices", data->vertices);
 
@@ -116,21 +109,13 @@ bool ModuleMesh::LoadFile(const char* file_name)
 				}
 
 			}
-			if (scene->mMeshes[i]->HasTextureCoords(0))
+			if (scene->HasMaterials())
 			{
-				//texCoords = new float[scene->mMeshes[i]->mNumVertices * 2];
-				data->numCoords = scene->mMeshes[i]->mNumVertices * 2;
-				data->uvCoord = new float[data->numCoords];
-				for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
-
-					//texCoords[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
-					//texCoords[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
-					data->uvCoord[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
-					data->uvCoord[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
-					//LOG("Texture coords: %f", texCoords[k]);
-				}
+				data->texture = new Image(nullptr);
+				data->texture->LoadCoords(scene->mMeshes[i]);
+				data->texture->LoadMatirials(scene, file_name);
 			}
-			Geometry* geo = new Geometry(data);
+			Geometry* geo = new Geometry(data, nullptr);
 			geometry.push_back(geo);
 			LOG("New mesh created from %s", file_name);
 		}
@@ -144,7 +129,7 @@ bool ModuleMesh::LoadFile(const char* file_name)
 
 GLuint ModuleMesh::LoadTexture(const char* p_tex)
 {
-	ILuint imgID = 0;
+	ILuint imgID;
 	ilGenImages(1, &imgID);
 	ilBindImage(imgID);
 
@@ -182,8 +167,9 @@ GLuint ModuleMesh::LoadTexture(const char* p_tex)
 
 	//Send texture to GPU
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &imgID);
-	glBindTexture(GL_TEXTURE_2D, imgID);
+	GLuint id = ilutGLBindTexImage();
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -198,7 +184,7 @@ GLuint ModuleMesh::LoadTexture(const char* p_tex)
 		return 0;
 	}
 	
-	return 0;
+	return id;
 }
 
 

@@ -178,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Component.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -473,6 +476,9 @@
     <ClInclude Include="DevIL\include\IL\ilu.h">
       <Filter>devIL</Filter>
     </ClInclude>
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Component.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

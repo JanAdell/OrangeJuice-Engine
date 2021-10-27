@@ -6,14 +6,23 @@
 #include <gl/GLU.h>
 #include "Globals.h"
 
-struct Geometry
+#include "Image.h"
+
+class Geometry: public Component
 {
-	Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_norm);
-	Geometry(Geometry* geo);
-	Geometry();
+public:
+	Geometry(float* ver, uint* ind, float* norm, uint numVert, uint numInd, uint numNorm, GameObject* parent = nullptr);
+	Geometry(Geometry* geo, GameObject* parent);
+	Geometry(GameObject* parent);
 	~Geometry();
 	void Draw();
 	void DebugDraw();
+
+	void Enable() override;
+	void Update() override;
+	void Disable() override;
+
+public:
 
 	uint idVertices = 0;
 	uint numVertices = 0;
@@ -25,12 +34,13 @@ struct Geometry
 	uint numNormals = 0;
 	float* normals = nullptr;
 	int parIndices = 0;
-	uint numCoords = 0;
-	float* uvCoord = nullptr;
 	float r, g, b, a;
-	int textureID = 0;
-	uint idCoords = 0;
 	
+	Image* texture = nullptr;
+
+public:
+
+	GameObject* parent;
 
 };
 
