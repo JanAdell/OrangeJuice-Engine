@@ -174,6 +174,18 @@ void Application::RequestBrowser(const char* url)
 	ShellExecuteA(GetActiveWindow(), "open", url, NULL, NULL, SW_SHOWNORMAL);
 }
 
+std::string Application::NormalizePath(const char* full_path)
+{
+	std::string newPath(full_path);
+	for (int i = 0; i < newPath.size(); ++i)
+	{
+		if (newPath[i] == '\\' || newPath[i] == '//')			
+			newPath[i] = '/';	
+	}
+
+	return newPath;
+}
+
 void Application::GetFrames(int& frames, float& millisec)
 {
 	frames = framesOnLastUpdate - 1;

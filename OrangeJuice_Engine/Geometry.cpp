@@ -4,25 +4,18 @@
 Geometry::Geometry(float* ver, uint* ind, float* norm, uint numVert, uint numInd, uint numNorm, GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
 	vertices(ver), indices(ind), normals(norm), numVertices(numVert), numIndices(numInd), numNormals(numNorm) 
 {
-	glGenBuffers(1, (uint*)&(idVertices));
-	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 3, vertices, GL_STATIC_DRAW);
 	
-	glGenBuffers(1, (uint*)&(idIndices));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
-
 }
 
 Geometry::Geometry(Geometry* geo, GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
 	vertices(geo->vertices), indices(geo->indices), normals(geo->normals), numVertices(geo->numVertices), numIndices(geo->numIndices), numNormals(geo->numNormals), texture(geo->texture)
 {
-	Init();
+	
 }
 
 Geometry::Geometry(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
 {
-	Init();
+	
 }
 
 Geometry::~Geometry()
@@ -60,6 +53,7 @@ void Geometry::Update()
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
 	if (texture != nullptr)
 	{
 		if (texture->textureId != 0)
@@ -76,6 +70,7 @@ void Geometry::Update()
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	//DebugDraw();
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -108,10 +103,10 @@ void Geometry::LoadData(aiMesh* mesh)
 		}
 
 	}
-	
+	LoadBuffers();
 }
 
-void Geometry::Init()
+void Geometry::LoadBuffers()
 {
 	glGenBuffers(1, (uint*)&(idVertices));
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);

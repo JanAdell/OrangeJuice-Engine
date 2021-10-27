@@ -89,6 +89,7 @@ public:
 	void GetFrames(int& frames, float& miliseconds);
 	void RequestBrowser(const char*);
 	HardwareSpecs systemSpecs;
+	std::string NormalizePath(const char* full_path);
 
 private:
 

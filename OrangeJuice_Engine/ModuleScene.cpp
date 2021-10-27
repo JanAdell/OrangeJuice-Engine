@@ -36,6 +36,7 @@ bool ModuleScene::Start()
 	App->camera->LookAt(vec3(0, 0, 0));
 
 	App->mesh->LoadFile("../Assets/BakerHouse.fbx");
+	
 
 	return ret;
 }

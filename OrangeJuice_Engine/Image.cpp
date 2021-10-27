@@ -1,4 +1,5 @@
 #include "Image.h"
+#include "Application.h"
 
 #include "DevIL/include/IL/il.h"
 #include "DevIL/include/IL/ilu.h"
@@ -16,12 +17,7 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-	glGenBuffers(1, (uint*)&(idCoords));
-	glBindBuffer(GL_ARRAY_BUFFER, idCoords);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numCoords, uvCoord, GL_STATIC_DRAW);
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR)
-		LOG("Error Storing textures! %s\n", gluErrorString(error));
+	
 }
 
 Image::~Image()
@@ -121,15 +117,25 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 		aiString textPath;
 		scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &textPath);
 		std::string  tex = textPath.C_Str();
-		std::string  pGeo = file_name;
-		//int count = 3;
-		//We change the name of the fbx for the texture name, with this made we have the general path
-		/*while (pGeo.back() != '\\' && count < 0)
+		std::string  pGeo = App->NormalizePath(file_name.c_str());
+
+		while (pGeo.back() != '/' )
 		{
 			pGeo.pop_back();
-			//count--;
-		}*/
+		}
 		pGeo += tex;
 		textureId = LoadImage(pGeo.c_str());
+
+		LoadBuffers();
 	}
+}
+
+void Image::LoadBuffers()
+{
+	glGenBuffers(1, (uint*)&(idCoords));
+	glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numCoords, uvCoord, GL_STATIC_DRAW);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+		LOG("Error Storing textures! %s\n", gluErrorString(error));
 }

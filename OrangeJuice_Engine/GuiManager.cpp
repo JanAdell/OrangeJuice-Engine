@@ -118,7 +118,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 	//PROVE
 	const char* file = App->input->DragAndDrop();
-	/*if (file != nullptr)
+	if (file != nullptr)
 	{
 		std::string ext(file);
 		ext = ext.substr(ext.find_last_of('.') + 1);
@@ -134,7 +134,7 @@ update_status GuiManager::PreUpdate(float dt)
 			App->mesh->LoadTexture(file);
 
 		LOG("%s", file);
-	}*/
+	}
 
 	if (file != nullptr)
 	{

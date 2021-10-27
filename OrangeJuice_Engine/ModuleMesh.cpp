@@ -88,6 +88,7 @@ bool ModuleMesh::LoadFile(const char* file_name)
 				dynamic_cast<Geometry*>(data)->texture = dynamic_cast<Image*>(tex);
 			}
 			LOG("New mesh created from %s", file_name);
+			
 		}
 		App->scene->gameObjects.push_back(gameObject);
 		aiReleaseImport(scene);

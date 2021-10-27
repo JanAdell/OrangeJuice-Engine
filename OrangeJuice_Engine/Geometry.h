@@ -19,9 +19,10 @@ public:
 
 	void Update() override;
 	void LoadData(aiMesh* mesh);
+	
 
 private:
-	void Init();
+	void LoadBuffers();
 
 public:
 
