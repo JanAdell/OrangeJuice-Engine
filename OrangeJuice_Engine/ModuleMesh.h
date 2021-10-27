@@ -22,9 +22,6 @@ public:
 	bool LoadFile(const char* fileName);
 	GLuint LoadTexture(const char* p_tex);
 
-public:
-	std::vector<Geometry*> geometry;
-
 private:
 	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
 };

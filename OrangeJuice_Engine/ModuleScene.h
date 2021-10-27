@@ -1,8 +1,13 @@
-#pragma once
+#ifndef _MODULESCENE_H_
+#define _MODULESCENE_H_
+
 #include "Module.h"
 #include "Globals.h"
 #include "Geometry.h"
 #include "Primitive.h"
+
+#include <vector>
+#include "GameObject.h"
 
 #define MAX_SNAKE 2
 #define MAX_CIRCUITSIZE 700
@@ -17,13 +22,15 @@ public:
 	~ModuleScene();
 
 	bool Start();
-	//update_status PreUpdate(float dt);
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 
 	bool CleanUp();
-	void DrawGeometry();
-	void OnCollision();
+	
+
+public:
+	std::vector<GameObject*> gameObjects;
 
 private:
 
@@ -31,3 +38,4 @@ private:
 	uint idVertex = 0;
 	uint idIndex = 0;
 };
+#endif

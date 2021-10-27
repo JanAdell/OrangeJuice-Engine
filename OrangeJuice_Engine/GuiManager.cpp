@@ -30,13 +30,7 @@ GuiManager::~GuiManager()
 
 bool GuiManager::Init()
 {
-	bool ret = true;
-	ImGui::CreateContext();
-
-
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
-	ImGui_ImplOpenGL3_Init();
-
+	
 	return true;
 }
 
@@ -49,9 +43,6 @@ bool GuiManager::Start()
 update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->window->window);
-	ImGui::NewFrame();
 	
 
 	if (ImGui::BeginMainMenuBar())
@@ -59,7 +50,7 @@ update_status GuiManager::PreUpdate(float dt)
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Configuration")) show_config_window = true;
-			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+			//if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
 
@@ -100,7 +91,7 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::End();
 	}
 
-	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
+	//if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
 	
 	if (show_config_window)
 	{
@@ -127,7 +118,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 	//PROVE
 	const char* file = App->input->DragAndDrop();
-	if (file != nullptr)
+	/*if (file != nullptr)
 	{
 		std::string ext(file);
 		ext = ext.substr(ext.find_last_of('.') + 1);
@@ -143,7 +134,14 @@ update_status GuiManager::PreUpdate(float dt)
 			App->mesh->LoadTexture(file);
 
 		LOG("%s", file);
+	}*/
+
+	if (file != nullptr)
+	{
+		App->mesh->LoadFile(file);
+		LOG("%s", file);
 	}
+
 		
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
@@ -157,9 +155,7 @@ update_status GuiManager::Update(float dt)
 
 update_status GuiManager::PostUpdate(float dt)
 {
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+	
 	return UPDATE_CONTINUE;
 }
 

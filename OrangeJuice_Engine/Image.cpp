@@ -16,7 +16,12 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-
+	glGenBuffers(1, (uint*)&(idCoords));
+	glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numCoords, uvCoord, GL_STATIC_DRAW);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+		LOG("Error Storing textures! %s\n", gluErrorString(error));
 }
 
 Image::~Image()
@@ -109,21 +114,22 @@ void Image::LoadCoords(aiMesh* scene)
 	}
 }
 
-void Image::LoadMatirials(const aiScene* scene, std::string file_name)
+void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 {
 	if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 	{
-		aiString text_path;
-		scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
-		std::string  tex = text_path.C_Str();
-		std::string  p_geo = file_name;
-
+		aiString textPath;
+		scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &textPath);
+		std::string  tex = textPath.C_Str();
+		std::string  pGeo = file_name;
+		//int count = 3;
 		//We change the name of the fbx for the texture name, with this made we have the general path
-		/*while (p_geo.back() != '\\')
+		/*while (pGeo.back() != '\\' && count < 0)
 		{
-			p_geo.pop_back();
+			pGeo.pop_back();
+			//count--;
 		}*/
-		p_geo += tex;
-		textureId = LoadImage(p_geo.c_str());
+		pGeo += tex;
+		textureId = LoadImage(pGeo.c_str());
 	}
 }

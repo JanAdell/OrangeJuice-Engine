@@ -26,40 +26,39 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Start()
 {
 	LOG("Loading Intro assets");
-	bool ret = true;	
+	bool ret = true;
+
+	ImGui::CreateContext();
+	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
+	ImGui_ImplOpenGL3_Init();
 	
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
+
 	App->mesh->LoadFile("../Assets/BakerHouse.fbx");
 
 	return ret;
 }
 
-// Load assets
-bool ModuleScene::CleanUp()
+update_status ModuleScene::PreUpdate(float dt)
 {
-	LOG("Unloading Intro scene");
-
-	return true;
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(App->window->window);
+	ImGui::NewFrame();
+	return UPDATE_CONTINUE;
 }
+
+
+
 
 // Update
 update_status ModuleScene::Update(float dt)
 {
-
-	// Vertical line at the center of the grid to mark (0,0,0)
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 5.f, 0.f);
-	glEnd();
-	glLineWidth(1.5f);
-	//
-
 	BasePlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 	
+
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		debugDraw = !debugDraw;
@@ -67,91 +66,35 @@ update_status ModuleScene::Update(float dt)
 		if (debugDraw == true) LOG("debugDraw on, showing normals.");
 	}
 
-	// checking drawing 
-	/*glLineWidth(5.0f);
-	glBegin(GL_LINES);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 10.f, 0.f);
-	glEnd();
-	glLineWidth(5.0f);*/
-
-	//Direct mode drawing
-	/*glBegin(GL_TRIANGLES);
-	//1
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(2.f, 0.f, 0.f);
-	//2
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(2.f, 0.f, 0.f);
-	//3
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(2.f, 0.f, 0.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	//4
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	//5
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(0.f, 2.f, 2.f);
-	//6
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(0.f, 2.f, 2.f);
-	//7
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	//8
-	glVertex3f(0.f, 2.f, 2.f);
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	//9
-	glVertex3f(0.f, 2.f, 2.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	//10
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(0.f, 2.f, 2.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	//11
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	//12
-	glVertex3f(2.f, 0.f, 0.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	glEnd();
-	*/
+	
 
 	return UPDATE_CONTINUE;
 }
+
 
 update_status ModuleScene::PostUpdate(float dt)
 {
-	DrawGeometry();
-
-	
-	
-	return UPDATE_CONTINUE;
-}
-
-void ModuleScene::OnCollision()
-{
-	
-
-}
-
-void ModuleScene::DrawGeometry()
-{
-	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+	for (std::vector<GameObject*>::iterator object = gameObjects.begin(); object != gameObjects.end(); ++object)
 	{
-		(*it)->Draw();
+		(*object)->Update();
 
-		if (debugDraw) (*it)->DebugDraw();
 	}
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	return UPDATE_CONTINUE;
+	
+}
+
+bool ModuleScene::CleanUp()
+{
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it) != nullptr)
+			delete (*it);
+		(*it) = nullptr;
+	}
+	gameObjects.clear();
+
+	return true;
 }

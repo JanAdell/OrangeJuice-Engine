@@ -9,7 +9,8 @@
 #include "DevIL/include/IL/ilu.h"
 #include "DevIL/include/IL/ilut.h"
 
-#include "Image.h"
+#include "GameObject.h"
+#include "ModuleScene.h"
 
 #pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
 #pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
@@ -56,12 +57,6 @@ update_status ModuleMesh::PostUpdate(float dt)
 
 bool ModuleMesh::CleanUp()
 {
-	for (std::vector<Geometry*>::iterator it = geometry.begin(); it != geometry.end(); it++)
-	{
-		if ((*it) != nullptr)
-			delete (*it);
-		(*it) = nullptr;
-	}
 	aiDetachAllLogStreams();
 	return true;
 }
@@ -77,50 +72,27 @@ bool ModuleMesh::LoadFile(const char* file_name)
 	
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
+		GameObject* gameObject = new GameObject();
+		
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Geometry* data = new Geometry(nullptr);
-			//Load vertex
-			data->numVertices = scene->mMeshes[i]->mNumVertices;
-			data->vertices = new float[data->numVertices * 3];
-			
-			memcpy(data->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * data->numVertices * 3);
-			LOG("New mesh with %d vertices", data->vertices);
+			Component* data = gameObject->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH);
 
-			if (scene->mMeshes[i]->HasFaces())
-			{
-				data->numIndices = scene->mMeshes[i]->mNumFaces * 3;
-				data->indices = new uint[data->numIndices * 3];
-				for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
-				{
-					if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
-					{
-						LOG("WARNING, geometry face with != 3 indices!");
-					}
-					else
-						memcpy(&data->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
-				}
-				//load normals
-				if (scene->mMeshes[i]->HasNormals())
-				{
-					data->normals = new float[scene->mMeshes[i]->mNumVertices * 3];
-					memcpy(data->normals, scene->mMeshes[i]->mNormals, sizeof(float) * scene->mMeshes[i]->mNumVertices * 3);
-				}
-
-			}
+			dynamic_cast<Geometry*>(data)->LoadData(scene->mMeshes[i]);
+	
 			if (scene->HasMaterials())
 			{
-				data->texture = new Image(nullptr);
-				data->texture->LoadCoords(scene->mMeshes[i]);
-				data->texture->LoadMatirials(scene, file_name);
+				Component* tex = gameObject->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL);
+				dynamic_cast<Image*>(tex)->LoadCoords(scene->mMeshes[i]);
+				dynamic_cast<Image*>(tex)->LoadMaterials(scene, file_name);
+				dynamic_cast<Geometry*>(data)->texture = dynamic_cast<Image*>(tex);
 			}
-			Geometry* geo = new Geometry(data, nullptr);
-			geometry.push_back(geo);
 			LOG("New mesh created from %s", file_name);
 		}
+		App->scene->gameObjects.push_back(gameObject);
 		aiReleaseImport(scene);
 	}
+
 	else
 		LOG("Error loading scene %s", file_name);
 
@@ -134,9 +106,6 @@ GLuint ModuleMesh::LoadTexture(const char* p_tex)
 	ilBindImage(imgID);
 
 	//path
-	std::string text = "../Assets/";
-	std::string tex = p_tex;
-	std::string res = text + tex;
 	ilLoadImage(p_tex);
 
 	ILuint devilError1 = ilGetError();

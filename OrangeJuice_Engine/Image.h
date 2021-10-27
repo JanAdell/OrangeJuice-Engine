@@ -22,7 +22,7 @@ public:
 
 	GLuint LoadImage(const char* p_tex);
 	void LoadCoords(aiMesh* scene);
-	void LoadMatirials(const aiScene* scene, std::string file_name);
+	void LoadMaterials(const aiScene* scene, std::string file_name);
 public:
 	uint idCoords = 0;
 	uint numCoords = 0;

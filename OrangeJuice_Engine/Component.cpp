@@ -9,3 +9,13 @@ Component::Component(GameObject* parent, COMPONENT_TYPE type) : parent(parent), 
 Component::~Component()
 {
 }
+
+void Component::Enable()
+{
+	isEnable = true;
+}
+
+void Component::Disable()
+{
+	isEnable = false;
+}

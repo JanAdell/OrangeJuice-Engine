@@ -15,12 +15,13 @@ public:
 	Geometry(Geometry* geo, GameObject* parent);
 	Geometry(GameObject* parent);
 	~Geometry();
-	void Draw();
 	void DebugDraw();
 
-	void Enable() override;
 	void Update() override;
-	void Disable() override;
+	void LoadData(aiMesh* mesh);
+
+private:
+	void Init();
 
 public:
 
