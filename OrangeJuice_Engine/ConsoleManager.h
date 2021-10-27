@@ -67,7 +67,7 @@ struct AppConsole
 
 	void    Draw(const char* title, bool* p_open)
 	{
-		ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+		//ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 		if (!ImGui::Begin(title, p_open))
 		{
 			ImGui::End();
@@ -175,7 +175,7 @@ struct AppConsole
 		if (reclaim_focus)
 			ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
 
-		ImGui::End();
+		//ImGui::End();
 	}
 
 	void    ExecCommand(const char* command_line)

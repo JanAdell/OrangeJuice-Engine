@@ -50,7 +50,7 @@ update_status GuiManager::PreUpdate(float dt)
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Configuration")) show_config_window = true;
-			//if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
 
@@ -59,6 +59,7 @@ update_status GuiManager::PreUpdate(float dt)
 		if (ImGui::BeginMenu("View")) 
 		{
 			if (ImGui::MenuItem("Console")) show_console_window = true;
+
 			ImGui::EndMenu();
 		}
 
@@ -82,16 +83,14 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::EndMainMenuBar();
 	}
 
-	if (show_console_window) 
+	if (show_console_window)
 	{
-		if (ImGui::Begin("Console", &show_console_window), window_flags)
-		{
-			ShowAppConsole(&show_console_window);
-		}
-		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		ShowAppConsole(&show_console_window);
 	}
 
-	//if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
+	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
 	
 	if (show_config_window)
 	{
@@ -148,7 +147,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
-	ShowAppConsole(show_console_window);
+	if(show_console_window) ShowAppConsole(show_console_window);
 	
 	return UPDATE_CONTINUE;
 }
@@ -476,7 +475,11 @@ void GuiManager::ConfigWindow()
 
 void GuiManager::ShowAppConsole(bool show_console)
 {
+	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+	
 	console.Draw("Orange Juice Engine", &show_console);
+
+	ImGui::End();
 
 }//console 
 
