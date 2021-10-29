@@ -10,6 +10,7 @@
 
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleScene.h"
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
 #include "json.hpp"
@@ -49,8 +50,8 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Configuration")) show_config_window = true;
-			if (ImGui::MenuItem("Demo Window")) show_demo_window = true;
+			if (ImGui::MenuItem("Configuration")) showConfigWindow = true;
+			if (ImGui::MenuItem("Demo Window")) showDemoWindow = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
 
@@ -59,13 +60,14 @@ update_status GuiManager::PreUpdate(float dt)
 
 		if (ImGui::BeginMenu("Create"))
 		{
-			if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
+			if (ImGui::MenuItem("Primitives")) showPrimitivesWindow = true;
 			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("View")) 
 		{
-			if (ImGui::MenuItem("Console")) show_console_window = true;
+			if (ImGui::MenuItem("Console")) showConsoleWindow = true;
+			if (ImGui::MenuItem("Inspector")) showHierachyWindow = true;
 
 			ImGui::EndMenu();
 		}
@@ -81,7 +83,7 @@ update_status GuiManager::PreUpdate(float dt)
 			if (ImGui::MenuItem("Report a bug"))
 				App->RequestBrowser("https://github.com/JanAdell/OrangeJuice-Engine/issues");
 
-			if (ImGui::MenuItem("About",NULL, show_about_window)) show_about_window = !show_about_window;;
+			if (ImGui::MenuItem("About",NULL, showAboutWindow)) showAboutWindow = !showAboutWindow;;
 				
 
 			ImGui::EndMenu();
@@ -90,20 +92,20 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::EndMainMenuBar();
 	}
 
-	if (show_console_window)
+	if (showConsoleWindow)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
-		ShowAppConsole(&show_console_window);
+		ShowAppConsole(&showConsoleWindow);
 	}
 
-	if (show_primitives_window) PrimitivesWindow();
+	if (showPrimitivesWindow) PrimitivesWindow();
 
-	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
+	if (showDemoWindow) ImGui::ShowDemoWindow(&showDemoWindow);
 	
-	if (show_config_window)
+	if (showConfigWindow)
 	{
-		if (ImGui::Begin("Configuration", &show_config_window), window_flags)
+		if (ImGui::Begin("Configuration", &showConfigWindow), window_flags)
 		{
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 			ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
@@ -113,9 +115,9 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::End();
 	}
 
-	if (show_about_window)
+	if (showAboutWindow)
 	{
-		if (ImGui::Begin("About", &show_about_window), window_flags)
+		if (ImGui::Begin("About", &showAboutWindow), window_flags)
 		{
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 			ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
@@ -123,6 +125,11 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 		ImGui::End();
 	}
+
+	if (showHierachyWindow)
+		HierarchyWindow();
+
+	
 
 	//PROVE
 	const char* file = App->input->DragAndDrop();
@@ -156,7 +163,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
-	if(show_console_window) ShowAppConsole(show_console_window);
+	if(showConsoleWindow) ShowAppConsole(showConsoleWindow);
 	
 	return UPDATE_CONTINUE;
 }
@@ -504,12 +511,12 @@ void GuiManager::GetLog(const char* log)
 
 void GuiManager::PrimitivesWindow()
 {
-	if (show_primitives_window)
+	if (showPrimitivesWindow)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 		par_shapes_mesh* m = nullptr;
-		if (ImGui::Begin("Create Primitives", &show_primitives_window))
+		if (ImGui::Begin("Create Primitives", &showPrimitivesWindow))
 		{
 			static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
 			static int scale[3] = { 1,1,1 };
@@ -613,4 +620,36 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	geo->CreatePrimitive(p_mesh, col[0], col[1], col[2], col[3]);
 	App->scene->gameObjects.push_back(game_object);
 	App->camera->GoAroundGeometry(geo);
+}
+
+void GuiManager::HierarchyWindow()
+{
+	if (showHierachyWindow)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Objects", &showHierachyWindow))
+		{
+			if (ImGui::CollapsingHeader("Geometry"))
+			{
+				for (uint i = 0; i < App->scene->gameObjects.size(); ++i)
+				{
+					GameObject* game_object = App->scene->gameObjects[i];
+
+					if (game_object->parent == nullptr)
+					{
+						if (ImGui::TreeNodeEx(game_object->name.c_str()))
+						{
+
+							game_object->GetHierarcy();
+							ImGui::TreePop();
+						}
+					}
+
+				}
+			
+			}
+			ImGui::End();
+		}
+	}
 }

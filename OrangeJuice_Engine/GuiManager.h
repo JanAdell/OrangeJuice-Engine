@@ -38,6 +38,7 @@ public:
 	void PrimitivesWindow();
 	void DrawGeometry();
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
+	void HierarchyWindow();
 
 	void GetLog(const char* log);
 
@@ -46,11 +47,12 @@ public:
 
 private:
 
-	bool show_demo_window = false;
-	bool show_config_window = false;
-	bool show_about_window = false;
-	bool show_console_window = false;
-	bool show_primitives_window = false;
+	bool showDemoWindow = false;
+	bool showConfigWindow = false;
+	bool showAboutWindow = false;
+	bool showConsoleWindow = false;
+	bool showPrimitivesWindow = false;
+	bool showHierachyWindow = false;
 
 	bool fullscreen = false;
 	bool resizable = false;

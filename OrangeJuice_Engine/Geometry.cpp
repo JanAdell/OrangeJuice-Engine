@@ -31,7 +31,7 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 	LoadBuffers();
 
-	LOG("PENE");
+	LOG("Primitive created");
 }
 
 

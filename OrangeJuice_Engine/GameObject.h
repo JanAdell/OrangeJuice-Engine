@@ -14,12 +14,16 @@ public:
 	void Update();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
+	virtual void GetHierarcy();
+	void GetPropierties();
 
 public:
 	std::string name;
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;
+	bool showInspectorWindow = true;
+	bool toDelete = false;
 };
 
 #endif 
