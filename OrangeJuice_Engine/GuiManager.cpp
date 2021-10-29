@@ -107,8 +107,18 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::Begin("Configuration", &showConfigWindow), window_flags)
 		{
+			char a[100] = "";
+			
 			ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 			ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+			
+			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				test = a;
+				
+			}
+			ImGui::Text(test.c_str());
+
 			ConfigWindow();
 			
 		}

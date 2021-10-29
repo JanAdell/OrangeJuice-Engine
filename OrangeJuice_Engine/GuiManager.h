@@ -74,6 +74,7 @@ private:
 	ImGuiTextBuffer text;
 
 	Primitives prim = Primitives::UKNOWN;
+	std::string test = "";
 
 	JSON_Value* root;
 };
