@@ -36,6 +36,7 @@ void Image::Disable()
 {
 }
 
+
 GLuint Image::LoadImage(const char* p_tex)
 {
 	//Gen image
@@ -138,4 +139,9 @@ void Image::LoadBuffers()
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 		LOG("Error Storing textures! %s\n", gluErrorString(error));
+}
+
+int Image::GetTextureId()
+{
+	return textureId;
 }

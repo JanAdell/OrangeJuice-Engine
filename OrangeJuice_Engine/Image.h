@@ -25,6 +25,7 @@ public:
 	void LoadMaterials(const aiScene* scene, std::string file_name);
 	void LoadBuffers();
 	void ShowProperties() {};
+	int GetTextureId();
 
 public:
 	uint idCoords = 0;

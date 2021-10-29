@@ -19,6 +19,8 @@ public:
 	void UnLoadTransformation();
 
 	void ShowProperties() {};
+	int GetTextureId() { return 0; };
+
 public:
 
 	int translation[3] = { 1,1,1 };

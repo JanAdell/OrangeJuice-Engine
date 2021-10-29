@@ -112,6 +112,7 @@ void GameObject::GetPropierties()
 				(&isEnable) ? true : false;
 
 			ImGui::SameLine();
+			//this was a test, leaving it here because we may need similar when we make selectable nodes
 			char a[100] = "";
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
@@ -120,6 +121,7 @@ void GameObject::GetPropierties()
 		}
 		Component* mesh = nullptr;
 		std::vector<Component*>::iterator it = components.begin();
+		int id = 0;
 		while (it != components.end())
 		{
 			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
@@ -127,9 +129,33 @@ void GameObject::GetPropierties()
 				mesh = *it;
 				break;
 			}
-			if (mesh != nullptr)
-				mesh->ShowProperties();
+			++it;
+			
 		}
+		if (mesh != nullptr)
+			mesh->ShowProperties();
+
+		Component* tex = nullptr;
+		std::vector<Component*>::iterator it2 = components.begin();
+		while (it2 != components.end())
+		{
+			if ((*it2)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			{
+				tex = *it2;
+				break;
+			}
+			++it2;
+		}
+		if (tex != nullptr)
+			id = tex->GetTextureId();
+
+		if (id != 0)
+		{
+			ImVec2 size = { 200,200 };
+			ImGui::Image((ImTextureID)id, size);
+			ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
+		}
+
 		ImGui::End();
 	}
 }

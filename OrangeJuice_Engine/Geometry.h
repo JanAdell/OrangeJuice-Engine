@@ -35,7 +35,7 @@ public:
 	void LoadData(aiMesh* mesh);
 
 	void ShowProperties();
-	
+	int GetTextureId() { return 0; };
 
 private:
 	void LoadBuffers();
