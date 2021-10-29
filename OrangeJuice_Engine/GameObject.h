@@ -22,8 +22,9 @@ public:
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;
-	bool showInspectorWindow = true;
+	bool showInspectorWindow = false;
 	bool toDelete = false;
+	bool isEnable = true;
 };
 
 #endif 

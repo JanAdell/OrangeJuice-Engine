@@ -20,9 +20,12 @@ public:
 	virtual void Enable();
 	virtual void Update() = 0;
 	virtual void Disable();
+	
+	virtual void ShowProperties() = 0;
 
 public:
 
+	bool toDelete = false;
 	bool isEnable = true;
 	COMPONENT_TYPE type = COMPONENT_TYPE::NO_COMPONENT;
 	GameObject* parent = nullptr;

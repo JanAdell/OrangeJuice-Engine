@@ -24,6 +24,7 @@ public:
 	void LoadCoords(aiMesh* scene);
 	void LoadMaterials(const aiScene* scene, std::string file_name);
 	void LoadBuffers();
+	void ShowProperties() {};
 
 public:
 	uint idCoords = 0;

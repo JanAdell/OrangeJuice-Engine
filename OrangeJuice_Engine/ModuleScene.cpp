@@ -46,6 +46,16 @@ update_status ModuleScene::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+
+	for (std::vector<GameObject*>::iterator object = gameObjects.begin(); object != gameObjects.end(); ++object)
+	{
+		if ((*object)->toDelete)
+		{
+			gameObjects.erase(object);
+			break;
+		}
+	}
+
 	return UPDATE_CONTINUE;
 }
 
