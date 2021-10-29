@@ -639,30 +639,54 @@ void GuiManager::HierarchyWindow()
 		{
 			if (ImGui::CollapsingHeader("Geometry"))
 			{
+				static int selection_mask = (1 << 0);
+				static int node_clicked = 0;
+
 				for (uint i = 0; i < App->scene->gameObjects.size(); ++i)
 				{
 					GameObject* game_object = App->scene->gameObjects[i];
 
 					if (game_object->parent == nullptr)
 					{
-						if (ImGui::TreeNodeEx(game_object->name.c_str()))
-						{
+						// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+						if (selection_mask & (1 << i))
+							node_flags |= ImGuiTreeNodeFlags_Selected;
 
-							game_object->GetHierarcy();
-							ImGui::TreePop();
-						}
-						if (*ImGui::GetIO().MouseDoubleClicked == true)
+						bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
+						if (ImGui::IsItemClicked())
+						{
+							selection_mask = (1 << i);
 							game_object->showInspectorWindow = true;
 
-						if (game_object->showInspectorWindow)
-						{
-							game_object->GetPropierties();
-							break;
+							//al show inspector windows = false
+							std::vector<GameObject*>::iterator iterator = App->scene->gameObjects.begin();
+							while (iterator != App->scene->gameObjects.end())
+							{
+								if (*iterator != game_object) (*iterator)->showInspectorWindow = false;
+								++iterator;
+							}
 						}
+
+						if (game_object->children.size() != 0)
+						{
+							std::vector<GameObject*>::iterator child = game_object->children.begin();
+							while (child != game_object->children.end())
+							{
+								if (*child != game_object)
+									(*child)->showInspectorWindow = false;
+								++child;
+							}
+						}
+
+						if (node_open)
+						{
+							game_object->GetHierarcy(); ImGui::TreePop();
+						}
+						if (game_object->showInspectorWindow) game_object->GetPropierties();
 					}
 
 				}
-			
 			}
 			ImGui::End();
 		}

@@ -17,7 +17,6 @@ Geometry::~Geometry()
 
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
 {
-	primitive_mesh = p_mesh;
 	numVertices = p_mesh->npoints;
 	parIndices = p_mesh->ntriangles;
 	numIndices = p_mesh->ntriangles * 3;
@@ -31,6 +30,7 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	b = col2;
 	a = col3;
 
+	transform = new Transform(parent);
 	LoadBuffers();
 
 	LOG("Primitive created");
@@ -139,7 +139,7 @@ void Geometry::LoadData(aiMesh* mesh)
 void Geometry::ShowProperties()
 {
 	static int scale[3] = { 1,1,1 };
-	static int translation[3] = { 1,1,1 };
+	static int translation[3] = { 0,0,0 };
 	static int rad = 0;
 	static float axis[3] = { 0,0,0 };
 	if (ImGui::CollapsingHeader("Transformation"))
@@ -173,13 +173,13 @@ void Geometry::ShowProperties()
 		}
 		if (ImGui::Button("Transform"))
 		{
-			if (transform == nullptr)
-			{
-				transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-				transform->LoadTransformation(primitive_mesh, translation, scale, rad, axis);
-			}
-			else
-				transform->LoadTransformation(primitive_mesh, translation, scale, rad, axis);
+			transform->LoadTransformation(this, translation, scale, rad, axis);
+
+			glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 3, vertices, GL_STATIC_DRAW);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
 		}
 	}
 }
