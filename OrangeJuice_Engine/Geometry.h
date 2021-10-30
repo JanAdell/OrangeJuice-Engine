@@ -53,6 +53,8 @@ public:
 	float* normals = nullptr;
 	int parIndices = 0;
 	float r, g, b, a;
+	uint numFaceNormals = 0;
+	float* faceNormals = nullptr;
 	
 	Image* texture = nullptr;
 

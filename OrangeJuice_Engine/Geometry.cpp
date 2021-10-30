@@ -3,6 +3,8 @@
 #include "ImGui/imgui.h"
 #include "Assimp/include/scene.h"
 #include "GameObject.h"
+#include "Application.h"
+#include "ModuleInput.h"
 
 //Primitives constructor
 
@@ -21,9 +23,18 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	parIndices = p_mesh->ntriangles;
 	numIndices = p_mesh->ntriangles * 3;
 
-	vertices = p_mesh->points;
-	indices = p_mesh->triangles;
-	normals = p_mesh->normals;
+	vertices = new float[numVertices * 3];
+	indices = new uint[numIndices];
+	normals = new float[numVertices * 3];
+
+	memcpy(vertices, p_mesh->points, sizeof(float) * numVertices * 3);
+	memcpy(indices, p_mesh->triangles, sizeof(uint) * numIndices);
+
+	if (p_mesh->normals != NULL)
+	{
+		memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
+		numNormals = numVertices * 3;
+	}
 
 	r = col0;
 	g = col1;
@@ -39,24 +50,37 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 //DebugDraw for all geometries
 void Geometry::DebugDraw()
-{//TODO: Fix normals in the primitive geometries
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-	for (uint i = 0; i < numVertices * 3; i += 3)
+{
+	if (parent->showVertexNormals && numNormals != 0)
 	{
-		glColor3f(3.0f, 0.0f, 1.0f);
-		glBegin(GL_LINES);
-		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
-		glVertex3f(vertices[i] + normals[i] * 10, vertices[i + 1] + normals[i + 1] * 10, vertices[i + 2] + normals[i + 2] * 10);
-		glEnd();
-		glColor3f(1.0f, 1.0f, 1.0f);
-	}
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+		glEnableClientState(GL_VERTEX_ARRAY);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+		for (uint i = 0; i < numVertices * 3; i += 3)
+		{
+			glColor3f(3.0f, 0.0f, 1.0f);
+			glBegin(GL_LINES);
+			glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+			glVertex3f(vertices[i] + normals[i] * 2, vertices[i + 1] + normals[i + 1] * 2, vertices[i + 2] + normals[i + 2] * 2);
+			glEnd();
+			glColor3f(1.0f, 1.0f, 1.0f);
+		}
+
+		if (parent->showNormals && numNormals != 0)
+		{
+			glEnableClientState(GL_VERTEX_ARRAY);
+			for (uint i = 0; i < numFaceNormals; i += 6)
+			{
+				glColor3f(3.0f, 0.0f, 1.0f);
+				glBegin(GL_LINES);
+				glVertex3f(faceNormals[i], faceNormals[i + 1], faceNormals[i + 2]);
+				glVertex3f(faceNormals[i + 3], faceNormals[i + 4], faceNormals[i + 5]);
+				glEnd();
+				glColor3f(1.0f, 1.0f, 1.0f);
+			}
+
+			glDisableClientState(GL_VERTEX_ARRAY);
+		}
+	}
 }
 
 //Draw primitives geometries
@@ -99,9 +123,12 @@ void Geometry::Update()
 		glColor4f(r, g, b, a);
 
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glPopAttrib();
+
+	DebugDraw();
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -129,8 +156,25 @@ void Geometry::LoadData(aiMesh* mesh)
 		//load normals
 		if (mesh->HasNormals())
 		{
+			numNormals = mesh->mNumVertices * 3;
 			normals = new float[mesh->mNumVertices * 3];
 			memcpy(normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
+		}
+
+		numFaceNormals = numVertices * 2;
+		faceNormals = new float[numFaceNormals];
+		uint j = 0;
+		for (uint i = 0; i < numVertices; i += 9)
+		{
+			float u[3] = { (vertices[i + 3] - vertices[i + 0]),(vertices[i + 4] - vertices[i + 1]),(vertices[i + 5] - vertices[i + 2]) };
+			float v[3] = { (vertices[i + 6] - vertices[i + 3]),(vertices[i + 7] - vertices[i + 4]),(vertices[i + 8] - vertices[i + 5]) };
+			faceNormals[j] = (vertices[i] + vertices[i + 3] + vertices[i + 6]) / 3;
+			faceNormals[j + 1] = (vertices[i + 1] + vertices[i + 4] + vertices[i + 7]) / 3;;
+			faceNormals[j + 2] = (vertices[i + 2] + vertices[i + 5] + vertices[i + 8]) / 3;;
+			faceNormals[j + 3] = faceNormals[j] + (u[1] * v[2] - u[2] * v[1]);
+			faceNormals[j + 4] = faceNormals[j + 1] + (u[2] * v[0] - u[0] * v[2]);
+			faceNormals[j + 5] = faceNormals[j + 2] + (u[0] * v[1] - u[1] * v[0]);
+			j += 6;
 		}
 	}
 	LoadBuffers();
@@ -142,6 +186,13 @@ void Geometry::ShowProperties()
 	static int translation[3] = { 0,0,0 };
 	static int rad = 0;
 	static float axis[3] = { 0,0,0 };
+
+	if (ImGui::CollapsingHeader("Information"))
+	{
+		ImGui::Text("triangles: %u", numIndices / 3);
+		ImGui::Text("vertices: %u", numVertices);
+	}
+
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		ImGui::SliderInt3("Scale", scale, 1, 10);

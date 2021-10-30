@@ -16,6 +16,8 @@ public:
 	Component* CreateComponent(COMPONENT_TYPE type);
 	virtual void GetHierarcy();
 	void GetPropierties();
+	void ShowNormalVertex(const bool&);
+	void ShowNormalFaces(const bool&);
 
 public:
 	std::string name;
@@ -25,6 +27,9 @@ public:
 	bool showInspectorWindow = false;
 	bool toDelete = false;
 	bool isEnable = true;
+
+	bool showVertexNormals = false;
+	bool showNormals = false;
 };
 
 #endif 

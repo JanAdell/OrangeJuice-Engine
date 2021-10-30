@@ -105,5 +105,19 @@ void Transform::ChangePosition(Geometry* mesh, float x, float y, float z)
 		mesh->vertices[i] += x;
 		mesh->vertices[i + 1] += y;
 		mesh->vertices[i + 2] += z;
+
+		if (mesh->normals != nullptr)
+		{
+			mesh->normals[i] += x;
+			mesh->normals[i + 1] += y;
+			mesh->normals[i + 2] += z;
+		}
+
+		if (mesh->faceNormals != nullptr)
+		{
+			mesh->faceNormals[i] += x;
+			mesh->faceNormals[i + 1] += y;
+			mesh->faceNormals[i + 2] += z;
+		}
 	}
 }
