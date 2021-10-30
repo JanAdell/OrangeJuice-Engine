@@ -160,19 +160,17 @@ void GameObject::GetPropierties()
 
 		if (ImGui::CollapsingHeader("Properties"))
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::CollapsingHeader("Options"))
 			{
-				if (ImGui::MenuItem("Delete"))
+				if (ImGui::Button("Delete"))
 					toDelete = true;
-
-				ImGui::EndMenu();
 			}
 
 			if (ImGui::Checkbox("Active", &isEnable))
 				(&isEnable) ? true : false;
 
 			ImGui::SameLine();
-			//this was a test, leaving it here because we may need similar when we make selectable nodes
+			//this was a test, leaving it here because we may need similar something when we make selectable nodes
 			char a[100] = "";
 			memcpy(a, name.c_str(), name.size());
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))

@@ -96,21 +96,6 @@ void Geometry::DebugDraw()
 	}
 }
 
-//Draw primitives geometries
-void Geometry::DrawPrimitives()
-{
-
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glDrawElements(GL_TRIANGLES, parIndices * 3, GL_UNSIGNED_INT, NULL);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-}
-
 void Geometry::Update()
 {
 	glPushAttrib(GL_CURRENT_BIT);

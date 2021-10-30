@@ -39,6 +39,7 @@ public:
 	void DrawGeometry();
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
 	void HierarchyWindow();
+	void TextureWindow();
 
 	void GetLog(const char* log);
 
@@ -53,6 +54,7 @@ private:
 	bool showConsoleWindow = false;
 	bool showPrimitivesWindow = false;
 	bool showHierachyWindow = false;
+	bool showTextureWindow = false;
 
 	bool fullscreen = false;
 	bool resizable = false;

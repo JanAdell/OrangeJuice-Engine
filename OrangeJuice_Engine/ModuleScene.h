@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "Geometry.h"
 #include "Primitive.h"
+#include "Image.h"
 
 #include <vector>
 #include "GameObject.h"
@@ -31,6 +32,7 @@ public:
 
 public:
 	std::vector<GameObject*> gameObjects;
+	std::vector<int> textures;
 
 private:
 

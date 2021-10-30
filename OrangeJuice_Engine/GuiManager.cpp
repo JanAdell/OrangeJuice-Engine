@@ -68,6 +68,7 @@ update_status GuiManager::PreUpdate(float dt)
 		{
 			if (ImGui::MenuItem("Console")) showConsoleWindow = true;
 			if (ImGui::MenuItem("Inspector")) showHierachyWindow = true;
+			if (ImGui::MenuItem("Textures")) showTextureWindow = true;
 
 			ImGui::EndMenu();
 		}
@@ -136,37 +137,16 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::End();
 	}
 
-	if (showHierachyWindow)
-		HierarchyWindow();
+	if (showHierachyWindow) HierarchyWindow();
 
-	
+	if (showTextureWindow) TextureWindow();
 
-	//PROVE
-	const char* file = App->input->DragAndDrop();
-	if (file != nullptr)
+	const char* p_file = App->input->DragAndDrop();
+	if (p_file != nullptr)
 	{
-		std::string ext(file);
-		ext = ext.substr(ext.find_last_of('.') + 1);
-		for (size_t i = 0; i < ext.length(); i++)
-		{
-			ext[i] = std::tolower(ext[i]);
-		}
-
-		if(ext == "fbx")
-			App->mesh->LoadFile(file);
-
-		else
-			App->mesh->LoadTexture(file);
-
-		LOG("%s", file);
+		App->mesh->LoadFile(p_file);
+		LOG("%s", p_file);
 	}
-
-	if (file != nullptr)
-	{
-		App->mesh->LoadFile(file);
-		LOG("%s", file);
-	}
-
 		
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
@@ -267,7 +247,7 @@ void GuiManager::ConfigWindow()
 			fpsLog.push_back(frames);
 			msLog.push_back(millisec);
 
-			LOG("%i", fpsLog.size());
+			//LOG("%i", fpsLog.size());
 
 			char title[25];
 			sprintf_s(title, 25, "Framerate %.1f", fpsLog[fpsLog.size() - 1]);
@@ -563,17 +543,172 @@ void GuiManager::PrimitivesWindow()
 				}
 				DegToRad(rad);
 				ImGui::ColorEdit4("Color", col);
-				if (ImGui::Button("  Cube  "))
-					CreatePrimitives(m, Primitives::CUBE, col, scale, translation, rad, axis);
-				else if (ImGui::Button(" Sphere "))
-					CreatePrimitives(m, Primitives::SPHERE, col, scale, translation, rad, axis);
-				else if (ImGui::Button("  Cone  "))
-					CreatePrimitives(m, Primitives::CONE, col, scale, translation, rad, axis);
-				else if (ImGui::Button("Cylinder"))
-					CreatePrimitives(m, Primitives::CYILINDER, col, scale, translation, rad, axis);
-				else if (ImGui::Button(" Plane  "))
-					CreatePrimitives(m, Primitives::PLANE, col, scale, translation, rad, axis);
-
+				if (ImGui::CollapsingHeader("Cube"))
+				{
+					ImGui::SliderInt3("Size", scale, 1, 10);
+					ImGui::SliderInt3("Translation", translation, -100, 100);
+					ImGui::TextWrapped("Rotation");
+					ImGui::Separator();
+					ImGui::SliderInt("Radiant", &rad, 0, 360);
+					const char* items[] = { "X", "Y", "Z" };
+					static int item_current = 0;
+					ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+					switch (item_current)
+					{
+					case 0:
+						axis[0] = 1;
+						axis[1] = 0;
+						axis[2] = 0;
+						break;
+					case 1:
+						axis[0] = 0;
+						axis[1] = 1;
+						axis[2] = 0;
+						break;
+					case 2:
+						axis[0] = 0;
+						axis[1] = 0;
+						axis[2] = 1;
+						break;
+					}
+					DegToRad(rad);
+					ImGui::ColorEdit4("Color", col);
+					if (ImGui::Button("Create"))
+						CreatePrimitives(m, Primitives::CUBE, col, scale, translation, rad, axis);
+				}
+				
+				if (ImGui::CollapsingHeader("Sphere"))
+				{
+					ImGui::SliderInt3("Size", scale, 1, 10);
+					ImGui::SliderInt3("Translation", translation, -100, 100);
+					ImGui::TextWrapped("Rotation");
+					ImGui::Separator();
+					ImGui::SliderInt("Radiant", &rad, 0, 360);
+					const char* items[] = { "X", "Y", "Z" };
+					static int item_current = 0;
+					ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+					switch (item_current)
+					{
+					case 0:
+						axis[0] = 1;
+						axis[1] = 0;
+						axis[2] = 0;
+						break;
+					case 1:
+						axis[0] = 0;
+						axis[1] = 1;
+						axis[2] = 0;
+						break;
+					case 2:
+						axis[0] = 0;
+						axis[1] = 0;
+						axis[2] = 1;
+						break;
+					}
+					DegToRad(rad);
+					ImGui::ColorEdit4("Color", col);
+					if (ImGui::Button("Create"))
+						CreatePrimitives(m, Primitives::SPHERE, col, scale, translation, rad, axis);
+				}
+				if (ImGui::CollapsingHeader("Cone"))
+				{
+					ImGui::SliderInt3("Size", scale, 1, 10);
+					ImGui::SliderInt3("Translation", translation, -100, 100);
+					ImGui::TextWrapped("Rotation");
+					ImGui::Separator();
+					ImGui::SliderInt("Radiant", &rad, 0, 360);
+					const char* items[] = { "X", "Y", "Z" };
+					static int item_current = 0;
+					ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+					switch (item_current)
+					{
+					case 0:
+						axis[0] = 1;
+						axis[1] = 0;
+						axis[2] = 0;
+						break;
+					case 1:
+						axis[0] = 0;
+						axis[1] = 1;
+						axis[2] = 0;
+						break;
+					case 2:
+						axis[0] = 0;
+						axis[1] = 0;
+						axis[2] = 1;
+						break;
+					}
+					DegToRad(rad);
+					ImGui::ColorEdit4("Color", col);
+					if (ImGui::Button("Create"))
+						CreatePrimitives(m, Primitives::CONE, col, scale, translation, rad, axis);
+				}
+				if (ImGui::CollapsingHeader("Cylinder"))
+				{
+					ImGui::SliderInt3("Size", scale, 1, 10);
+					ImGui::SliderInt3("Translation", translation, -100, 100);
+					ImGui::TextWrapped("Rotation");
+					ImGui::Separator();
+					ImGui::SliderInt("Radiant", &rad, 0, 360);
+					const char* items[] = { "X", "Y", "Z" };
+					static int item_current = 0;
+					ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+					switch (item_current)
+					{
+					case 0:
+						axis[0] = 1;
+						axis[1] = 0;
+						axis[2] = 0;
+						break;
+					case 1:
+						axis[0] = 0;
+						axis[1] = 1;
+						axis[2] = 0;
+						break;
+					case 2:
+						axis[0] = 0;
+						axis[1] = 0;
+						axis[2] = 1;
+						break;
+					}
+					DegToRad(rad);
+					ImGui::ColorEdit4("Color", col);
+					if (ImGui::Button("Create"))
+						CreatePrimitives(m, Primitives::CYILINDER, col, scale, translation, rad, axis);
+				}
+				if (ImGui::CollapsingHeader("Plane"))
+				{
+					ImGui::SliderInt3("Size", scale, 1, 10);
+					ImGui::SliderInt3("Translation", translation, -100, 100);
+					ImGui::TextWrapped("Rotation");
+					ImGui::Separator();
+					ImGui::SliderInt("Radiant", &rad, 0, 360);
+					const char* items[] = { "X", "Y", "Z" };
+					static int item_current = 0;
+					ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+					switch (item_current)
+					{
+					case 0:
+						axis[0] = 1;
+						axis[1] = 0;
+						axis[2] = 0;
+						break;
+					case 1:
+						axis[0] = 0;
+						axis[1] = 1;
+						axis[2] = 0;
+						break;
+					case 2:
+						axis[0] = 0;
+						axis[1] = 0;
+						axis[2] = 1;
+						break;
+					}
+					DegToRad(rad);
+					ImGui::ColorEdit4("Color", col);
+					if (ImGui::Button("Create"))
+						CreatePrimitives(m, Primitives::PLANE, col, scale, translation, rad, axis);
+				}
 			}
 			ImGui::End();
 
@@ -620,7 +755,6 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 		LOG("Unknown primtive selected");
 		break;
 	}
-
 
 	GameObject* game_object = new GameObject();
 	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
@@ -691,5 +825,29 @@ void GuiManager::HierarchyWindow()
 			}
 			ImGui::End();
 		}
+	}
+}
+
+void GuiManager::TextureWindow()
+{
+	if (showTextureWindow)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Textures", &showTextureWindow))
+		{
+			for (uint i = 0; i < App->scene->textures.size(); ++i)
+			{
+				std::string node_name = "Texture " + std::to_string(i + 1);
+				if (ImGui::TreeNodeEx(node_name.c_str()))
+				{
+					ImVec2 size = { 200,200 };
+					int id = App->scene->textures[i];
+					ImGui::Image((ImTextureID)id, size);
+					ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
+					ImGui::TreePop();
+				}
+			}
+		} ImGui::End();
 	}
 }
