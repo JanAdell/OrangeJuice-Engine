@@ -17,6 +17,16 @@ Geometry::~Geometry()
 {
 }
 
+void Geometry::Disable()
+{
+	delete[] vertices;
+	vertices = nullptr;
+	delete[] indices;
+	indices = nullptr;
+	delete[] normals;
+	normals = nullptr;
+}
+
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
 {
 	numVertices = p_mesh->npoints;
@@ -29,6 +39,7 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 	memcpy(vertices, p_mesh->points, sizeof(float) * numVertices * 3);
 	memcpy(indices, p_mesh->triangles, sizeof(uint) * numIndices);
+	memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
 
 	if (p_mesh->normals != NULL)
 	{
@@ -41,7 +52,9 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	b = col2;
 	a = col3;
 
-	transform = new Transform(parent);
+	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
+	texture->LoadCoords(p_mesh);	
 	LoadBuffers();
 
 	LOG("Primitive created");
@@ -196,7 +209,7 @@ void Geometry::ShowProperties()
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		ImGui::SliderInt3("Scale", scale, 1, 10);
-		ImGui::SliderInt3("Translation", translation, 0, 100);
+		ImGui::SliderInt3("Translation", translation, -100, 100);
 		ImGui::TextWrapped("Rotation");
 		ImGui::Separator();
 		ImGui::SliderInt("Radiant", &rad, 0, 360);

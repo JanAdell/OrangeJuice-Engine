@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "Globals.h"
 #include "glew/include/GL/glew.h"
+#include "par_shapes.h"
+
 #include <gl/GL.h>
 #include <string>
 
@@ -22,6 +24,8 @@ public:
 
 	GLuint LoadImage(const char* p_tex);
 	void LoadCoords(aiMesh* scene);
+	void LoadCoords(par_shapes_mesh* p_mesh);
+
 	void LoadMaterials(const aiScene* scene, std::string file_name);
 	void LoadBuffers();
 	void ShowProperties() {};

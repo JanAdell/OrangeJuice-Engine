@@ -536,7 +536,7 @@ void GuiManager::PrimitivesWindow()
 			if (ImGui::CollapsingHeader("Primitives"))
 			{
 				ImGui::SliderInt3("Size", scale, 1, 10);
-				ImGui::SliderInt3("Translation", translation, 0, 100);
+				ImGui::SliderInt3("Translation", translation, -100, 100);
 				ImGui::TextWrapped("Rotation");
 				ImGui::Separator();
 				ImGui::SliderInt("Radiant", &rad, 0, 360);
@@ -627,6 +627,7 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	geo->CreatePrimitive(p_mesh, col[0], col[1], col[2], col[3]);
 	App->scene->gameObjects.push_back(game_object);
 	App->camera->GoAroundGeometry(geo);
+	par_shapes_free_mesh(p_mesh);
 }
 
 void GuiManager::HierarchyWindow()

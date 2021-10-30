@@ -35,6 +35,8 @@ void Image::Update()
 
 void Image::Disable()
 {
+	delete[] uvCoord;
+	uvCoord = nullptr;
 }
 
 
@@ -110,6 +112,13 @@ void Image::LoadCoords(aiMesh* scene)
 			}
 		}
 	}
+}
+
+void Image::LoadCoords(par_shapes_mesh* p_mesh)
+{
+	numCoords = p_mesh->npoints * 2 / 3;
+	uvCoord = p_mesh->tcoords;
+	LoadBuffers();
 }
 
 void Image::LoadMaterials(const aiScene* scene, std::string file_name)

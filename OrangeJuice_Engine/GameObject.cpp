@@ -15,6 +15,7 @@ GameObject::~GameObject()
 {
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
+		(*it)->Disable();
 		if ((*it) != nullptr)
 			delete (*it);
 		(*it) = nullptr;
@@ -32,13 +33,26 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		if ((*it)->toDelete)
+		{
+			components.erase(it);
+			break;
+		}
+		else if ((*it)->isEnable)
+		{
+			(*it)->Update();
+		}
+	}
+
 	if (children.empty())
 	{
-		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			if ((*it)->toDelete)
 			{
-				components.erase(it);
+				children.erase(it);
 				break;
 			}
 
@@ -48,11 +62,6 @@ void GameObject::Update()
 
 			}
 		}
-	}
-	else
-	{
-		for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
-			(*iter)->Update();
 	}
 }
 
