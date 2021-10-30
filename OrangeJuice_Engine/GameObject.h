@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include "Component.h"
+#include "Globals.h"
+
+class Geometry;
 
 class GameObject
 {
@@ -18,6 +21,7 @@ public:
 	void GetPropierties();
 	void ShowNormalVertex(const bool&);
 	void ShowNormalFaces(const bool&);
+	void ShowObjectProperties(GameObject*, uint&, uint&);
 
 public:
 	std::string name;

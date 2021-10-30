@@ -187,11 +187,11 @@ void Geometry::ShowProperties()
 	static int rad = 0;
 	static float axis[3] = { 0,0,0 };
 
-	if (ImGui::CollapsingHeader("Information"))
+	/*if (ImGui::CollapsingHeader("Information"))
 	{
 		ImGui::Text("triangles: %u", numIndices / 3);
 		ImGui::Text("vertices: %u", numVertices);
-	}
+	}*/
 
 	if (ImGui::CollapsingHeader("Transformation"))
 	{

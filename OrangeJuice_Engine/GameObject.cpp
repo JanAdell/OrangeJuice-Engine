@@ -138,6 +138,17 @@ void GameObject::GetPropierties()
 {
 	if (ImGui::Begin("Inspector", &showInspectorWindow))
 	{
+		if (ImGui::CollapsingHeader("Information"))
+		{
+			uint num_vertices = 0;
+			uint num_triangles = 0;
+
+			ShowObjectProperties(this, num_triangles, num_vertices);
+
+			ImGui::Text("triangles: %u", num_triangles);
+			ImGui::Text("vertices: %u", num_vertices);
+		}
+
 		if (ImGui::CollapsingHeader("Properties"))
 		{
 			if (ImGui::BeginMenu("Options"))
@@ -177,14 +188,14 @@ void GameObject::GetPropierties()
 			ShowNormalFaces(showNormals);
 		}
 
-		Component* mesh = nullptr;
+		Geometry* mesh = nullptr;
 		std::vector<Component*>::iterator it = components.begin();
 		int id = 0;
 		while (it != components.end())
 		{
 			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			{
-				mesh = *it;
+				mesh = dynamic_cast<Geometry*>(*it);
 				mesh->ShowProperties();
 				break;
 			}
@@ -231,5 +242,26 @@ void GameObject::ShowNormalFaces(const bool& x)
 	{
 		(*iter)->showNormals = x;
 	}
+
+}
+
+void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint& nvertices)
+{
+	for (std::vector<Component*>::iterator it = object->components.begin(); it < object->components.end(); ++it)
+	{
+		if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+		{
+			ntriangles += dynamic_cast<Geometry*>(*it)->numIndices / 3;
+			nvertices += dynamic_cast<Geometry*>(*it)->numVertices;
+		}
+	}
+	if (!children.empty())
+	{
+		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter < object->children.end(); ++iter)
+		{
+			ShowObjectProperties(*iter, ntriangles, nvertices);
+		}
+	}
+
 
 }
