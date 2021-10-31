@@ -196,6 +196,36 @@ void GuiManager::AboutWindow()
 	ImGui::NewLine();
 	ImGui::Text("A 3D engine created by Jan Adell Mill and Oscar Reguera Parera");
 	ImGui::NewLine();
+
+	if (ImGui::CollapsingHeader("License"))
+	{
+		ImGui::Text("Copyright (c) 2021 Jan Adell Mill & Oscar Reguera Parera");
+		ImGui::NewLine();
+		ImGui::Text("Permission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files(the 'Software'), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions :");
+		ImGui::NewLine();
+		ImGui::Text("The above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.");
+		ImGui::NewLine();
+		ImGui::Text("THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.");
+		ImGui::NewLine();
+	}
+	if (ImGui::CollapsingHeader("Libraries"))
+	{
+		if (ImGui::Button("SDL 2.0.4")) App->RequestBrowser("https://www.libsdl.org/");
+		ImGui::NewLine();
+		if (ImGui::Button("GLEW 2.1.0")) App->RequestBrowser("http://glew.sourceforge.net/");
+		ImGui::NewLine();
+		if (ImGui::Button("ImGui 1.84.2")) App->RequestBrowser("https://github.com/ocornut/imgui");
+		ImGui::NewLine();
+		if (ImGui::Button("MathGeoLib 1.5.0")) App->RequestBrowser("https://github.com/juj/MathGeoLib");
+		ImGui::NewLine();
+		if (ImGui::Button("OpenGL 3.1.0")) App->RequestBrowser("https://www.khronos.org/registry/OpenGL-Refpages/es3.0/");
+		ImGui::NewLine();
+		if (ImGui::Button("DevIl 1.8.0")) App->RequestBrowser("http://openil.sourceforge.net/");
+		ImGui::NewLine();
+		if (ImGui::Button("Assimp 5.0..1")) App->RequestBrowser("http://www.assimp.org/");
+		ImGui::NewLine();
+		if (ImGui::Button("ParShapes")) App->RequestBrowser("https://prideout.net/shapes");
+	}
 }
 
 void GuiManager::ConfigWindow()
