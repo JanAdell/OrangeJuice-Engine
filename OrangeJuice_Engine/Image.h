@@ -23,15 +23,19 @@ public:
 	void Disable() override;
 
 	GLuint LoadImage(const char* p_tex);
-	GLuint GetID();
+	void LoadCoords(aiMesh* scene);
+	void LoadCoords(par_shapes_mesh* p_mesh);
 
-	bool LoadMaterials(const aiScene* scene, std::string file_name);
+	void LoadMaterials(const aiScene* scene, std::string file_name);
+	void LoadBuffers();
 	void ShowProperties() {};
 	std::string GetTexturePath();
 	int GetTextureId();
 
 public:
-	
+	uint idCoords = 0;
+	uint numCoords = 0;
+	float* uvCoord = nullptr;
 	int textureId = 0;
 	std::string pTex;
 };

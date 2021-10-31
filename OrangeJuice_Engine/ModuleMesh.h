@@ -22,7 +22,7 @@ public:
 	bool LoadFile(const char* fileName);
 	bool LoadFBXFile(const char* file_name);
 	bool LoadTextureFile(const char* file_name);
-	void ChangeTex(GameObject* object, const char* file_name, Image* tex = nullptr);
+	void ChangeTex(GameObject* object, const char* file_name);
 
 private:
 	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
