@@ -177,27 +177,77 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 	std::vector<float3> vertices;
 	if (obj->children.empty())
 	{
-		vertices = AABBVertex(obj, vertices);
+
+		for (std::vector < Component*>::iterator iter2 = obj->components.begin(); iter2 != obj->components.end(); ++iter2)
+		{
+			COMPONENT_TYPE type = (*iter2)->type;
+			if (type == COMPONENT_TYPE::COMPONENT_MESH)
+			{
+				//Generate AABBS for each geometry on scene
+				math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+				std::vector <float3> vertex_array;
+
+				Geometry* g = dynamic_cast<Geometry*>(*iter2);
+				for (int j = 0; j < g->numVertices * 3; j += 3)
+				{
+					vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
+				}
+
+				new_aabb.Enclose(&vertex_array[0], g->numVertices);
+
+				//Stores the 8 vertices of the box in a general array
+				for (int j = 0; j < 8; j++)
+				{
+					vertices.push_back(new_aabb.CornerPoint(j));
+				}
+			}
+
+		}
 	}
 	else
 	{
 		for (std::vector<GameObject*>::iterator iter = obj->children.begin(); iter < obj->children.end(); ++iter)
 		{
-			vertices = AABBVertex((*iter), vertices);
+			for (std::vector < Component*>::iterator iter2 = (*iter)->components.begin(); iter2 != (*iter)->components.end(); ++iter2)
+			{
+				COMPONENT_TYPE type = (*iter2)->type;
+				if (type == COMPONENT_TYPE::COMPONENT_MESH)
+				{
+					//Generate AABBS for each geom in scene
+					math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+					std::vector <float3> vertex_array;
 
+					Geometry* g = dynamic_cast<Geometry*>(*iter2);
+					for (int j = 0; j < g->numVertices * 3; j += 3)
+					{
+						vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
+					}
+
+					new_aabb.Enclose(&vertex_array[0], g->numVertices);
+
+					//Stores the 8 vertices of the box in a general array
+					for (int j = 0; j < 8; j++)
+					{
+						vertices.push_back(new_aabb.CornerPoint(j));
+					}
+				}
+
+			}
 		}
-		math::AABB general(float3(0, 0, 0), float3(0, 0, 0));
-		general.Enclose(&vertices[0], vertices.size());
-		Position.x = general.maxPoint.x * 1.5;
-		Position.y = general.maxPoint.y * 1.5;
-		Position.z = general.maxPoint.z * 1.5;
-		Reference.x = general.CenterPoint().x;
-		Reference.y = general.CenterPoint().y;
-		Reference.z = general.CenterPoint().z;
-
-
-		LookAt(Reference);
 	}
+	//Creates a general AABB 
+	math::AABB general(float3(0, 0, 0), float3(0, 0, 0));
+	general.Enclose(&vertices[0], vertices.size());
+
+	Position.x = general.maxPoint.x * 1.5;
+	Position.y = general.maxPoint.y * 1.5;
+	Position.z = general.maxPoint.z * 1.5;
+
+	Reference.x = general.CenterPoint().x;
+	Reference.y = general.CenterPoint().y;
+	Reference.z = general.CenterPoint().z;
+
+	LookAt(Reference);
 }
 
 std::vector<float3> ModuleCamera3D::AABBVertex(GameObject* obj, std::vector<float3> vertices)
@@ -208,20 +258,20 @@ std::vector<float3> ModuleCamera3D::AABBVertex(GameObject* obj, std::vector<floa
 		if (type == COMPONENT_TYPE::COMPONENT_MESH)
 		{
 			
-			math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
-			std::vector <float3> vertex_array;
+			math::AABB newAABB(float3(0, 0, 0), float3(0, 0, 0));
+			std::vector <float3> vertexArray;
 
 			Geometry* g = dynamic_cast<Geometry*>(*iter2);
 			for (int j = 0; j < g->numVertices * 3; j += 3)
 			{
-				vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
+				vertexArray.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
 			}
 
-			new_aabb.Enclose(&vertex_array[0], g->numVertices);
+			newAABB.Enclose(&vertexArray[0], g->numVertices);
 
 			for (int j = 0; j < 8; j++)
 			{
-				vertices.push_back(new_aabb.CornerPoint(j));
+				vertices.push_back(newAABB.CornerPoint(j));
 			}
 		}
 
