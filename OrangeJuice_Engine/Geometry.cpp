@@ -248,3 +248,9 @@ void Geometry::LoadBuffers()
 		LOG("Error Storing Indices! %s\n", gluErrorString(error));
 
 }
+
+void Geometry::UpdateBuffer()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 3, vertices, GL_STATIC_DRAW);
+}

@@ -329,6 +329,9 @@ void GuiManager::ConfigWindow()
 		ImGui::Text("GPU Drivers version:");
 		ImGui::SameLine();
 		ImGui::TextColored({ 255, 255, 0, 255 }, "%s", glGetString(GL_VERSION));
+
+		VramConsumption();
+		
 	}//hardware tab
 
 	//-------- WINDOW TAB
@@ -850,4 +853,75 @@ void GuiManager::TextureWindow()
 			}
 		} ImGui::End();
 	}
+}
+
+void GuiManager::VramConsumption()
+{
+	const GLubyte* v = glGetString(GL_VENDOR);
+	char vendor[30];
+
+	for (int i = 0; i < 30; i++)
+	{
+		vendor[i] = v[i];
+	}
+	//Nvidia VRAM usage
+	if (strcmp(vendor, "NVIDIA Corporation") == 0)
+	{
+		GLint total_mem_kb = 0;
+
+		glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &total_mem_kb);
+
+		GLint cur_avail_mem_kb = 0;
+		glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &cur_avail_mem_kb);
+
+		//Calculate VRAM usage
+		char vram[25];
+		vramLog.push_back(((float)total_mem_kb) / 1000.f);
+		if (vramLog.size() > 100)
+		{
+			for (int i = 0; vramLog.size() > i - 1; i++)
+			{
+				vramLog[i] = vramLog[i + 1];
+			}
+			vramLog.pop_back();
+		}
+		sprintf_s(vram, 25, "VRAM usage: %.3f Mb", ((float)total_mem_kb) / 1000.f);
+		ImGui::PlotHistogram("##VRAM usage: ", &vramLog[0], vramLog.size(), 0, vram, 0.0f, 100.0f, ImVec2(310, 100));
+
+		//Calculate VRAM aviable
+		char vram_curr[50];
+		currVramLog.push_back(((float)cur_avail_mem_kb) / 1000.f);
+		if (currVramLog.size() > 100)
+		{
+			for (int i = 0; currVramLog.size() > i - 1; i++)
+			{
+				currVramLog[i] = currVramLog[i + 1];
+			}
+			currVramLog.pop_back();
+		}
+		sprintf_s(vram_curr, 50, "VRAM Aviable: %.3f Mb", ((float)cur_avail_mem_kb) / 1000.f);
+		ImGui::PlotHistogram("##VRAM Aviable: ", &currVramLog[0], currVramLog.size(), 0, vram_curr, 0.0f, 100.0f, ImVec2(310, 100));
+
+	}
+	//AMD VRAM usage still in project
+	/*else if (strcmp(vendor, "ATI Technologies Inc.") == 0)
+	{
+		GLint nCurAvailMemoryInKB = 0;
+		glGetIntegerv(GL_ATI_meminfo,
+			&nCurAvailMemoryInKB);
+		char vram_curr[50];
+		currVramLog.push_back(((float)nCurAvailMemoryInKB) / 1000.f);
+		if (currVramLog.size() > 100)
+		{
+			for (int i = 0; currVramLog.size() > i - 1; i++)
+			{
+				currVramLog[i] = currVramLog[i + 1];
+			}
+			currVramLog.pop_back();
+		}
+		sprintf_s(vram_curr, 50, "VRAM Aviable: %.3f Mb", ((float)nCurAvailMemoryInKB) / 1000.f);
+		ImGui::PlotHistogram("##VRAM Aviable: ", &currVramLog[0], currVramLog.size(), 0, vram_curr, 0.0f, 100.0f, ImVec2(310, 100));
+
+	}*/
+	else (ImGui::TextColored(ImVec4(255, 0, 0, 255), "VRam Usage only available for NVIDIA devices at the moment"));
 }

@@ -4,6 +4,8 @@
 #include "Geometry.h"
 #include "par_shapes.h"
 
+#include "../OrangeJuice_Engine/MathGeoLib/MathGeoLib.h"
+
 Transform::Transform(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMPONENT_TRANSFORM)
 {
 }
@@ -28,15 +30,18 @@ void Transform::LoadTransformation(Geometry* mesh, int trans[3], int scle[3], fl
 {
 	if (mesh != nullptr)
 	{
-		ChangeScale(mesh, scle[0], scle[1], scle[3]);
+		//ChangeScale(mesh, scle[0], scle[1], scle[3]);
 		ChangePosition(mesh, trans[0], trans[1], trans[2]);
+
+		Rotate(mesh, rd, axs);
+		mesh->UpdateBuffer();
 
 		this->mesh = mesh;
 		for (uint i = 0; i < 3; ++i)
 		{
 			translation[i] += trans[i];
 			scale[i] += scle[i];
-			axis[i] = axs[i];
+			
 		}
 		rad = +rd;
 	}
@@ -53,7 +58,7 @@ void Transform::LoadTransformation(Geometry* mesh, int trans[3], int scle[3], fl
 
 void Transform::UnLoadTransformation()
 {
-	ChangeScale(mesh, scale[0], scale[1], scale[3]);
+	//ChangeScale(mesh, scale[0], scale[1], scale[3]);
 	ChangePosition(mesh, translation[0], translation[1], translation[2]);
 	//par_shapes_rotate(mesh, rad, axis);
 
@@ -119,5 +124,63 @@ void Transform::ChangePosition(Geometry* mesh, float x, float y, float z)
 			mesh->faceNormals[i + 1] += y;
 			mesh->faceNormals[i + 2] += z;
 		}
+	}
+}
+
+void Transform::Rotate(Geometry* mesh, float rd, float axs[3])
+{
+	
+	float rdCos = cosf(rd);
+	float rdSin = sinf(rd);
+
+	float rMatrix[3][3] =
+	{
+		(axs[0] * axs[0]) * (1 - rdCos) + rdCos,(axs[0] * axs[1] * (1 - rdCos)) + (axs[2] * rdSin), (axs[2] * axs[0] * (1 - rdCos)) - (axs[1] * rdSin),
+		(axs[0] * axs[1] * (1 - rdCos)) - (axs[2] * rdSin),(((axs[1] * axs[1]) * (1 - rdCos)) + rdCos), (axs[1] * axs[2] * (1 - rdCos)) + (axs[0] * rdSin),
+		((axs[2] * axs[0] * (1 - rdCos)) + (axs[1] * rdSin)),((axs[1] * axs[2] * (1 - rdCos)) - (axs[0] * rdSin)), (((axs[2] * axs[2]) * (1 - rdCos)) + rdCos),
+	};
+
+	
+	DoRotation(mesh, rMatrix);
+
+	
+	for (uint i = 0; i < 3; ++i)
+	{
+		for (uint j = 0; j < 3; ++j)
+		{
+			for (uint k = 0; k < 3; ++k)
+			{
+				for (uint l = 0; l < 3; ++l)
+				{
+					R[i][j] += R[k][l] * rMatrix[l][k];
+				}
+			}
+		}
+	}
+}
+
+void Transform::DoRotation(Geometry* mesh, float  r_matrix[3][3])
+{
+	for (uint i = 0; i < mesh->numVertices * 3; i += 3)
+	{
+
+		float v1 = r_matrix[0][0] * mesh->vertices[i] + r_matrix[1][0] * mesh->vertices[i + 1] + r_matrix[2][0] * mesh->vertices[i + 2];
+		float v2 = r_matrix[0][1] * mesh->vertices[i] + r_matrix[1][1] * mesh->vertices[i + 1] + r_matrix[2][1] * mesh->vertices[i + 2];
+		float v3 = r_matrix[0][2] * mesh->vertices[i] + r_matrix[1][2] * mesh->vertices[i + 1] + r_matrix[2][2] * mesh->vertices[i + 2];
+		mesh->vertices[i] = v1;
+		mesh->vertices[i + 1] = v2;
+		mesh->vertices[i + 2] = v3;
+
+		if (mesh->normals)
+		{
+			float n1 = r_matrix[0][0] * mesh->normals[i] + r_matrix[1][0] * mesh->normals[i + 1] + r_matrix[2][0] * mesh->normals[i + 2];
+			float n2 = r_matrix[0][1] * mesh->normals[i] + r_matrix[1][1] * mesh->normals[i + 1] + r_matrix[2][1] * mesh->normals[i + 2];
+			float n3 = r_matrix[0][2] * mesh->normals[i] + r_matrix[1][2] * mesh->normals[i + 1] + r_matrix[2][2] * mesh->normals[i + 2];
+			mesh->normals[0] = n1;
+			mesh->normals[1] = n2;
+			mesh->normals[2] = n3;
+		}
+
+
 	}
 }

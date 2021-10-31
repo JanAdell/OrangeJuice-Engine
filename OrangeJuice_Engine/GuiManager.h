@@ -41,6 +41,8 @@ public:
 	void HierarchyWindow();
 	void TextureWindow();
 
+	void VramConsumption();
+
 	void GetLog(const char* log);
 
 	bool Save(nlohmann::json& j) const override;
@@ -79,6 +81,9 @@ private:
 	std::string test = "";
 
 	JSON_Value* root;
+
+	std::vector<float> vramLog;
+	std::vector<float> currVramLog;
 };
 
 
