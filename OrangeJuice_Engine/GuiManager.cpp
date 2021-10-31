@@ -816,14 +816,16 @@ void GuiManager::HierarchyWindow()
 								++child;
 							}
 						}
-
+						if (game_object->showInspectorWindow)
+						{
+							game_object->GetPropierties();
+							App->scene->gameObjectSelect = game_object;
+						}
 						if (node_open)
 						{
 							game_object->GetHierarcy(); ImGui::TreePop();
 						}
-						if (game_object->showInspectorWindow) game_object->GetPropierties();
 					}
-
 				}
 			}
 			ImGui::End();

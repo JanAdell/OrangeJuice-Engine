@@ -33,6 +33,7 @@ public:
 public:
 	std::vector<GameObject*> gameObjects;
 	std::vector<int> textures;
+	GameObject* gameObjectSelect = nullptr;
 
 private:
 

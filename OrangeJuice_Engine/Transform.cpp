@@ -45,6 +45,7 @@ void Transform::LoadTransformation(Geometry* mesh, int trans[3], int scle[3], fl
 		}
 		rad = +rd;
 	}
+
 	//if parent have childs apply the transformation in all of them 
 	if (parent->children.size() != 0)
 	{
@@ -78,28 +79,11 @@ void Transform::UnLoadTransformation()
 void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
 {
 	glScalef(x, y, z);
-	/*for (uint i = 0; i < mesh->num_vertices; i += 3) {
+	for (uint i = 0; i < mesh->numVertices; i += 3) {
 		mesh->vertices[i] *= x;
 		mesh->vertices[i + 1] *= y;
 		mesh->vertices[i + 2] *= z;
-	}*/
-
-	/*if (mesh->normals && (x != y || x != z || y != z)) {
-		x = 1.0f / x;
-		y = 1.0f / y;
-		z = 1.0f / z;
-		for (int i = 0; i < mesh->num_vertices*3; i += 3) {
-			mesh->normals[i] *= x;
-			mesh->normals[i + 1] *= y;
-			mesh->normals[i + 2] *= z;
-			float lsqr = sqrt(mesh->normals[i] * mesh->normals[i] + mesh->normals[i+1] * mesh->normals[i+1] + mesh->normals[i+2] * mesh->normals[i+2]);
-			if (lsqr > 0) {
-				mesh->normals[i] *= 1.0f / lsqr;
-				mesh->normals[i+1] *= 1.0f / lsqr;
-				mesh->normals[i+2] *= 1.0f / lsqr;
-			}
-		}
-	}*/
+	}
 }
 
 
@@ -180,7 +164,5 @@ void Transform::DoRotation(Geometry* mesh, float  r_matrix[3][3])
 			mesh->normals[1] = n2;
 			mesh->normals[2] = n3;
 		}
-
-
 	}
 }

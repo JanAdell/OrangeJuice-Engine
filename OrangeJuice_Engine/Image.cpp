@@ -9,6 +9,7 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
+#include <vector>
 
 #pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
 #pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
