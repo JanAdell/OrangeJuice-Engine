@@ -736,7 +736,7 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 	geo->CreatePrimitive(p_mesh, col[0], col[1], col[2], col[3]);
 	App->scene->gameObjects.push_back(game_object);
-	App->camera->GoAroundGeometry(geo);
+	//App->camera->GoAroundGeometry(geo);
 	par_shapes_free_mesh(p_mesh);
 }
 

@@ -3,6 +3,8 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "json.hpp"
+#include <vector>
+#include "../OrangeJuice_Engine/MathGeoLib/Math/MathAll.h"
 
 class ModuleCamera3D : public Module
 {
@@ -21,7 +23,9 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
-	void GoAroundGeometry(const Geometry* geom);
+	void GoAroundGeometry(GameObject* obj);
+
+	std::vector<float3> AABBVertex(GameObject* obj, std::vector<float3> vertices);
 
 
 private:

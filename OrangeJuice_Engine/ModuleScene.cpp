@@ -77,7 +77,11 @@ update_status ModuleScene::Update(float dt)
 		if (debugDraw == true) LOG("debugDraw on, showing normals.");
 	}
 
-	
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		if (gameObjectSelect != nullptr)
+			App->camera->GoAroundGeometry(gameObjectSelect);
+	}
 
 	return UPDATE_CONTINUE;
 }
