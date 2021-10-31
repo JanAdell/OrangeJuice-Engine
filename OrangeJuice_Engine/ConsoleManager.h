@@ -70,7 +70,7 @@ struct AppConsole
 		//ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 		if (!ImGui::Begin(title, p_open))
 		{
-			ImGui::End();
+			//ImGui::End();
 			return;
 		}
 
