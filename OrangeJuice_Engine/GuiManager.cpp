@@ -31,7 +31,8 @@ GuiManager::~GuiManager()
 
 bool GuiManager::Init()
 {
-	
+	ImGui::CreateContext();
+	GUIStyle();
 	return true;
 }
 
@@ -931,4 +932,82 @@ void GuiManager::VramConsumption()
 
 	}*/
 	else (ImGui::TextColored(ImVec4(255, 0, 0, 255), "VRam Usage only available for NVIDIA devices at the moment"));
+}
+
+
+
+
+void GuiManager::GUIStyle()
+{
+	// cherry colors, 3 intensities
+#define HI(v)   ImVec4(0.949f, 0.6f, 0.2f, v)
+#define MED(v)  ImVec4(0.949f, 0.729f, 0.223f, v)
+#define LOW(v)  ImVec4(0.898f, 0.705f, 0.294f, v)
+	// backgrounds (@todo: complete with BG_MED, BG_LOW)
+#define BG(v)		ImVec4(0.345f, 0.345f, 0.345f, v)
+#define BG_MED(v)   ImVec4(0.439f, 0.439f, 0.439f, v)
+#define BG_LOW(v)   ImVec4(0.568f, 0.568f, 0.568f, v)
+	// text
+#define TEXT(v) ImVec4(0.925f, 0.909f, 0.850f, v)
+
+	auto& style = ImGui::GetStyle();
+	style.Colors[ImGuiCol_Text] = TEXT(0.78f);
+	style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
+	style.Colors[ImGuiCol_WindowBg] = BG(0.5f);
+	//style.Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
+	style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
+	style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
+	style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_FrameBg] = BG(1.00f);
+	style.Colors[ImGuiCol_FrameBgHovered] = HI(0.78f);
+	style.Colors[ImGuiCol_FrameBgActive] = HI(1.00f);
+	style.Colors[ImGuiCol_TitleBg] = MED(0.75f);
+	style.Colors[ImGuiCol_TitleBgActive] = HI(1.00f);
+	style.Colors[ImGuiCol_TitleBgCollapsed] = LOW(0.75f);
+	style.Colors[ImGuiCol_MenuBarBg] = BG(0.47f);
+	style.Colors[ImGuiCol_ScrollbarBg] = BG(1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.09f, 0.15f, 0.16f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = HI(0.78f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = HI(1.00f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+	style.Colors[ImGuiCol_ButtonHovered] = HI(0.86f);
+	style.Colors[ImGuiCol_ButtonActive] = HI(1.00f);
+	style.Colors[ImGuiCol_Header] = HI(0.76f);
+	style.Colors[ImGuiCol_HeaderHovered] = HI(0.86f);
+	style.Colors[ImGuiCol_HeaderActive] = HI(1.00f);
+	//style.Colors[ImGuiCol_Column] = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
+	//style.Colors[ImGuiCol_ColumnHovered] = HI(0.78f);
+	//style.Colors[ImGuiCol_ColumnActive] = HI(1.00f);
+	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
+	style.Colors[ImGuiCol_ResizeGripHovered] = HI(0.78f);
+	style.Colors[ImGuiCol_ResizeGripActive] = HI(1.00f);
+	style.Colors[ImGuiCol_PlotLines] = TEXT(0.63f);
+	style.Colors[ImGuiCol_PlotLinesHovered] = HI(1.00f);
+	style.Colors[ImGuiCol_PlotHistogram] = HI(0.8f);
+	style.Colors[ImGuiCol_PlotHistogramHovered] = HI(1.00f);
+	style.Colors[ImGuiCol_TextSelectedBg] = HI(0.43f);
+	// [...]
+	//style.Colors[ImGuiCol_ModalWindowDarkening] = BG(0.73f);
+
+	style.WindowPadding = ImVec2(6, 4);
+	style.WindowRounding = 0.0f;
+	style.FramePadding = ImVec2(5, 2);
+	style.FrameRounding = 3.0f;
+	style.ItemSpacing = ImVec2(7, 1);
+	style.ItemInnerSpacing = ImVec2(1, 1);
+	style.TouchExtraPadding = ImVec2(0, 0);
+	style.IndentSpacing = 6.0f;
+	style.ScrollbarSize = 12.0f;
+	style.ScrollbarRounding = 16.0f;
+	style.GrabMinSize = 20.0f;
+	style.GrabRounding = 2.0f;
+
+	style.WindowTitleAlign.x = 0.50f;
+
+	style.Colors[ImGuiCol_Border] = ImVec4(0.539f, 0.479f, 0.255f, 0.162f);
+	style.FrameBorderSize = 0.0f;
+	style.WindowBorderSize = 1.0f;
 }

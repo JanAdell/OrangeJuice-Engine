@@ -48,6 +48,8 @@ public:
 	bool Save(nlohmann::json& j) const override;
 	bool Load(nlohmann::json& j) override;
 
+	void GUIStyle();
+
 private:
 
 	bool showConfigWindow = false;
