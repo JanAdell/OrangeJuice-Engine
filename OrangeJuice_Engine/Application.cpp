@@ -66,6 +66,8 @@ bool Application::Init()
 		ret = (*item)->Start();
 	}
 
+	MaxFrames(0);
+
 	//Hardware specs from the pc executing the program
 	SDL_GetVersion(&systemSpecs.sdlVersion);
 	systemSpecs.cpus = SDL_GetCPUCount();
@@ -82,7 +84,7 @@ bool Application::Init()
 	systemSpecs.threeDnow = SDL_Has3DNow();
 	systemSpecs.avx = SDL_HasAVX();
 	
-	ms_timer.Start();
+	msTimer.Start();
 	Load();
 	return ret;
 }
@@ -92,10 +94,10 @@ void Application::PrepareUpdate()
 {
 	frameCount++;
 	lastSecFrameCount++;
-	dt = (float)ms_timer.Read() / 1000.0f;
+	dt = (float)msTimer.Read() / 1000.0f;
 	if (dt > maxFrames)
 		dt = maxFrames;
-	ms_timer.Start();
+	msTimer.Start();
 }
 
 // ---------------------------------------------
@@ -114,14 +116,14 @@ void Application::FinishUpdate()
 		lastSecFrameCount = 0;
 	}
 
-	avgFps = float(frameCount) / startupTime.Read() / 10000;
-	lastFrameMs = frameTime.Read();
+	lastFrameMs = msTimer.Read();
 	framesOnLastUpdate = prevLastSecFrameCount;
 
-	if (framerateCap > 0 && lastFrameMs < framerateCap)
+	if (framerateCap > 0 && lastFrameMs < milisecCap)
 	{
-		SDL_Delay(framerateCap - lastFrameMs);
+		SDL_Delay(milisecCap - lastFrameMs);
 	}
+	lastFrameMs = msTimer.Read();
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -190,6 +192,12 @@ void Application::GetFrames(int& frames, float& millisec)
 {
 	frames = framesOnLastUpdate - 1;
 	millisec = frameMs;
+}
+
+void Application::MaxFrames(int max)
+{
+	framerateCap = max;
+	milisecCap = (framerateCap > 0) ? 1000 / max : 0;
 }
 
 bool Application::Save()

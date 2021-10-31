@@ -49,7 +49,7 @@ public:
 
 private:
 
-	Timer	ms_timer;
+	Timer	msTimer;
 	std::list<Module*> list_modules;
 
 public:
@@ -67,7 +67,7 @@ public:
 	uint					framesOnLastUpdate = 0u;
 	uint					maxFrames = 60u;
 	uint16_t				framerateCap = 0u;
-	float					avgFps = 0.0f;
+	uint16_t				milisecCap = 0u;
 	float					dt;
 
 	std::list<uint>		lastFrames[100];
@@ -87,6 +87,7 @@ public:
 	bool Load();
 
 	void GetFrames(int& frames, float& miliseconds);
+	void MaxFrames(int max);
 	void RequestBrowser(const char*);
 	HardwareSpecs systemSpecs;
 	std::string NormalizePath(const char* full_path);

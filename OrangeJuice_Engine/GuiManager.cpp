@@ -51,7 +51,6 @@ update_status GuiManager::PreUpdate(float dt)
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Configuration")) showConfigWindow = true;
-			if (ImGui::MenuItem("Demo Window")) showDemoWindow = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
 
 
@@ -102,7 +101,6 @@ update_status GuiManager::PreUpdate(float dt)
 
 	if (showPrimitivesWindow) PrimitivesWindow();
 
-	if (showDemoWindow) ImGui::ShowDemoWindow(&showDemoWindow);
 	
 	if (showConfigWindow)
 	{
@@ -251,7 +249,7 @@ void GuiManager::ConfigWindow()
 				
 		ImGui::Text("App Name:    %s ", str1);
 		
-		ImGui::Text("Organitsation:");
+		ImGui::Text("Organisation:");
 		ImGui::SameLine();
 		if (ImGui::Button(str2, ImVec2(357, 0))) App->RequestBrowser("https://www.citm.upc.edu/");
 
@@ -260,8 +258,11 @@ void GuiManager::ConfigWindow()
 		{
 			uint min = 0;
 			uint max = 144;
-			ImGui::SliderScalar(" Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
+			if (ImGui::SliderInt("Max FPS", &maxFps, min, max))
+			{
+				App->MaxFrames(maxFps);
 
+			}
 			ImGui::Text("Limit FPS:");
 			int frames;
 			float millisec;
@@ -370,7 +371,7 @@ void GuiManager::ConfigWindow()
 		bool active = true;
 		int width = 0;
 		int height = 0;
-		ImGui::Checkbox(" Active", &App->renderer3D->vsync);
+		ImGui::Checkbox(" Vsync", &App->renderer3D->vsync);
 		ImGui::TextWrapped("Icon:  *default*");
 		ImGui::SliderFloat(" Brightness", &App->window->brightness, 0, 1);
 		ImGui::SliderInt(" Width", &width, 0, 3820);

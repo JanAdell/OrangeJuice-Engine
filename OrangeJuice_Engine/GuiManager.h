@@ -50,7 +50,6 @@ public:
 
 private:
 
-	bool showDemoWindow = false;
 	bool showConfigWindow = false;
 	bool showAboutWindow = false;
 	bool showConsoleWindow = false;
@@ -65,6 +64,8 @@ private:
 
 	uint idVertex = 0;
 	uint idIndex = 0;
+
+	int maxFps = 0;
 	
 	//float brightness = 1.0f;
 
