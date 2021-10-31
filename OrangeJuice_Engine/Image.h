@@ -28,15 +28,19 @@ public:
 
 	void LoadMaterials(const aiScene* scene, std::string file_name);
 	void LoadBuffers();
+	void LoadCheckerTexture();
 	void ShowProperties() {};
 	std::string GetTexturePath();
 	int GetTextureId();
+	int SetTextureId(int id);
 
 public:
 	uint idCoords = 0;
 	uint numCoords = 0;
 	float* uvCoord = nullptr;
 	int textureId = 0;
+	int tmpId = 0;
+	uint checkId = 0;
 	std::string pTex;
 };
 

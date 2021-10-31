@@ -221,7 +221,20 @@ void GameObject::GetPropierties()
 		{
 			if (ImGui::CollapsingHeader("Material"))
 			{
-				ImGui::Checkbox("show", &tex->show);
+				if (ImGui::Checkbox("Checker Texture", &tex->showChecker))
+				{
+					Image* img = dynamic_cast<Image*>(tex);
+					if (tex->showChecker)
+					{
+						img->SetTextureId(img->checkId);
+					}
+					else
+					{
+						img->SetTextureId(img->tmpId);
+					}
+				}
+
+				ImGui::Checkbox("Show", &tex->show);
 				ImVec2 size = { 200,200 };
 				ImGui::Image((ImTextureID)id, size);
 				ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->texDimension[0], tex->texDimension[1]);

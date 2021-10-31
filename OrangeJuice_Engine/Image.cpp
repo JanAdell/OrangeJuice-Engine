@@ -19,7 +19,7 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-	
+	LoadCheckerTexture();
 }
 
 Image::~Image()
@@ -67,8 +67,6 @@ GLuint Image::LoadImage(const char* p_tex)
 	}
 
 	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-
 
 	ILuint devilError2 = ilGetError();
 	if (devilError2 != IL_NO_ERROR)
@@ -142,6 +140,8 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 		pTex = pGeo;
 		textureId = LoadImage(pGeo.c_str());
 
+		tmpId = textureId;
+
 		LoadBuffers();
 	}
 }
@@ -156,8 +156,37 @@ void Image::LoadBuffers()
 		LOG("Error Storing textures! %s\n", gluErrorString(error));
 }
 
+void Image::LoadCheckerTexture()
+{
+	GLubyte checkImage[64][64][4];
+	for (int i = 0; i < 64; i++) {
+		for (int j = 0; j < 64; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkImage[i][j][0] = (GLubyte)c;
+			checkImage[i][j][1] = (GLubyte)c;
+			checkImage[i][j][2] = (GLubyte)c;
+			checkImage[i][j][3] = (GLubyte)255;
+		}
+	}
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &checkId);
+	glBindTexture(GL_TEXTURE_2D, checkId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+	glBindTexture(GL_TEXTURE_2D, NULL);
+}
+
 int Image::GetTextureId()
 {
+	return textureId;
+}
+
+int Image::SetTextureId(int id)
+{
+	textureId = id;
 	return textureId;
 }
 

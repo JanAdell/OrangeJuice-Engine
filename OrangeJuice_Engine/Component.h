@@ -32,6 +32,7 @@ public:
 	bool toDelete = false;
 	bool isEnable = true;
 	bool show = true;
+	bool showChecker = false;
 	int texDimension[2];
 	COMPONENT_TYPE type = COMPONENT_TYPE::NO_COMPONENT;
 	GameObject* parent = nullptr;
