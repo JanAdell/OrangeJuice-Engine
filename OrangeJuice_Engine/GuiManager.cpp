@@ -106,7 +106,7 @@ update_status GuiManager::PreUpdate(float dt)
 	
 	if (showConfigWindow)
 	{
-		if (ImGui::Begin("Configuration", &showConfigWindow), window_flags)
+		if (ImGui::Begin("Configuration", &showConfigWindow, window_flags))
 		{
 			char a[100] = "";
 			
@@ -801,8 +801,8 @@ void GuiManager::HierarchyWindow()
 					}
 				}
 			}
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 }
 
@@ -826,7 +826,8 @@ void GuiManager::TextureWindow()
 					ImGui::TreePop();
 				}
 			}
-		} ImGui::End();
+		} 
+		ImGui::End();
 	}
 }
 

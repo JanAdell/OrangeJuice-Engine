@@ -79,6 +79,7 @@ private:
 
 	Primitives prim = Primitives::UKNOWN;
 	std::string test = "";
+	ImGuiWindowFlags windowFlags = 0;
 
 	JSON_Value* root;
 
