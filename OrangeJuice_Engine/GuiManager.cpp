@@ -581,7 +581,7 @@ void GuiManager::PrimitivesWindow()
 					}
 					DegToRad(rad);
 					ImGui::ColorEdit4("Color", col);
-					if (ImGui::Button("Create"))
+					if (ImGui::Button("Create Cube"))
 						CreatePrimitives(m, Primitives::CUBE, col, scale, translation, rad, axis);
 				}
 				
@@ -615,7 +615,7 @@ void GuiManager::PrimitivesWindow()
 					}
 					DegToRad(rad);
 					ImGui::ColorEdit4("Color", col);
-					if (ImGui::Button("Create"))
+					if (ImGui::Button("Create Sphere"))
 						CreatePrimitives(m, Primitives::SPHERE, col, scale, translation, rad, axis);
 				}
 				if (ImGui::CollapsingHeader("Cone"))
@@ -648,7 +648,7 @@ void GuiManager::PrimitivesWindow()
 					}
 					DegToRad(rad);
 					ImGui::ColorEdit4("Color", col);
-					if (ImGui::Button("Create"))
+					if (ImGui::Button("Create Cone"))
 						CreatePrimitives(m, Primitives::CONE, col, scale, translation, rad, axis);
 				}
 				if (ImGui::CollapsingHeader("Cylinder"))
@@ -681,7 +681,7 @@ void GuiManager::PrimitivesWindow()
 					}
 					DegToRad(rad);
 					ImGui::ColorEdit4("Color", col);
-					if (ImGui::Button("Create"))
+					if (ImGui::Button("Create Cylinders"))
 						CreatePrimitives(m, Primitives::CYILINDER, col, scale, translation, rad, axis);
 				}
 				if (ImGui::CollapsingHeader("Plane"))
@@ -714,7 +714,7 @@ void GuiManager::PrimitivesWindow()
 					}
 					DegToRad(rad);
 					ImGui::ColorEdit4("Color", col);
-					if (ImGui::Button("Create"))
+					if (ImGui::Button("Create Plane"))
 						CreatePrimitives(m, Primitives::PLANE, col, scale, translation, rad, axis);
 				}
 			}
