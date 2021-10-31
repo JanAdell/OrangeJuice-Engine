@@ -35,6 +35,8 @@ public:
 
 	void LoadData(aiMesh* mesh);
 
+	std::string GetTexturePath() { return std::string(); };
+
 	void ShowProperties();
 	int GetTextureId() { return 0; };
 	void UpdateBuffer();

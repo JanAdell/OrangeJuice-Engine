@@ -1,6 +1,8 @@
 #ifndef _COMPONENT_H_
 #define _COMPONENT_H_
 
+#include <string>
+
 class GameObject;
 
 enum class COMPONENT_TYPE
@@ -23,11 +25,14 @@ public:
 	
 	virtual void ShowProperties() = 0;
 	virtual int GetTextureId() = 0;
+	virtual std::string GetTexturePath() = 0;
 
 public:
 
 	bool toDelete = false;
 	bool isEnable = true;
+	bool show = true;
+	int texDimension[2];
 	COMPONENT_TYPE type = COMPONENT_TYPE::NO_COMPONENT;
 	GameObject* parent = nullptr;
 };

@@ -7,8 +7,11 @@
 
 GameObject::GameObject(GameObject* parent) : parent(parent)
 {
-	if (parent == nullptr) name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1);
-	else name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
+	if (name.empty())
+	{
+		if (parent == nullptr) name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1);
+		else name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
+	}
 }
 
 GameObject::~GameObject()
@@ -161,29 +164,20 @@ void GameObject::GetPropierties()
 
 		if (ImGui::CollapsingHeader("Properties"))
 		{
-			if (ImGui::CollapsingHeader("Options"))
-			{
-				if (ImGui::Button("Delete"))
-					toDelete = true;
-			}
+			if (ImGui::Button("Delete")) toDelete = true;
 
-			if (ImGui::Checkbox("Active", &isEnable))
-				(&isEnable) ? true : false;
+			if (ImGui::Checkbox("Active", &isEnable)) (&isEnable) ? true : false;
 
 			ImGui::SameLine();
 			//this was a test, leaving it here because we may need similar something when we make selectable nodes
 			char a[100] = "";
 			memcpy(a, name.c_str(), name.size());
-			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
-			{
-				name.assign(a);
-			}
+			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue)) name.assign(a);
 		}
 
 		if (ImGui::Checkbox("show vertices normals", &showVertexNormals))
 		{
 			(&showVertexNormals) ? true : false;
-
 			ShowNormalVertex(showVertexNormals);
 		}
 
@@ -192,7 +186,6 @@ void GameObject::GetPropierties()
 		if (ImGui::Checkbox("show faces normals", &showVertexNormals))
 		{
 			(&showVertexNormals) ? true : false;
-
 			ShowNormalFaces(showNormals);
 		}
 
@@ -222,14 +215,18 @@ void GameObject::GetPropierties()
 			++it2;
 		}
 
-		if (tex != nullptr)
-			id = tex->GetTextureId();
+		if (tex != nullptr) id = tex->GetTextureId();
 
 		if (id != 0)
 		{
-			ImVec2 size = { 200,200 };
-			ImGui::Image((ImTextureID)id, size);
-			ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
+			if (ImGui::CollapsingHeader("Material"))
+			{
+				ImGui::Checkbox("show", &tex->show);
+				ImVec2 size = { 200,200 };
+				ImGui::Image((ImTextureID)id, size);
+				ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->texDimension[0], tex->texDimension[1]);
+				ImGui::TextColored(ImVec4(255, 255, 0, 255), "Path: %s", tex->GetTexturePath().c_str());
+			}
 		}
 
 		ImGui::End();

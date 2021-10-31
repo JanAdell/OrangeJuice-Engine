@@ -107,7 +107,7 @@ void Geometry::Update()
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	if (texture != nullptr)
 	{
-		if (texture->textureId != 0)
+		if (texture->textureId != 0 && texture->show)
 		{
 			//Bind textures
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);

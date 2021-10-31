@@ -22,6 +22,7 @@ public:
 
 	void ShowProperties() {};
 	int GetTextureId() { return 0; };
+	std::string GetTexturePath() { return std::string(); };
 
 	void ChangeScale(Geometry* mesh, float x, float y, float z);
 	void ChangePosition(Geometry* mesh, float x, float y, float z);
