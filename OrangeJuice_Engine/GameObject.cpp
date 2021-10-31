@@ -151,17 +151,7 @@ void GameObject::GetPropierties()
 	App->scene->gameObjectSelect = this;
 	if (ImGui::Begin("Inspector", &showInspectorWindow))
 	{
-		if (ImGui::CollapsingHeader("Information"))
-		{
-			uint num_vertices = 0;
-			uint num_triangles = 0;
-
-			ShowObjectProperties(this, num_triangles, num_vertices);
-
-			ImGui::Text("triangles: %u", num_triangles);
-			ImGui::Text("vertices: %u", num_vertices);
-		}
-
+		
 		if (ImGui::CollapsingHeader("Properties"))
 		{
 			if (ImGui::Button("Delete")) toDelete = true;
@@ -203,6 +193,16 @@ void GameObject::GetPropierties()
 			++it;
 		}
 
+		if (ImGui::CollapsingHeader("Information"))
+		{
+			uint num_vertices = 0;
+			uint num_triangles = 0;
+
+			ShowObjectProperties(this, num_triangles, num_vertices);
+
+			ImGui::Text("triangles: %u", num_triangles);
+			ImGui::Text("vertices: %u", num_vertices);
+		}
 		Component* tex = nullptr;
 		std::vector<Component*>::iterator it2 = components.begin();
 		while (it2 != components.end())

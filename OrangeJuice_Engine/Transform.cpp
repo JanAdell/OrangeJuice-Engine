@@ -84,11 +84,14 @@ bool Transform::LoadTransformation(Geometry* mesh)
 	}
 	if (mesh != nullptr)
 	{
-		for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
+		/*if (parent != nullptr)
 		{
-			Transform* comp = dynamic_cast<Transform*>((*it)->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-			comp->LoadTransformation(mesh);
-		}
+			for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
+			{
+				Transform* comp = dynamic_cast<Transform*>((*it)->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+				comp->LoadTransformation(mesh);
+			}
+		}*/
 	}
 
 return ret;

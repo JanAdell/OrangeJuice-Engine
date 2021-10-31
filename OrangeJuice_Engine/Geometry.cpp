@@ -41,12 +41,6 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	memcpy(indices, p_mesh->triangles, sizeof(uint) * numIndices);
 	memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
 
-	if (p_mesh->normals != NULL)
-	{
-		memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
-		numNormals = numVertices * 3;
-	}
-
 	r = col0;
 	g = col1;
 	b = col2;
