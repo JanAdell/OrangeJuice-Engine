@@ -180,57 +180,9 @@ void Geometry::LoadData(aiMesh* mesh)
 
 void Geometry::ShowProperties()
 {
-	static int scale[3] = { 1,1,1 };
-	static int translation[3] = { 0,0,0 };
-	static int rad = 0;
-	static float axis[3] = { 0,0,0 };
-
-	/*if (ImGui::CollapsingHeader("Information"))
-	{
-		ImGui::Text("triangles: %u", numIndices / 3);
-		ImGui::Text("vertices: %u", numVertices);
-	}*/
-
-	if (ImGui::CollapsingHeader("Transformation"))
-	{
-		ImGui::SliderInt3("Scale", scale, 1, 10);
-		ImGui::SliderInt3("Translation", translation, -100, 100);
-		ImGui::TextWrapped("Rotation");
-		ImGui::Separator();
-		ImGui::SliderInt("Radiant", &rad, 0, 360);
-
-		static int item_current = 0;
-		const char* items[] = { "X", "Y", "Z" };
-		ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-		switch (item_current)
-		{
-		case 0:
-			axis[0] = 1;
-			axis[1] = 0;
-			axis[2] = 0;
-			break;
-		case 1:
-			axis[0] = 0;
-			axis[1] = 1;
-			axis[2] = 0;
-			break;
-		case 2:
-			axis[0] = 0;
-			axis[1] = 0;
-			axis[2] = 1;
-			break;
-		}
-		if (ImGui::Button("Transform"))
-		{
-			transform->LoadTransformation(this, translation, scale, rad, axis);
-
-			glBindBuffer(GL_ARRAY_BUFFER, idVertices);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 3, vertices, GL_STATIC_DRAW);
-
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
-		}
-	}
+	
+	if (transform->LoadTransformation(this))
+		UpdateBuffer();
 }
 
 void Geometry::LoadBuffers()
