@@ -32,10 +32,12 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	numVertices = p_mesh->npoints;
 	parIndices = p_mesh->ntriangles;
 	numIndices = p_mesh->ntriangles * 3;
+	numCoords = p_mesh->npoints * 2;
 
 	vertices = new float[numVertices * 3];
 	indices = new uint[numIndices];
 	normals = new float[numVertices * 3];
+	uvCoord = new float[numCoords];
 
 	memcpy(vertices, p_mesh->points, sizeof(float) * numVertices * 3);
 	memcpy(indices, p_mesh->triangles, sizeof(uint) * numIndices);
@@ -46,6 +48,7 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 		memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
 		numNormals = numVertices * 3;
 	}
+	memcpy(uvCoord, p_mesh->tcoords, sizeof(float) * numCoords);
 
 	r = col0;
 	g = col1;
@@ -54,7 +57,6 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-	texture->LoadCoords(p_mesh);	
 	LoadBuffers();
 
 	LOG("Primitive created");
@@ -113,7 +115,7 @@ void Geometry::Update()
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindTexture(GL_TEXTURE_2D, texture->textureId);
-			glBindBuffer(GL_ARRAY_BUFFER, texture->idCoords);
+			glBindBuffer(GL_ARRAY_BUFFER, idCoords);
 			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 		}
 	}
@@ -175,6 +177,20 @@ void Geometry::LoadData(aiMesh* mesh)
 			j += 6;
 		}
 	}
+
+	if (mesh->HasTextureCoords(0))
+	{
+		numCoords = mesh->mNumVertices * 2;
+		uvCoord = new float[numCoords];
+		for (uint i = 0; i < mesh->GetNumUVChannels(); ++i)
+		{
+			for (uint k = 0; k < mesh->mNumVertices; ++k) {
+				uvCoord[k * 2] = mesh->mTextureCoords[i][k].x;
+				uvCoord[k * 2 + 1] = mesh->mTextureCoords[i][k].y;
+			}
+		}
+	}
+
 	LoadBuffers();
 }
 
@@ -242,6 +258,10 @@ void Geometry::LoadBuffers()
 	glGenBuffers(1, (uint*)&(idIndices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (uint*)&(idCoords));
+	glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numCoords, uvCoord, GL_STATIC_DRAW);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)

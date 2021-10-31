@@ -26,13 +26,13 @@ public:
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
-
 	bool CleanUp();
-	
+
+	void DeleteTexture(Image* tex);
 
 public:
 	std::vector<GameObject*> gameObjects;
-	std::vector<int> textures;
+	std::vector<Image*> textures;
 	GameObject* gameObjectSelect = nullptr;
 
 private:
