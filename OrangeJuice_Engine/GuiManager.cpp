@@ -38,7 +38,8 @@ bool GuiManager::Init()
 
 bool GuiManager::Start()
 {
-
+	showConsoleWindow = true;
+	showHierachyWindow = true;
 	return true;
 }
 
@@ -60,15 +61,15 @@ update_status GuiManager::PreUpdate(float dt)
 
 		if (ImGui::BeginMenu("Create"))
 		{
-			if (ImGui::MenuItem("Primitives")) showPrimitivesWindow = true;
+			if (ImGui::MenuItem("Primitives")) showPrimitivesWindow = !showPrimitivesWindow;
 			ImGui::EndMenu();
 		}
 
 		if (ImGui::BeginMenu("View")) 
 		{
-			if (ImGui::MenuItem("Console")) showConsoleWindow = true;
-			if (ImGui::MenuItem("Inspector")) showHierachyWindow = true;
-			if (ImGui::MenuItem("Textures")) showTextureWindow = true;
+			if (ImGui::MenuItem("Console")) showConsoleWindow = !showConsoleWindow;
+			if (ImGui::MenuItem("Inspector")) showHierachyWindow = !showHierachyWindow;
+			if (ImGui::MenuItem("Textures")) showTextureWindow = !showTextureWindow;
 
 			ImGui::EndMenu();
 		}

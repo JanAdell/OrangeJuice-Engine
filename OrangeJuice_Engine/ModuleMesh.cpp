@@ -98,7 +98,8 @@ bool ModuleMesh::LoadFile(const char* file_name)
 bool ModuleMesh::LoadFBXFile(const char* file_name)
 {
 	bool ret = true;
-	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
+	
+	const aiScene* scene = aiImportFile(App->NormalizePath(file_name).c_str(), aiProcessPreset_TargetRealtime_Quality);
 
 	if (scene != nullptr && scene->HasMeshes())
 	{

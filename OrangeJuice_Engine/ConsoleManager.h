@@ -22,13 +22,13 @@ struct AppConsole
 		ClearLog();
 		memset(InputBuf, 0, sizeof(InputBuf));
 		HistoryPos = -1;
-		Commands.push_back("HELP");
-		Commands.push_back("HISTORY");
+		//Commands.push_back("HELP");
+		//Commands.push_back("HISTORY");
 		Commands.push_back("CLEAR");
-		Commands.push_back("CLASSIFY");  // "classify" is only here to provide an example of "C"+[tab] completing to "CL" and displaying matches.
+		//Commands.push_back("CLASSIFY");  // "classify" is only here to provide an example of "C"+[tab] completing to "CL" and displaying matches.
 		AutoScroll = true;
 		ScrollToBottom = true;
-		AddLog("Welcome to Dear ImGui!");
+		//AddLog("Welcome to Dear ImGui!");
 	}
 	~AppConsole()
 	{
@@ -83,13 +83,13 @@ struct AppConsole
 			ImGui::EndPopup();
 		}
 
-		ImGui::TextWrapped("This example implements a console with basic coloring, completion and history. A more elaborate implementation may want to store entries along with extra data such as timestamp, emitter, etc.");
-		ImGui::TextWrapped("Enter 'HELP' for help, press TAB to use text completion.");
+		//ImGui::TextWrapped("This example implements a console with basic coloring, completion and history. A more elaborate implementation may want to store entries along with extra data such as timestamp, emitter, etc.");
+		//ImGui::TextWrapped("Enter 'HELP' for help, press TAB to use text completion.");
 
 		// TODO: display items starting from the bottom
 
-		if (ImGui::SmallButton("Add Dummy Text")) { AddLog("%d some text", Items.Size); AddLog("some more text"); AddLog("display very important message here!"); } ImGui::SameLine();
-		if (ImGui::SmallButton("Add Dummy Error")) { AddLog("[error] something went wrong"); } ImGui::SameLine();
+		//if (ImGui::SmallButton("Add Dummy Text")) { AddLog("%d some text", Items.Size); AddLog("some more text"); AddLog("display very important message here!"); } ImGui::SameLine();
+		//if (ImGui::SmallButton("Add Dummy Error")) { AddLog("[error] something went wrong"); } ImGui::SameLine();
 		if (ImGui::SmallButton("Clear")) { ClearLog(); } ImGui::SameLine();
 		bool copy_to_clipboard = ImGui::SmallButton("Copy"); ImGui::SameLine();
 		if (ImGui::SmallButton("Scroll to bottom")) ScrollToBottom = true;
