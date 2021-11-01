@@ -30,6 +30,8 @@ From there feel free to play around with the UI, load any models (either the one
 * Inpector/Hirearchy tab may show the parent game object selected, yet it's not. The selected game object is that which is selected from the drop down menu: 
 > For example, if we have a "GameObject 1" which holds a "GameObject 1.1" within its drop down menu, when "GameObject 1.1" is highlighted in orange and we see its Inspector window, "GameObject 1.1" is selected. If we move to "GameObject 2.1", within "GameObject 2" and select it, we may still see "GameObject 1" highlighted, but it's just a visual error and we really have "GameObject 2.1" selected. 
 
+* Accessing the Window tab in Configuration changes window resolution automatically. It can be then changed back to regular size.
+
 ### Future Implementation
 
 * Allow the user to move the models in the scene either through inspector or with their mouse if the object is selected. We wanted to allow position changes on this first release, but it was giving us serious problems, so we have decided to leave it as something for display only, and work to have it ready as intended for the next release. 
