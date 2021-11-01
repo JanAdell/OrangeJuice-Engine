@@ -27,3 +27,12 @@ Some specific FBX models might not load into the engine due to their version. Lo
 
 ## Features
 
+## Authors
+
+> [Jan Adell](https://github.com/JanAdell)
+
+> [Oscar Reguera](https://github.com/oscarrep)
+
+## License
+
+
