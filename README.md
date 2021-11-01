@@ -1,6 +1,8 @@
 # Orange Juice Engine
 Repository dedicated to the development and releases of our home brew engine, Orange Juice. This project is an assignment for the 3D Engines subject at the Videogame Design and Development degree (CITM, UPC). The engine is created with C++ and other major libraries such as OpenGL and ImGui.
 
+This project is developed by Oscar Reguera and Jan Adell. 
+
 ## How to Use
 
 ### Controls
@@ -13,7 +15,7 @@ Repository dedicated to the development and releases of our home brew engine, Or
 
 ### General Use
 
-Just download our latest release either in our repositorie's releases page or clicking [here](https://github.com/JanAdell/OrangeJuice-Engine/releases), unzip the file, and execute **OrangeJuice_Engine.exe**.
+Just download our latest release either in our repository's releases page or clicking [here](https://github.com/JanAdell/OrangeJuice-Engine/releases), unzip the file, and execute **OrangeJuice_Engine.exe**.
 
 From there feel free to play around with the UI, load any models (either the ones on the Assets folder or your own) or do any action you want. Feel free, if you encounter an error, to report it [here](https://github.com/JanAdell/OrangeJuice-Engine/issues).
 
@@ -33,6 +35,14 @@ Some specific FBX models might not load into the engine due to their version. Lo
 
 > [Oscar Reguera](https://github.com/oscarrep)
 
+## [Project's Repository](https://github.com/JanAdell/OrangeJuice-Engine)
+
+
+
 ## License
 
+Copyright (c) 2021 Jan Adell Mill & Oscar Reguera Parera
 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions :
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
