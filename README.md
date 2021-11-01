@@ -19,7 +19,7 @@ Just download our latest release either in our repository's releases page or cli
 
 From there feel free to play around with the UI, load any models (either the ones on the Assets folder or your own) or do any action you want. Feel free, if you encounter an error, to report it [here](https://github.com/JanAdell/OrangeJuice-Engine/issues).
 
-**When a Game Object is loaded, the inspector must be opened and we need to select their first child in order to change textures or act on them**
+**When a Game Object is loaded, the inspector must be opened and we need to select their childs (Gameobjects in drop down menu within Hirearchy) in order to change textures or act on them**
 
 ### Known errors
 
@@ -33,8 +33,15 @@ From there feel free to play around with the UI, load any models (either the one
 ### Future Implementation
 
 * Allow the user to move the models in the scene either through inspector or with their mouse if the object is selected. We wanted to allow position changes on this first release, but it was giving us serious problems, so we have decided to leave it as something for display only, and work to have it ready as intended for the next release. 
+* Allow changes to be made not only to childs of the parent game object (which right now is an empty container) but to the parent itself so we dont have to work child by child. 
 
 ## Features
+
+* Load FBX models
+* Load Textures into said models
+* Console which logs the loading process
+* Hardware tracking and performance tracking
+* Hirearchy system which allows to work with models with multiple meshes (which appear as children in the inspector tab)
 
 ## Authors
 
@@ -43,8 +50,6 @@ From there feel free to play around with the UI, load any models (either the one
 > [Oscar Reguera](https://github.com/oscarrep)
 
 ## [Project's Repository](https://github.com/JanAdell/OrangeJuice-Engine)
-
-
 
 ## License
 
