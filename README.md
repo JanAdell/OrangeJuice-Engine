@@ -11,7 +11,7 @@ This project is developed by Oscar Reguera and Jan Adell.
 * **Left Control** to bring the camera down
 * **Mouse Wheel** to zoom in and out
 * **ALT + Left mouse click** to rotate the camera
-* **F key** to focus on an object and orbit around it
+* **F key** to focus on an object
 
 ### General Use
 
@@ -26,6 +26,9 @@ From there feel free to play around with the UI, load any models (either the one
 * Some specific FBX models might not load into the engine due to their version. Loading them into 3DS Max and reimporting to a newer version allows for them to be seen in the engine.
 
 * Primitives don't load textures properly. We can see them change when a texture is dropped when one is selected but we have trouble prositioning the texture into the primitive.
+
+* Inpector/Hirearchy tab may show the parent game object selected, yet it's not. The selected game object is that which is selected from the drop down menu: 
+> For example, if we have a "GameObject 1" which holds a "GameObject 1.1" within its drop down menu, when "GameObject 1.1" is highlighted in orange and we see its Inspector window, "GameObject 1.1" is selected. If we move to "GameObject 2.1", within "GameObject 2" and select it, we may still see "GameObject 1" highlighted, but it's just a visual error and we really have "GameObject 2.1" selected. 
 
 ### Future Implementation
 
