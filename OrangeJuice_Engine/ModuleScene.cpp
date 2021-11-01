@@ -89,7 +89,7 @@ update_status ModuleScene::Update(float dt)
 
 update_status ModuleScene::PostUpdate(float dt)
 {
-	gameObjectSelect = nullptr;
+	//gameObjectSelect = nullptr;
 
 	for (std::vector<GameObject*>::iterator object = gameObjects.begin(); object != gameObjects.end(); ++object)
 	{

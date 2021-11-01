@@ -789,49 +789,63 @@ void GuiManager::HierarchyWindow()
 				{
 					GameObject* game_object = App->scene->gameObjects[i];
 
-					if (game_object->parent == nullptr)
+					if (game_object != nullptr)
 					{
 						// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
 						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 						if (selection_mask & (1 << i))
 							node_flags |= ImGuiTreeNodeFlags_Selected;
-
+							
+					
 						bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
 						if (ImGui::IsItemClicked())
 						{
 							selection_mask = (1 << i);
 							game_object->showInspectorWindow = true;
-
-							//al show inspector windows = false
-							std::vector<GameObject*>::iterator iterator = App->scene->gameObjects.begin();
-							while (iterator != App->scene->gameObjects.end())
-							{
-								if (*iterator != game_object) (*iterator)->showInspectorWindow = false;
-								++iterator;
-							}
-						}
-
-						if (game_object->children.size() != 0)
-						{
-							std::vector<GameObject*>::iterator child = game_object->children.begin();
-							while (child != game_object->children.end())
-							{
-								if (*child != game_object)
-									(*child)->showInspectorWindow = false;
-								++child;
-							}
-						}
-						if (game_object->showInspectorWindow)
-						{
-							game_object->GetPropierties();
 							App->scene->gameObjectSelect = game_object;
+							//al show inspector windows = false
+							std::vector<GameObject*>::iterator goIterator = App->scene->gameObjects.begin();
+							while (goIterator != App->scene->gameObjects.end())
+							{
+								if (*goIterator != App->scene->gameObjectSelect) (*goIterator)->showInspectorWindow = false;
+
+								std::vector<GameObject*>::iterator iterator = (*goIterator)->children.begin();
+								while (iterator != (*goIterator)->children.end())
+								{
+									if (*iterator != App->scene->gameObjectSelect) (*iterator)->showInspectorWindow = false;
+
+									if (!(*iterator)->children.empty())
+									{
+										std::vector<GameObject*>::iterator child = (*iterator)->children.begin();
+										while (child != (*iterator)->children.end())
+										{
+											if (*child != App->scene->gameObjectSelect)
+												(*child)->showInspectorWindow = false;
+											//else LOG("hoho");
+											++child;
+										}
+
+									}
+									++iterator;
+
+								}
+								++goIterator;
+							}
 						}
+
+												
 						if (node_open)
 						{
 							game_object->GetHierarcy(); ImGui::TreePop();
 						}
 					}
 				}
+				if (App->scene->gameObjectSelect != nullptr && App->scene->gameObjectSelect->showInspectorWindow)
+				{
+					if (App->scene->gameObjectSelect != nullptr)
+						App->scene->gameObjectSelect->GetPropierties();
+				}
+
 			}
 		}
 		ImGui::End();

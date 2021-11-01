@@ -49,7 +49,7 @@ void GameObject::Update()
 		}
 	}
 
-	if (children.empty())
+	if (!children.empty())
 	{
 		for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 		{
@@ -111,12 +111,13 @@ void GameObject::GetHierarcy()
 		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
 		if (ImGui::IsItemClicked())
 		{
+			App->scene->gameObjectSelect = game_object;
 			selection_mask = (1 << i);
 			//al show inspector windows = false
 			std::vector<GameObject*>::iterator iterator = children.begin();
 			while (iterator != children.end())
 			{
-				if (*iterator != game_object)
+				if (*iterator != App->scene->gameObjectSelect)
 					(*iterator)->showInspectorWindow = false;
 				++iterator;
 			}
@@ -125,7 +126,8 @@ void GameObject::GetHierarcy()
 				showInspectorWindow = false;
 
 			//show inspector
-			game_object->showInspectorWindow = true;
+			App->scene->gameObjectSelect->showInspectorWindow = true;
+
 		}
 		//finish show inspector
 
@@ -139,10 +141,14 @@ void GameObject::GetHierarcy()
 			ImGui::TreePop();
 		}
 
-		if (game_object->showInspectorWindow)
+		/*if (game_object != nullptr) 
 		{
-			game_object->GetPropierties();
-		}
+			if (game_object->showInspectorWindow)
+			{
+				game_object->GetPropierties();
+			}
+		}*/
+
 	}
 }
 
