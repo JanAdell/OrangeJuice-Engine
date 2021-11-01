@@ -19,9 +19,13 @@ Just download our latest release either in our repository's releases page or cli
 
 From there feel free to play around with the UI, load any models (either the ones on the Assets folder or your own) or do any action you want. Feel free, if you encounter an error, to report it [here](https://github.com/JanAdell/OrangeJuice-Engine/issues).
 
+**When a Game Object is loaded, the inspector must be opened and we need to select their first child in order to change textures or act on them**
+
 ### Known errors
 
-Some specific FBX models might not load into the engine due to their version. Loading them into 3DS Max and reimporting to a newer version allows for them to be seen in the engine.
+* Some specific FBX models might not load into the engine due to their version. Loading them into 3DS Max and reimporting to a newer version allows for them to be seen in the engine.
+
+* Primitives don't load textures properly. We can see them change when a texture is dropped when one is selected but we have trouble prositioning the texture into the primitive.
 
 ### Future Implementation
 
