@@ -105,7 +105,7 @@ update_status GuiManager::PreUpdate(float dt)
 	
 	if (showConfigWindow)
 	{
-		if (ImGui::Begin("Configuration", &showConfigWindow, window_flags))
+		if (ImGui::Begin("Configuration", &showConfigWindow, windowFlags))
 		{
 			char a[100] = "";
 			

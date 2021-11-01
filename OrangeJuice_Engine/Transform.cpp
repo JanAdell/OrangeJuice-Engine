@@ -42,14 +42,14 @@ bool Transform::LoadTransformation(Geometry* mesh)
 	float new_position[3] = { translation[0], translation[1] ,translation[2] };
 	//change name
 	//scale
-	if (ImGui::InputFloat3("scale", scale, NULL, ImGuiInputTextFlags_EnterReturnsTrue))
+	if (ImGui::InputFloat3("scale", scale, "%i", ImGuiInputTextFlags_EnterReturnsTrue))
 		ret = true;
-	if (ImGui::InputFloat3("position", new_position, NULL, ImGuiInputTextFlags_EnterReturnsTrue))
+	if (ImGui::InputFloat3("position", new_position, "%i", ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		float translation_x = new_position[0] - translation[0];
 		float translation_y = new_position[1] - translation[1];
 		float translation_z = new_position[2] - translation[2];
-		ChangePosition(mesh, translation_x, translation_y, translation_z);
+		//ChangePosition(mesh, translation_x, translation_y, translation_z);
 		for (uint i = 0; i < 3; ++i)
 		{
 			translation[i] = new_position[i];
@@ -84,14 +84,14 @@ bool Transform::LoadTransformation(Geometry* mesh)
 	}
 	if (mesh != nullptr)
 	{
-		/*if (parent != nullptr)
+		if (parent != nullptr)
 		{
 			for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
 			{
 				Transform* comp = dynamic_cast<Transform*>((*it)->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 				comp->LoadTransformation(mesh);
 			}
-		}*/
+		}
 	}
 
 return ret;

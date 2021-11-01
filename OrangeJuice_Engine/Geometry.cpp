@@ -161,8 +161,8 @@ void Geometry::LoadData(aiMesh* mesh)
 			float u[3] = { (vertices[i + 3] - vertices[i + 0]),(vertices[i + 4] - vertices[i + 1]),(vertices[i + 5] - vertices[i + 2]) };
 			float v[3] = { (vertices[i + 6] - vertices[i + 3]),(vertices[i + 7] - vertices[i + 4]),(vertices[i + 8] - vertices[i + 5]) };
 			faceNormals[j] = (vertices[i] + vertices[i + 3] + vertices[i + 6]) / 3;
-			faceNormals[j + 1] = (vertices[i + 1] + vertices[i + 4] + vertices[i + 7]) / 3;;
-			faceNormals[j + 2] = (vertices[i + 2] + vertices[i + 5] + vertices[i + 8]) / 3;;
+			faceNormals[j + 1] = (vertices[i + 1] + vertices[i + 4] + vertices[i + 7]) / 3;
+			faceNormals[j + 2] = (vertices[i + 2] + vertices[i + 5] + vertices[i + 8]) / 3;
 			faceNormals[j + 3] = faceNormals[j] + (u[1] * v[2] - u[2] * v[1]);
 			faceNormals[j + 4] = faceNormals[j + 1] + (u[2] * v[0] - u[0] * v[2]);
 			faceNormals[j + 5] = faceNormals[j + 2] + (u[0] * v[1] - u[1] * v[0]);
