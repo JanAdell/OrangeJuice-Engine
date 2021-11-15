@@ -51,11 +51,13 @@ From there feel free to play around with the UI, load any models (either the one
 
 > [Oscar Reguera](https://github.com/oscarrep)
 
+> [Magdalena Ostrowska](https://github.com/magdaostrowska)
+
 ## [Project's Repository](https://github.com/JanAdell/OrangeJuice-Engine)
 
 ## License
 
-Copyright (c) 2021 Jan Adell Mill & Oscar Reguera Parera
+Copyright (c) 2021 Jan Adell Mill, Oscar Reguera Parera and Magdalena Ostrowska
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions :
 

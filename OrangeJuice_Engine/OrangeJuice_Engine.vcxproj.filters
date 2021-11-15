@@ -2,13 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="glmath.cpp" />
     <ClCompile Include="GuiManager.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -177,25 +172,38 @@
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Component.cpp" />
     <ClCompile Include="par_shapes.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Component.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Tools\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Tools\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="glmath.cpp">
+      <Filter>Tools\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Tools\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GuiManager.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="p2List.h" />
-    <ClInclude Include="Module.h" />
-    <ClInclude Include="p2DynArray.h" />
-    <ClInclude Include="p2Point.h" />
-    <ClInclude Include="Timer.h" />
     <ClInclude Include="ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -470,7 +478,6 @@
     </ClInclude>
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="par_shapes.h" />
-    <ClInclude Include="Primitive.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="DevIL\include\IL\il.h">
       <Filter>devIL</Filter>
@@ -480,8 +487,30 @@
     </ClInclude>
     <ClInclude Include="Image.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Tools\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>Tools\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="glmath.h">
+      <Filter>Tools\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Tools\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
@@ -495,6 +524,21 @@
     </Filter>
     <Filter Include="devIL">
       <UniqueIdentifier>{41a700f8-57f5-44df-9fc7-2c6766ff8d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{68fcdd70-f150-4592-927d-e2545ce0ca6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{8605c828-18d9-4631-942f-ecfa13f1912d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\FileManager">
+      <UniqueIdentifier>{098ad100-64b9-42cd-960b-0e1f35f6fcc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Helpers">
+      <UniqueIdentifier>{9fdf7b03-db8a-40ad-a1c0-d8271049c921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Containers">
+      <UniqueIdentifier>{814347f5-e57d-4047-a87c-3162913580dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
