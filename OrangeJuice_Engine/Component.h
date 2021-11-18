@@ -1,6 +1,7 @@
 #ifndef _COMPONENT_H_
 #define _COMPONENT_H_
 
+#include "Globals.h"
 #include <string>
 
 class GameObject;
@@ -38,6 +39,8 @@ public:
 	int texDimension[2];
 	COMPONENT_TYPE type = COMPONENT_TYPE::NO_COMPONENT;
 	GameObject* parent = nullptr;
+
+	uint componentUUID;
 };
 
 #endif

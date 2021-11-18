@@ -18,13 +18,18 @@ public:
 	void Update();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
-	Component* GetComponent(COMPONENT_TYPE type);
-	Transform* GetTransform();
-	virtual void GetHierarchy();
-	void GetPropierties();
+	uint CreateUUID();
+	
 	void ShowNormalVertex(const bool&);
 	void ShowNormalFaces(const bool&);
 	void ShowObjectProperties(GameObject*, uint&, uint&);
+
+	Component* GetComponent(COMPONENT_TYPE type);
+	void GetPropierties();
+	Transform* GetTransform();
+	virtual void GetHierarchy();
+	uint GetUUID();
+	uint GetParentUUID();
 
 	void ChangeName(std::string name);
 
@@ -41,6 +46,11 @@ public:
 	bool showInspectorWindow = false;
 	bool showVertexNormals = false;
 	bool showNormals = false;
+
+private:
+
+	uint UUID;
+	uint parentUUID;
 };
 
 #endif 

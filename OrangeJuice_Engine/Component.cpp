@@ -4,6 +4,7 @@
 
 Component::Component(GameObject* parent, COMPONENT_TYPE type) : parent(parent), type(type)
 {
+	componentUUID = parent->CreateUUID();
 }
 
 Component::~Component()

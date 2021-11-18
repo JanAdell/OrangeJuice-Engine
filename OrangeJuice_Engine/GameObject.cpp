@@ -12,6 +12,9 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 		if (parent == nullptr) name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1);
 		else name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 	}
+
+	parentUUID = 0;
+	UUID = CreateUUID();
 }
 
 GameObject::~GameObject()
@@ -93,6 +96,47 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	return component;
 }
 
+uint GameObject::CreateUUID()
+{
+	return LCG().Int();
+}
+
+void GameObject::ShowNormalVertex(const bool& x)
+{
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
+	{
+		(*iter)->showVertexNormals = x;
+	}
+}
+
+void GameObject::ShowNormalFaces(const bool& x)
+{
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
+	{
+		(*iter)->showNormals = x;
+	}
+
+}
+
+void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint& nvertices)
+{
+	for (std::vector<Component*>::iterator it = object->components.begin(); it < object->components.end(); ++it)
+	{
+		if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+		{
+			ntriangles += dynamic_cast<Geometry*>(*it)->numIndices / 3;
+			nvertices += dynamic_cast<Geometry*>(*it)->numVertices;
+		}
+	}
+	if (!children.empty())
+	{
+		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter < object->children.end(); ++iter)
+		{
+			ShowObjectProperties(*iter, ntriangles, nvertices);
+		}
+	}
+}
+
 Component* GameObject::GetComponent(COMPONENT_TYPE type)
 {
 	for (int i = 0; i < components.size(); i++)
@@ -103,69 +147,6 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 		}
 	}
 	return nullptr;
-}
-
-Transform* GameObject::GetTransform()
-{
-	return transform;
-}
-
-void GameObject::GetHierarchy()
-{
-	static int selection_mask = (1 << 0);
-	static int node_clicked = 0;
-
-	for (uint i = 0; i < children.size(); ++i)
-	{
-		GameObject* game_object = children[i];
-
-		//start to show inspector
-			// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
-		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-		if (selection_mask & (1 << i))
-			node_flags |= ImGuiTreeNodeFlags_Selected;
-
-		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
-		if (ImGui::IsItemClicked())
-		{
-			App->scene->gameObjectSelect = game_object;
-			selection_mask = (1 << i);
-			//al show inspector windows = false
-			std::vector<GameObject*>::iterator iterator = children.begin();
-			while (iterator != children.end())
-			{
-				if (*iterator != App->scene->gameObjectSelect)
-					(*iterator)->showInspectorWindow = false;
-				++iterator;
-			}
-			//parent inspector = false
-			if (showInspectorWindow)
-				showInspectorWindow = false;
-
-			//show inspector
-			App->scene->gameObjectSelect->showInspectorWindow = true;
-		}
-		//finish show inspector
-
-
-		if (node_open)
-		{
-			if (game_object->children.size() != 0)
-			{
-				game_object->GetHierarchy();
-			}
-			ImGui::TreePop();
-		}
-
-		/*if (game_object != nullptr) 
-		{
-			if (game_object->showInspectorWindow)
-			{
-				game_object->GetPropierties();
-			}
-		}*/
-
-	}
 }
 
 void GameObject::GetPropierties()
@@ -267,40 +248,76 @@ void GameObject::GetPropierties()
 	}
 }
 
-void GameObject::ShowNormalVertex(const bool& x)
+Transform* GameObject::GetTransform()
 {
-	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
+	return transform;
+}
+
+void GameObject::GetHierarchy()
+{
+	static int selection_mask = (1 << 0);
+	static int node_clicked = 0;
+
+	for (uint i = 0; i < children.size(); ++i)
 	{
-		(*iter)->showVertexNormals = x;
+		GameObject* game_object = children[i];
+
+		//start to show inspector
+			// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+		if (selection_mask & (1 << i))
+			node_flags |= ImGuiTreeNodeFlags_Selected;
+
+		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
+		if (ImGui::IsItemClicked())
+		{
+			App->scene->gameObjectSelect = game_object;
+			selection_mask = (1 << i);
+			//al show inspector windows = false
+			std::vector<GameObject*>::iterator iterator = children.begin();
+			while (iterator != children.end())
+			{
+				if (*iterator != App->scene->gameObjectSelect)
+					(*iterator)->showInspectorWindow = false;
+				++iterator;
+			}
+			//parent inspector = false
+			if (showInspectorWindow)
+				showInspectorWindow = false;
+
+			//show inspector
+			App->scene->gameObjectSelect->showInspectorWindow = true;
+		}
+		//finish show inspector
+
+
+		if (node_open)
+		{
+			if (game_object->children.size() != 0)
+			{
+				game_object->GetHierarchy();
+			}
+			ImGui::TreePop();
+		}
+
+		/*if (game_object != nullptr)
+		{
+			if (game_object->showInspectorWindow)
+			{
+				game_object->GetPropierties();
+			}
+		}*/
+
 	}
 }
 
-void GameObject::ShowNormalFaces(const bool& x)
+uint GameObject::GetUUID()
 {
-	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
-	{
-		(*iter)->showNormals = x;
-	}
-
+	return UUID;
 }
 
-void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint& nvertices)
-{
-	for (std::vector<Component*>::iterator it = object->components.begin(); it < object->components.end(); ++it)
-	{
-		if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
-		{
-			ntriangles += dynamic_cast<Geometry*>(*it)->numIndices / 3;
-			nvertices += dynamic_cast<Geometry*>(*it)->numVertices;
-		}
-	}
-	if (!children.empty())
-	{
-		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter < object->children.end(); ++iter)
-		{
-			ShowObjectProperties(*iter, ntriangles, nvertices);
-		}
-	}
+uint GameObject::GetParentUUID() {
+	return parent->GetUUID();
 }
 
 void GameObject::ChangeName(std::string name)
