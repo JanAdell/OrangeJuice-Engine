@@ -3,11 +3,13 @@
 
 #include "Component.h"
 #include "par_shapes.h"
+#include "MathGeoLib/MathGeoLib.h"
 
 class Geometry;
 
 class Transform :public Component
 {
+
 public:
 
 	Transform(GameObject* parent);
@@ -23,8 +25,6 @@ public:
 	void UnLoadTransformation();
 
 	void ShowProperties() {};
-	int GetTextureId() { return 0; };
-	std::string GetTexturePath() { return std::string(); };
 
 	void ChangeScale(Geometry* mesh, float x, float y, float z);
 	void ChangePosition(Geometry* mesh, float x, float y, float z);
@@ -32,20 +32,37 @@ public:
 	void Rotate(Geometry* mesh, float rd, float axs[3]);
 	void DoRotation(Geometry* mesh, float  r_matrix[3][3]);
 
+	void SetTranslation(float3 position);
+	void SetScale(float3 scale);
+	void SetRotation(float3 rot);
+	void SetQuatRotation(Quat quatRot);
+
+	float3 GetTranslation();
+	float3 GetScale();
+	float3 GetEulerRotation();
+	Quat GetQuatRotation();
+
+	void CalculateMatrix();
+
+	int GetTextureId() { return 0; };
+	std::string GetTexturePath() { return std::string(); };
+	
 public:
 
-	float translation[3] = { 1,1,1 };
-	float scale[3] = { 1,1,1 };
-	int rad = 0;
-	float axis[3] = { 0,0,0 };
-	Geometry* mesh = nullptr;
+	float3 translation;
+	float scale[3] = { 1.0f,1.0f,1.0f };
+	float3 scl;
+	int rad;
+	float3 axis;
 
-	float R[3][3] =
-	{ 1, 0, 0,
-	0, 1, 0,
-	0, 0, 1 };
+	Geometry* mesh;
+
+	float4x4 localMatrix;
+	float4x4 globalMatrix;
+
+	Quat quatRotation;
+
+	float R[3][3];
 };
-
-
 
 #endif

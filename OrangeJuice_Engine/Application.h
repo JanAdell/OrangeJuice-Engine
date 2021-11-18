@@ -1,7 +1,5 @@
 #pragma once
 
-#include <list>
-#include <vector>
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
@@ -12,6 +10,11 @@
 #include "ModuleCamera3D.h"
 #include "GuiManager.h"
 #include "ModuleMesh.h"
+
+#include "ImGuizmo/ImGuizmo.h"
+
+#include <list>
+#include <vector>
 
 struct HardwareSpecs
 {

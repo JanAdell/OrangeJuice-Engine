@@ -19,3 +19,8 @@ void Component::Disable()
 {
 	isEnable = false;
 }
+
+COMPONENT_TYPE Component::GetComponentType()
+{
+	return COMPONENT_TYPE::NO_COMPONENT;
+}

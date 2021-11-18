@@ -22,6 +22,8 @@ public:
 	virtual void Enable();
 	virtual void Update() = 0;
 	virtual void Disable();
+
+	COMPONENT_TYPE GetComponentType();
 	
 	virtual void ShowProperties() = 0;
 	virtual int GetTextureId() = 0;

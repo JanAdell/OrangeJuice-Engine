@@ -10,6 +10,20 @@
 
 Transform::Transform(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMPONENT_TRANSFORM)
 {
+	translation = { 0.0f,0.0f,0.0f };
+	scl = { scale[0], scale[1], scale[2] };
+	rad = 0;
+	axis = { 0.0f,0.0f,0.0f };
+
+	mesh = nullptr;
+
+	localMatrix = float4x4::identity;
+	globalMatrix = float4x4::identity;
+
+	float R[3][3] =
+	{ 1, 0, 0,
+	0, 1, 0,
+	0, 0, 1 };
 }
 
 Transform::~Transform()
@@ -30,9 +44,24 @@ void Transform::Disable()
 
 void Transform::Init(const int& x, const int& y, const int& z)
 {
-	translation[0] = x;
-	translation[1] = y;
-	translation[2] = z;
+	translation.x = x;
+	translation.y = y;
+	translation.z = z;
+}
+
+float3 Transform::GetTranslation()
+{
+	return translation;
+}
+
+float3 Transform::GetScale()
+{
+	return scl;
+}
+
+void Transform::CalculateMatrix()
+{
+	localMatrix.Set(float4x4::FromTRS(translation, quatRotation, scl));
 }
 
 bool Transform::LoadTransformation(Geometry* mesh)
@@ -46,9 +75,9 @@ bool Transform::LoadTransformation(Geometry* mesh)
 		ret = true;
 	if (ImGui::InputFloat3("position", new_position, "%i", ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		float translation_x = new_position[0] - translation[0];
-		float translation_y = new_position[1] - translation[1];
-		float translation_z = new_position[2] - translation[2];
+		float translation_x = new_position[0] - translation.x;
+		float translation_y = new_position[1] - translation.y;
+		float translation_z = new_position[2] - translation.z;
 		//ChangePosition(mesh, translation_x, translation_y, translation_z);
 		for (uint i = 0; i < 3; ++i)
 		{
@@ -100,7 +129,7 @@ return ret;
 void Transform::UnLoadTransformation()
 {
 	//ChangeScale(mesh, scale[0], scale[1], scale[3]);
-	ChangePosition(mesh, translation[0], translation[1], translation[2]);
+	ChangePosition(mesh, translation.x, translation.y, translation.z);
 	//par_shapes_rotate(mesh, rad, axis);
 
 	//if parent have childs apply the transformation in all of them 
@@ -115,7 +144,6 @@ void Transform::UnLoadTransformation()
 	toDelete = true;
 }
 
-
 void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
 {
 	glScalef(x, y, z);
@@ -125,7 +153,6 @@ void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
 		mesh->vertices[i + 2] *= z;
 	}
 }
-
 
 void Transform::ChangePosition(Geometry* mesh, float x, float y, float z)
 {
@@ -153,7 +180,6 @@ void Transform::ChangePosition(Geometry* mesh, float x, float y, float z)
 
 void Transform::Rotate(Geometry* mesh, float rd, float axs[3])
 {
-	
 	float rdCos = cosf(rd);
 	float rdSin = sinf(rd);
 
@@ -167,7 +193,6 @@ void Transform::Rotate(Geometry* mesh, float rd, float axs[3])
 	
 	DoRotation(mesh, rMatrix);
 
-	
 	for (uint i = 0; i < 3; ++i)
 	{
 		for (uint j = 0; j < 3; ++j)
@@ -187,7 +212,6 @@ void Transform::DoRotation(Geometry* mesh, float  r_matrix[3][3])
 {
 	for (uint i = 0; i < mesh->numVertices * 3; i += 3)
 	{
-
 		float v1 = r_matrix[0][0] * mesh->vertices[i] + r_matrix[1][0] * mesh->vertices[i + 1] + r_matrix[2][0] * mesh->vertices[i + 2];
 		float v2 = r_matrix[0][1] * mesh->vertices[i] + r_matrix[1][1] * mesh->vertices[i + 1] + r_matrix[2][1] * mesh->vertices[i + 2];
 		float v3 = r_matrix[0][2] * mesh->vertices[i] + r_matrix[1][2] * mesh->vertices[i + 1] + r_matrix[2][2] * mesh->vertices[i + 2];
@@ -205,4 +229,40 @@ void Transform::DoRotation(Geometry* mesh, float  r_matrix[3][3])
 			mesh->normals[2] = n3;
 		}
 	}
+}
+
+void Transform::SetTranslation(float3 position)
+{
+	translation = position;
+	CalculateMatrix();
+}
+
+void Transform::SetScale(float3 scale)
+{
+	scl = scale;
+	CalculateMatrix();
+}
+
+void Transform::SetRotation(float3 rot)
+{
+	axis = rot;
+	this->quatRotation = Quat::FromEulerXYZ(axis.x * DEGTORAD, axis.y * DEGTORAD, axis.z * DEGTORAD);
+	CalculateMatrix();
+}
+
+void Transform::SetQuatRotation(Quat quatRot)
+{
+	this->quatRotation = quatRotation;
+	axis = this->quatRotation.ToEulerXYZ() * RADTODEG;
+	CalculateMatrix();
+}
+
+float3 Transform::GetEulerRotation()
+{
+	return axis;
+}
+
+Quat Transform::GetQuatRotation()
+{
+	return quatRotation;
 }

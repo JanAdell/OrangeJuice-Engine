@@ -182,3 +182,29 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 			ChangeTex(*iter, file_name);
 	}
 }
+
+void ModuleMesh::CreateAABB()
+{
+	bbox.SetNegativeInfinity();
+
+	/*
+	float3* vertices = new float3[_resource->vertices_amount];
+
+	for (size_t i = 0; i < _resource->vertices_amount; i++)
+	{
+		vertices[i].x = _resource->vertices[i * VERTEX_ATTRIBUTES];
+		vertices[i].y = _resource->vertices[i * VERTEX_ATTRIBUTES + 1];
+		vertices[i].z = _resource->vertices[i * VERTEX_ATTRIBUTES + 2];
+	}
+
+	bbox.Enclose(vertices, numVertices);
+
+	delete[] vertices;
+	*/
+	
+}
+
+AABB ModuleMesh::GetAABB()
+{
+	return bbox;
+}

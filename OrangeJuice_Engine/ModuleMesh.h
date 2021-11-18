@@ -24,8 +24,12 @@ public:
 	bool LoadTextureFile(const char* file_name);
 	void ChangeTex(GameObject* object, const char* file_name);
 
+	void CreateAABB();
+	AABB GetAABB();
+
 private:
 	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
+	AABB bbox;
 };
 
 #endif //_MODULEMESH_H_ 

@@ -8,6 +8,7 @@
 #include "MathGeoLib/MathGeoLib.h"
 #include "ConsoleManager.h"
 #include "Geometry.h"
+#include "ModuleScene.h"
 
 #include "parson/parson.h"
 #include "par_shapes.h"

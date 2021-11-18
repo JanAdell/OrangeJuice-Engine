@@ -199,6 +199,9 @@
     <ClCompile Include="Color.cpp">
       <Filter>Tools\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="HierarchyWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -511,6 +514,9 @@
     <ClInclude Include="Color.h">
       <Filter>Tools\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="HierarchyWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
@@ -539,6 +545,9 @@
     </Filter>
     <Filter Include="Tools\Containers">
       <UniqueIdentifier>{814347f5-e57d-4047-a87c-3162913580dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{f4c3ab0e-bbca-4d81-bc72-42918d5b769f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

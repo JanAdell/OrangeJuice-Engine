@@ -22,6 +22,8 @@ public:
 
 	void OnResize(int width, int height);
 
+	void CalculateGlobalMatrix(GameObject* gameObject);
+
 public:
 	bool vsync;
 

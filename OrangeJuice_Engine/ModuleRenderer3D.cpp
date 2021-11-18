@@ -159,7 +159,6 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
-
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -171,4 +170,22 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void ModuleRenderer3D::CalculateGlobalMatrix(GameObject* gameObject)
+{
+	Transform* transform = (Transform*)gameObject->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+
+	if (transform != nullptr)
+	{
+		if (gameObject->parent != nullptr)
+			transform->globalMatrix = ((Transform*)gameObject->parent->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix * transform->localMatrix;
+		else
+			transform->globalMatrix = transform->localMatrix;
+
+		for (std::vector<GameObject*>::iterator iterator = gameObject->children.begin(); iterator != gameObject->children.end(); iterator++)
+		{
+			CalculateGlobalMatrix((*iterator));
+		}
+	}
 }

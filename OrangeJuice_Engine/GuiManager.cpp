@@ -47,14 +47,12 @@ update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
 	
-
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Configuration")) showConfigWindow = true;
 			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
-
 
 			ImGui::EndMenu();
 		}
@@ -103,9 +101,9 @@ update_status GuiManager::PreUpdate(float dt)
 
 	if (showPrimitivesWindow) PrimitivesWindow();
 
-	
-	if (showConfigWindow)
+	if (showConfigWindow)	
 	{
+		
 		if (ImGui::Begin("Configuration", &showConfigWindow, windowFlags))
 		{
 			char a[100] = "";
@@ -116,16 +114,14 @@ update_status GuiManager::PreUpdate(float dt)
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				test = a;
-				
 			}
 			ImGui::Text(test.c_str());
 
 			ConfigWindow();
-			
 		}
 		ImGui::End();
 	}
-
+	
 	if (showAboutWindow)
 	{
 		if (ImGui::Begin("About", &showAboutWindow), window_flags)
@@ -138,7 +134,6 @@ update_status GuiManager::PreUpdate(float dt)
 	}
 
 	if (showHierachyWindow) HierarchyWindow();
-
 	if (showTextureWindow) TextureWindow();
 
 	const char* p_file = App->input->DragAndDrop();
@@ -147,26 +142,39 @@ update_status GuiManager::PreUpdate(float dt)
 		App->mesh->LoadFile(p_file);
 		LOG("%s", p_file);
 	}
-		
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
 {
-	if(showConsoleWindow) ShowAppConsole(showConsoleWindow);
+	const ImGuiIO& guiIO = ImGui::GetIO();
+	float screenX = guiIO.DisplaySize.x;
+	float screenY = guiIO.DisplaySize.y;
+
+	float small_col_size = (screenX * 20) / 100;
+	float big_col_size = (screenX * 60) / 100;
+
+	float big_row_size = (screenY * 60) / 100;
+	float small_row_size = (screenY * 40) / 100;
+
+	if (showConsoleWindow) {
+		ImVec2 textSize = ImGui::CalcTextSize("Console");
+		ImVec2 windowSize = ImVec2(big_col_size, small_row_size - 20);
+		ImGui::SetNextWindowPos(ImVec2((guiIO.DisplaySize.x - windowSize.x) * 0.5f, (guiIO.DisplaySize.y - windowSize.y)));
+		ImGui::SetNextWindowSize(windowSize);
+		ShowAppConsole(showConsoleWindow);
+	}
 	
 	return UPDATE_CONTINUE;
 }
 
 update_status GuiManager::PostUpdate(float dt)
 {
-	
 	return UPDATE_CONTINUE;
 }
 
 bool GuiManager::CleanUp()
 {
-
 	fpsLog.clear();
 	msLog.clear();
 
@@ -796,7 +804,6 @@ void GuiManager::HierarchyWindow()
 						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 						if (selection_mask & (1 << i))
 							node_flags |= ImGuiTreeNodeFlags_Selected;
-							
 					
 						bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
 						if (ImGui::IsItemClicked())
@@ -814,7 +821,6 @@ void GuiManager::HierarchyWindow()
 								while (iterator != (*goIterator)->children.end())
 								{
 									if (*iterator != App->scene->gameObjectSelect) (*iterator)->showInspectorWindow = false;
-
 									if (!(*iterator)->children.empty())
 									{
 										std::vector<GameObject*>::iterator child = (*iterator)->children.begin();
@@ -825,19 +831,16 @@ void GuiManager::HierarchyWindow()
 											//else LOG("hoho");
 											++child;
 										}
-
 									}
 									++iterator;
-
 								}
 								++goIterator;
 							}
 						}
-
-												
+		
 						if (node_open)
 						{
-							game_object->GetHierarcy(); ImGui::TreePop();
+							game_object->GetHierarchy(); ImGui::TreePop();
 						}
 					}
 				}
@@ -846,7 +849,6 @@ void GuiManager::HierarchyWindow()
 					if (App->scene->gameObjectSelect != nullptr)
 						App->scene->gameObjectSelect->GetPropierties();
 				}
-
 			}
 		}
 		ImGui::End();
@@ -948,9 +950,6 @@ void GuiManager::VramConsumption()
 	}*/
 	else (ImGui::TextColored(ImVec4(255, 0, 0, 255), "VRam Usage only available for NVIDIA devices at the moment"));
 }
-
-
-
 
 void GuiManager::GUIStyle()
 {

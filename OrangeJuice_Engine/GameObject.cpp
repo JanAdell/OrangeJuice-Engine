@@ -93,7 +93,24 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	return component;
 }
 
-void GameObject::GetHierarcy()
+Component* GameObject::GetComponent(COMPONENT_TYPE type)
+{
+	for (int i = 0; i < components.size(); i++)
+	{
+		if (type == components[i]->GetComponentType())
+		{
+			return components[i];
+		}
+	}
+	return nullptr;
+}
+
+Transform* GameObject::GetTransform()
+{
+	return transform;
+}
+
+void GameObject::GetHierarchy()
 {
 	static int selection_mask = (1 << 0);
 	static int node_clicked = 0;
@@ -127,7 +144,6 @@ void GameObject::GetHierarcy()
 
 			//show inspector
 			App->scene->gameObjectSelect->showInspectorWindow = true;
-
 		}
 		//finish show inspector
 
@@ -136,7 +152,7 @@ void GameObject::GetHierarcy()
 		{
 			if (game_object->children.size() != 0)
 			{
-				game_object->GetHierarcy();
+				game_object->GetHierarchy();
 			}
 			ImGui::TreePop();
 		}
@@ -155,9 +171,8 @@ void GameObject::GetHierarcy()
 void GameObject::GetPropierties()
 {
 	App->scene->gameObjectSelect = this;
-	if (ImGui::Begin("Inspector", &showInspectorWindow))
+	if (ImGui::Begin("Inspector", &showInspectorWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
 	{
-		
 		if (ImGui::CollapsingHeader("Properties"))
 		{
 			if (ImGui::Button("Delete")) toDelete = true;
@@ -286,6 +301,9 @@ void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint
 			ShowObjectProperties(*iter, ntriangles, nvertices);
 		}
 	}
+}
 
-
+void GameObject::ChangeName(std::string name)
+{
+	this->name = name;
 }

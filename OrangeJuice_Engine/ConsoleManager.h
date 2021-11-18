@@ -65,12 +65,12 @@ struct AppConsole
 			ScrollToBottom = true;
 	}
 
-	void    Draw(const char* title, bool* p_open)
+	void Draw(const char* title, bool* p_open)
 	{
 		//ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
-		if (!ImGui::Begin(title, p_open))
+		if (!ImGui::Begin(title, NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
 		{
-			//ImGui::End();
+			ImGui::End();
 			return;
 		}
 
