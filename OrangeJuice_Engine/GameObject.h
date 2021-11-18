@@ -47,8 +47,6 @@ public:
 	bool showVertexNormals = false;
 	bool showNormals = false;
 
-private:
-
 	uint UUID;
 	uint parentUUID;
 };

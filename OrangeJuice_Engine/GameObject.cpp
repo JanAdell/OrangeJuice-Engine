@@ -160,11 +160,15 @@ void GameObject::GetPropierties()
 
 			if (ImGui::Checkbox("Active", &isEnable)) (&isEnable) ? true : false;
 
-			ImGui::SameLine();
+			ImGui::NewLine();
 			//this was a test, leaving it here because we may need similar something when we make selectable nodes
 			char a[100] = "";
 			memcpy(a, name.c_str(), name.size());
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue)) name.assign(a);
+
+			ImGui::NewLine();
+			ImGui::Text("UUID: %i", UUID);
+			ImGui::NewLine();
 		}
 
 		if (ImGui::Checkbox("show vertices normals", &showVertexNormals))
