@@ -15,7 +15,6 @@ class Camera : public Component
 public:
 
 	Camera(GameObject* gameObject);
-	Camera();
 	~Camera();
 
 	virtual void Enable() override;
@@ -30,5 +29,10 @@ public:
 public:
 
 	Frustum frustum;
+
+	float nearPlane;
+	float farPlane;
+	float horizontalFov;
+	float verticalFov;
 };
 

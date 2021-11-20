@@ -210,29 +210,36 @@ void GameObject::GetPropierties()
 			}
 			++it;
 		}
-
-		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+		if (mesh != nullptr)
 		{
-			num_vertices = 0;
-			uint num_triangles = 0;
+			if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				num_vertices = 0;
+				uint num_triangles = 0;
 
-			ShowObjectProperties(this, num_triangles, num_vertices);
+				ShowObjectProperties(this, num_triangles, num_vertices);
 
-			ImGui::Text("triangles: %u", num_triangles);
-			ImGui::Text("vertices: %u", num_vertices);
+				ImGui::Text("triangles: %u", num_triangles);
+				ImGui::Text("vertices: %u", num_vertices);
+			}
 		}
 
-		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+		if (cam != nullptr)
 		{
-			float horizontalFov;// = cam->frustum.HorizontalFov();
-			float verticalFov;// = cam->frustum.VerticalFov();
+			if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::DragFloat("Near Plane", &cam->nearPlane, 0.05f, 0.f, 0.f, "%.2f");
+				ImGui::DragFloat("Far Plane", &cam->farPlane, 0.05f, 0.f, 0.f, "%.2f");
+				cam->frustum.SetViewPlaneDistances(cam->nearPlane, cam->farPlane);
 
-			if (ImGui::DragFloat("Horizontal FOV", &horizontalFov, 0.01f, 0.0f, 130.0f));
-			if (ImGui::DragFloat("Vertical FOV", &verticalFov, 0.01f, 0.0f, 60.0f));
+				ImGui::DragFloat("Horizontal FOV", &cam->horizontalFov, 0.05f, 0.f, 0.f, "%.2f");
+				ImGui::DragFloat("Vertical FOV", &cam->verticalFov, 0.01f, 0.0f, 60.0f);
+				cam->frustum.SetPerspective(cam->horizontalFov, cam->verticalFov);
 
-			ImGui::Spacing();
+				ImGui::Spacing();
+			}
 		}
-
+		
 		Component* tex = nullptr;
 		std::vector<Component*>::iterator it2 = components.begin();
 		while (it2 != components.end())

@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+class Camera;
+
 class GameObject
 {
 public:
@@ -44,7 +46,10 @@ public:
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;
+
+	// all the components from this game object
 	Transform* transform = nullptr;
+	Camera* cam = nullptr;
 
 	bool toDelete = false;
 	bool isEnable = true;
@@ -59,11 +64,7 @@ public:
 	uint parentUUID;
 
 	AABB bbox;
-	OBB obb;
-
-///private:
-
-	//Camera* cam;
+	OBB obb;	
 };
 
 #endif 

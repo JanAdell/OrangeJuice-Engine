@@ -231,7 +231,6 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 						vertices.push_back(new_aabb.CornerPoint(j));
 					}
 				}
-
 			}
 		}
 	}
@@ -274,7 +273,6 @@ std::vector<float3> ModuleCamera3D::AABBVertex(GameObject* obj, std::vector<floa
 				vertices.push_back(newAABB.CornerPoint(j));
 			}
 		}
-
 	}
 	return vertices;
 }
