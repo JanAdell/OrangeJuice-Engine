@@ -1,13 +1,19 @@
 #ifndef _GAMEOBJECT_H_
 #define _GAMEOBJECT_H_
 
-#include <string>
-#include <vector>
 #include "Component.h"
 #include "Globals.h"
 #include "Transform.h"
+#include "Camera.h"
+#include "Image.h"
+#include "Geometry.h"
+#include "Application.h"
+#include "ModuleScene.h"
 
-class Geometry;
+#include "MathGeoLib/MathGeoLib.h"
+
+#include <string>
+#include <vector>
 
 class GameObject
 {
@@ -38,7 +44,7 @@ public:
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;
-	Transform* transform;
+	Transform* transform = nullptr;
 
 	bool toDelete = false;
 	bool isEnable = true;
@@ -47,8 +53,17 @@ public:
 	bool showVertexNormals = false;
 	bool showNormals = false;
 
+	uint num_vertices;
+
 	uint UUID;
 	uint parentUUID;
+
+	AABB bbox;
+	OBB obb;
+
+///private:
+
+	//Camera* cam;
 };
 
 #endif 

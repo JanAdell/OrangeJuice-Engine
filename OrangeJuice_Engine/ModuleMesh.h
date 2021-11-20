@@ -6,6 +6,7 @@
 #include <gl/GL.h>
 #include "Geometry.h"
 #include "Module.h"
+#include "GameObject.h"
 #include <vector>
 
 

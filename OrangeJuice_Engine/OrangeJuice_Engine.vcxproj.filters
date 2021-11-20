@@ -199,6 +199,9 @@
     <ClCompile Include="Color.cpp">
       <Filter>Tools\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -510,6 +513,9 @@
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Tools\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

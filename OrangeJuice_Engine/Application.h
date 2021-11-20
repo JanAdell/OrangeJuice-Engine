@@ -35,7 +35,6 @@ public:
 	bool avx;
 	bool avx2;
 	bool altivec;
-
 };
 
 class Application
@@ -48,7 +47,6 @@ public:
 	ModuleCamera3D* camera;
 	ModuleMesh* mesh;
 	GuiManager* gui;
-
 
 private:
 

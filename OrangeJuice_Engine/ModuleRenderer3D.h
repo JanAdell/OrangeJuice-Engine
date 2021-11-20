@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
+#include "MathGeoLib/MathGeoLib.h"
 
 #define MAX_LIGHTS 8
 
@@ -23,6 +24,8 @@ public:
 	void OnResize(int width, int height);
 
 	void CalculateGlobalMatrix(GameObject* gameObject);
+
+	void DrawBoundingBox(float3* points);
 
 public:
 	bool vsync;

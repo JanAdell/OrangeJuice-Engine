@@ -161,7 +161,6 @@ float ModuleMesh::TriangleCenterAxis(const float& p1, const float& p2, const flo
 	return (middle_point + p3) * 0.5;
 }
 
-
 void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 {
 	if (object->children.empty())
@@ -186,22 +185,7 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 void ModuleMesh::CreateAABB()
 {
 	bbox.SetNegativeInfinity();
-
-	/*
-	float3* vertices = new float3[_resource->vertices_amount];
-
-	for (size_t i = 0; i < _resource->vertices_amount; i++)
-	{
-		vertices[i].x = _resource->vertices[i * VERTEX_ATTRIBUTES];
-		vertices[i].y = _resource->vertices[i * VERTEX_ATTRIBUTES + 1];
-		vertices[i].z = _resource->vertices[i * VERTEX_ATTRIBUTES + 2];
-	}
-
-	bbox.Enclose(vertices, numVertices);
-
-	delete[] vertices;
-	*/
-	
+	//bbox.Enclose(vertices, num_vertices);
 }
 
 AABB ModuleMesh::GetAABB()

@@ -1,9 +1,4 @@
 #include "GameObject.h"
-#include "Image.h"
-#include "Geometry.h"
-#include "Application.h"
-#include "ModuleScene.h"
-#include "Transform.h"
 
 GameObject::GameObject(GameObject* parent) : parent(parent)
 {
@@ -50,6 +45,19 @@ void GameObject::Update()
 		{
 			(*it)->Update();
 		}
+		else if ((*it)->GetComponentType() == COMPONENT_TYPE::COMPONENT_MESH)
+		{
+			ModuleMesh* mesh = (ModuleMesh*)*it;
+			obb = mesh->GetAABB();
+			obb.Transform(transform->globalMatrix);
+
+			bbox.SetNegativeInfinity();
+			bbox.Enclose(obb);
+
+			float3 points[8];
+			bbox.GetCornerPoints(points);
+			App->renderer3D->DrawBoundingBox(points);
+		}
 	}
 
 	if (!children.empty())
@@ -86,6 +94,10 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		break;
 	case COMPONENT_TYPE::COMPONENT_MATERIAL:
 		component = new Image(this);
+		components.push_back(component);
+		break;
+	case COMPONENT_TYPE::COMPONENT_CAMERA:
+		component = new Camera(this);
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::NO_COMPONENT:
@@ -199,9 +211,9 @@ void GameObject::GetPropierties()
 			++it;
 		}
 
-		if (ImGui::CollapsingHeader("Information"))
+		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			uint num_vertices = 0;
+			num_vertices = 0;
 			uint num_triangles = 0;
 
 			ShowObjectProperties(this, num_triangles, num_vertices);
@@ -209,6 +221,18 @@ void GameObject::GetPropierties()
 			ImGui::Text("triangles: %u", num_triangles);
 			ImGui::Text("vertices: %u", num_vertices);
 		}
+
+		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			float horizontalFov;// = cam->frustum.HorizontalFov();
+			float verticalFov;// = cam->frustum.VerticalFov();
+
+			if (ImGui::DragFloat("Horizontal FOV", &horizontalFov, 0.01f, 0.0f, 130.0f));
+			if (ImGui::DragFloat("Vertical FOV", &verticalFov, 0.01f, 0.0f, 60.0f));
+
+			ImGui::Spacing();
+		}
+
 		Component* tex = nullptr;
 		std::vector<Component*>::iterator it2 = components.begin();
 		while (it2 != components.end())
@@ -293,7 +317,6 @@ void GameObject::GetHierarchy()
 			App->scene->gameObjectSelect->showInspectorWindow = true;
 		}
 		//finish show inspector
-
 
 		if (node_open)
 		{

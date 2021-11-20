@@ -6,9 +6,11 @@
 #include "Geometry.h"
 #include "Primitive.h"
 #include "Image.h"
+#include "GameObject.h"
+
 
 #include <vector>
-#include "GameObject.h"
+#include <string>
 
 #define MAX_SNAKE 2
 #define MAX_CIRCUITSIZE 700
@@ -26,10 +28,10 @@ public:
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
-
 	bool CleanUp();
-	
 
+	GameObject* CreateGameObject(std::string name);
+	
 public:
 	std::vector<GameObject*> gameObjects;
 	std::vector<int> textures;

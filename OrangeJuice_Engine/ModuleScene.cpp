@@ -35,9 +35,11 @@ bool ModuleScene::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
+	GameObject* camera = CreateGameObject("camera");
+	camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
+
 	App->mesh->LoadFile("../Assets/BakerHouse.fbx");
 	
-
 	return ret;
 }
 
@@ -58,9 +60,6 @@ update_status ModuleScene::PreUpdate(float dt)
 
 	return UPDATE_CONTINUE;
 }
-
-
-
 
 // Update
 update_status ModuleScene::Update(float dt)
@@ -115,4 +114,13 @@ bool ModuleScene::CleanUp()
 	gameObjects.clear();
 
 	return true;
+}
+
+GameObject* ModuleScene::CreateGameObject(std::string name)
+{
+	GameObject* go = new GameObject();
+	go->name = name;
+	go->transform = (Transform*)go->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+	gameObjects.push_back(go);
+	return go;
 }
