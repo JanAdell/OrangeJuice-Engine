@@ -2,13 +2,15 @@
 #define _MODULEMESH_H_
 
 #include "Globals.h"
-#include "glew/include/GL/glew.h"
-#include <gl/GL.h>
 #include "Geometry.h"
 #include "Module.h"
 #include "GameObject.h"
-#include <vector>
 
+#include "glew/include/GL/glew.h"
+#include <gl/GL.h>
+
+#include <vector>
+#include <string>
 
 class ModuleMesh : public Module
 {
@@ -28,9 +30,12 @@ public:
 	void CreateAABB();
 	AABB GetAABB();
 
+	std::string GenerateNameFromPath(std::string path);
+
 private:
 	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
 	AABB bbox;
+	std::string modelName;
 };
 
 #endif //_MODULEMESH_H_ 

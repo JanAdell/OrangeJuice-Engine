@@ -66,6 +66,7 @@ bool ModuleMesh::LoadFile(const char* file_name)
 	bool ret = false;
 
 	std::string p_file = file_name;
+	modelName = GenerateNameFromPath(file_name);
 	std::string format;
 
 	LOG("Loading file from %s", file_name);
@@ -91,7 +92,6 @@ bool ModuleMesh::LoadFile(const char* file_name)
 	}
 	else LOG("File format '.%s' not recognized", format.c_str());
 
-
 	return ret;
 }
 
@@ -104,6 +104,7 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		GameObject* parent = new GameObject();
+		parent->name = modelName;
 		
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
@@ -191,4 +192,25 @@ void ModuleMesh::CreateAABB()
 AABB ModuleMesh::GetAABB()
 {
 	return bbox;
+}
+
+std::string ModuleMesh::GenerateNameFromPath(std::string path)
+{
+	std::string name = "";
+	std::string normalizedPath = path;
+
+	//Normalize path
+	for (int i = 0; i < path.length(); i++)
+	{
+		if (normalizedPath[i] == '\\')
+			normalizedPath[i] = '/';
+	}
+
+	size_t posSlash = normalizedPath.find_last_of("\\/");
+	size_t posDot = normalizedPath.find_last_of(".");
+
+	for (int i = posSlash + 1; i < posDot; i++) {
+		name += normalizedPath[i];
+	}
+	return name;
 }
