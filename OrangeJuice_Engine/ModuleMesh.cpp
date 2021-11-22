@@ -133,9 +133,15 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 	}
 	else
 		LOG("Error loading scene %s", file_name);
-
-
 	return ret;
+}
+
+void ModuleMesh::LoadStreetScene()
+{
+	char* path = "../Assets/street2.fbx";
+	modelName = App->mesh->GenerateNameFromPath(path);
+	App->mesh->LoadFBXFile(path);
+	GameObject* street = App->scene->CreateGameObject(modelName);
 }
 
 bool ModuleMesh::LoadTextureFile(const char* file_name)

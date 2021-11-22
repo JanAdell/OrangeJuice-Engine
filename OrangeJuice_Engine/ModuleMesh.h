@@ -24,6 +24,7 @@ public:
 
 	bool LoadFile(const char* fileName);
 	bool LoadFBXFile(const char* file_name);
+	void LoadStreetScene();
 	bool LoadTextureFile(const char* file_name);
 	void ChangeTex(GameObject* object, const char* file_name);
 

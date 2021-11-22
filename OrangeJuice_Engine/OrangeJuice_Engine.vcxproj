@@ -86,8 +86,6 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConsoleManager.h" />
-    <ClInclude Include="DevIL\include\IL\il.h" />
-    <ClInclude Include="DevIL\include\IL\ilu.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="json.hpp" />
