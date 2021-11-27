@@ -499,25 +499,25 @@ void GuiManager::ConfigWindow()
 		if (ImGui::Checkbox("GL Depth", &App->renderer3D->glDepthOn))
 			(&App->renderer3D->glDepthOn) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 
-		else if (ImGui::Checkbox("GL Cull Face", &App->renderer3D->glCullingOn))
+		if (ImGui::Checkbox("GL Cull Face", &App->renderer3D->glCullingOn))
 			(App->renderer3D->glCullingOn) ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 
-		else if (ImGui::Checkbox("GL Lighting", &App->renderer3D->glLightingOn))
+		if (ImGui::Checkbox("GL Lighting", &App->renderer3D->glLightingOn))
 			(App->renderer3D->glLightingOn) ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
 
-		else if (ImGui::Checkbox("GL Color Material", &App->renderer3D->glMatColorOn))
+		if (ImGui::Checkbox("GL Color Material", &App->renderer3D->glMatColorOn))
 			(App->renderer3D->glMatColorOn) ? glEnable(GL_COLOR_MATERIAL) : glDisable(GL_COLOR_MATERIAL);
 
-		else if (ImGui::Checkbox("GL Texture 2D", &App->renderer3D->glTex2dOn))
+		if (ImGui::Checkbox("GL Texture 2D", &App->renderer3D->glTex2dOn))
 			(App->renderer3D->glTex2dOn) ? glEnable(GL_TEXTURE_2D) : glDisable(GL_TEXTURE_2D);
 
-		else if (ImGui::Checkbox("GL Line Smooth", &App->renderer3D->glSmoothLineOn))
+		if (ImGui::Checkbox("GL Line Smooth", &App->renderer3D->glSmoothLineOn))
 			(App->renderer3D->glSmoothLineOn) ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH);
 
-		else if (ImGui::Checkbox("Hard Poly", &App->renderer3D->glHardOn))
+		if (ImGui::Checkbox("Hard Poly", &App->renderer3D->glHardOn))
 			(App->renderer3D->glHardOn) ? glShadeModel(GL_FLAT) : glShadeModel(GL_SMOOTH);
 
-		else if (ImGui::Checkbox("Wireframe mode", &App->renderer3D->glWireframeOn))
+		if (ImGui::Checkbox("Wireframe mode", &App->renderer3D->glWireframeOn))
 		{
 			if (App->renderer3D->glWireframeOn)
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -525,6 +525,44 @@ void GuiManager::ConfigWindow()
 		}
 	}
 
+	if (ImGui::CollapsingHeader("Timer")) {
+
+		if (ImGui::ArrowButton("Play", ImGuiDir_Right))
+		{
+			if (!App->time->IsPaused())
+				App->time->Play();
+			else
+				App->time->Resume();
+
+			App->scene->isInGame = true;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("||", { 20, 20 }))
+		{
+			if (App->scene->isInGame && !App->time->IsPaused())
+				App->time->Pause();
+		}
+
+		ImGui::SameLine();
+		ImGui::PushStyleColor(ImGuiCol_Button, { 0.8f,0,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 1,0.2f,0,1 });
+
+		if (ImGui::Button("STOP", { 40, 20 }))
+		{
+			if (App->scene->isInGame) {
+				App->time->Stop();
+				App->scene->isInGame = false;
+			}
+		}
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+
+		//ImGui::SliderFloat("Slow down | Speed up", App->time->GetTimeScale(), 0.1f, 2.0f, "%.1f");
+
+		ImGui::Text("Game Time: %.1f", App->time->GetGameTimeInSeconds());
+	}
 }//config window
 
 void GuiManager::ShowAppConsole(bool show_console)

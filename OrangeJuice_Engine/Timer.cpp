@@ -38,4 +38,29 @@ Uint32 Timer::Read()
 	}
 }
 
+float Timer::ReadSeconds()
+{
+	if (running == true)
+	{
+		return (SDL_GetTicks() - started_at) / 1000;
+	}
+	else
+	{
+		return (stopped_at - started_at) / 1000;
+	}
+}
+
+void Timer::Resume()
+{
+	running = true;
+	resumed_at = SDL_GetTicks();
+	started_at += resumed_at - stopped_at;
+	resumed_at = stopped_at = 0;
+}
+
+void Timer::Reset()
+{
+	started_at = stopped_at = resumed_at = 0;
+}
+
 

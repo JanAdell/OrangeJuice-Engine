@@ -37,6 +37,8 @@ public:
 	std::vector<int> textures;
 	GameObject* gameObjectSelect = nullptr;
 
+	bool isInGame;
+
 private:
 
 	bool debugDraw = false;

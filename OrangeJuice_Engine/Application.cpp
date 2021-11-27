@@ -11,6 +11,7 @@ Application::Application()
 	camera = new ModuleCamera3D(this);
 	mesh = new ModuleMesh(this);
 	gui = new GuiManager(this);
+	time = new ModuleTime(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -25,6 +26,7 @@ Application::Application()
 	// Scenes
 	AddModule(scene);
 	AddModule(gui);
+	AddModule(time);
 
 	// Renderer last!
 	AddModule(renderer3D);
@@ -187,16 +189,35 @@ std::string Application::NormalizePath(const char* full_path)
 	return newPath;
 }
 
-void Application::GetFrames(int& frames, float& millisec)
+void Application::Pause(bool wantToPause)
 {
-	frames = framesOnLastUpdate - 1;
-	millisec = frameMs;
+	if (wantToPause)
+		SetTimeScale(0.f);
+	else
+		SetTimeScale(1.f);
 }
 
 void Application::MaxFrames(int max)
 {
 	framerateCap = max;
 	milisecCap = (framerateCap > 0) ? 1000 / max : 0;
+}
+
+void Application::GetFrames(int& frames, float& millisec)
+{
+	frames = framesOnLastUpdate - 1;
+	millisec = frameMs;
+}
+
+const float Application::GetTimeScale() const
+{
+	return timeScale;
+}
+
+void Application::SetTimeScale(float scale, int frameNum)
+{
+	timeScale = scale;
+	scaleFrames = frameNum;
 }
 
 bool Application::Save()

@@ -10,11 +10,14 @@
 #include "ModuleCamera3D.h"
 #include "GuiManager.h"
 #include "ModuleMesh.h"
+#include "ModuleTime.h"
 
 #include "ImGuizmo/ImGuizmo.h"
 
 #include <list>
 #include <vector>
+ 
+class ModuleTime; 
 
 struct HardwareSpecs
 {
@@ -47,11 +50,15 @@ public:
 	ModuleCamera3D* camera;
 	ModuleMesh* mesh;
 	GuiManager* gui;
+	ModuleTime* time;
 
 private:
 
 	Timer	msTimer;
 	std::list<Module*> list_modules;
+
+	float timeScale;
+	int scaleFrames;
 
 public:
 
@@ -86,12 +93,18 @@ public:
 
 	bool Save();
 	bool Load();
-
-	void GetFrames(int& frames, float& miliseconds);
+	
 	void MaxFrames(int max);
 	void RequestBrowser(const char*);
 	HardwareSpecs systemSpecs;
 	std::string NormalizePath(const char* full_path);
+
+	void GetFrames(int& frames, float& miliseconds);
+	const float GetTimeScale()const;
+
+	void SetTimeScale(float scale, int frameNum = -1);
+
+	void Pause(bool wantToPause);
 
 private:
 

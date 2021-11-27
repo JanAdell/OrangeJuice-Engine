@@ -51,3 +51,7 @@ int Camera::SetTextureId(int id)
 {
 	return 0;
 }
+
+
+
+
