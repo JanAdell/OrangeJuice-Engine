@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include <fstream>
 
 //Primitives constructor
 
@@ -199,4 +200,21 @@ void Geometry::UpdateBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 3, vertices, GL_STATIC_DRAW);
+}
+
+void Geometry::Save(FILE* file)
+{
+	fputs("<vertices> \n", file);
+	for (int i = 0; i < numVertices * 3; ++i)
+	{
+		fprintf(file, "%i = '%s' ", i, std::to_string(vertices[i]).c_str());
+
+	}
+	fputs("\n</vertices>\n", file);
+	fputs("<indices>\n", file);
+	for (int i = 0; i < numIndices; ++i)
+	{
+		fprintf(file, "%i = '%s' ", i, std::to_string(indices[i]).c_str());
+	}
+	fputs("\n</indices>\n", file);
 }

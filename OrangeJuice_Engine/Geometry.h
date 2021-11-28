@@ -40,6 +40,7 @@ public:
 	void ShowProperties();
 	int GetTextureId() { return 0; };
 	void UpdateBuffer();
+	void Save(FILE*);
 
 private:
 	void LoadBuffers();

@@ -13,7 +13,7 @@
 
 #include "../OrangeJuice_Engine/MathGeoLib/MathGeoLib.h"
 #include "../OrangeJuice_Engine/MathGeoLib/MathBuildConfig.h"
-
+#include <fstream>
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -83,6 +83,12 @@ update_status ModuleScene::Update(float dt)
 			App->camera->GoAroundGeometry(gameObjectSelect);
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	{
+		char* path = "TestScene.oj";
+		SaveScene(path);
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -124,4 +130,26 @@ GameObject* ModuleScene::CreateGameObject(std::string name)
 	go->transform = (Transform*)go->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	gameObjects.push_back(go);
 	return go;
+}
+
+bool ModuleScene::SaveScene(char* path)
+{
+	bool ret = true;
+	FILE* file;
+	file = std::fopen(path, "wt");
+
+	if (file == NULL)
+	{
+		SDL_GetError();
+		return false;
+	}
+	for (std::vector<GameObject*>::iterator object = gameObjects.begin(); object != gameObjects.end(); ++object)
+	{
+		if (*object != nullptr)
+		{
+			(*object)->SaveMesh(file);
+		}
+	}
+	std::fclose(file);
+	return ret;
 }

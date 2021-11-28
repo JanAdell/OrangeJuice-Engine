@@ -31,6 +31,7 @@ public:
 	void ShowNormalVertex(const bool&);
 	void ShowNormalFaces(const bool&);
 	void ShowObjectProperties(GameObject*, uint&, uint&);
+	void SaveMesh(FILE*);
 
 	Component* GetComponent(COMPONENT_TYPE type);
 	void GetPropierties();

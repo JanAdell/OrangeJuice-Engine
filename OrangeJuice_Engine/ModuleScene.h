@@ -32,6 +32,8 @@ public:
 
 	GameObject* CreateGameObject(std::string name);
 	
+	bool SaveScene(char* path);
+
 public:
 	std::vector<GameObject*> gameObjects;
 	std::vector<int> textures;
