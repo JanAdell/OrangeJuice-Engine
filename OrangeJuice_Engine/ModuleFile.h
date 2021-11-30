@@ -3,7 +3,7 @@
 
 #include "Module.h"
 #include "GameObject.h"
-
+#include "PhysFS/include/physfs.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -20,7 +20,7 @@ public:
 	void SplitPath(const char* fullPath, std::vector<std::string>* splits);
 
 	std::string ToLowerCase(const char* path);
-
+	bool Exist(const char* file);
 
 	std::string GetFile(const char* path);
 	std::string GetFileName(const char* path);

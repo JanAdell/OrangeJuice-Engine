@@ -104,6 +104,12 @@ std::string ModuleFile::ToLowerCase(const char* path)
 	return pth;
 }
 
+bool ModuleFile::Exist(const char* file)
+{
+	//return PHYSFS_exists(file) != 0;
+	return false;
+}
+
 std::string ModuleFile::GetFile(const char* path)
 {
 	std::string file;

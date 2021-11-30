@@ -208,6 +208,10 @@
     <ClCompile Include="ModuleFile.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleResources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -529,6 +533,10 @@
     <ClInclude Include="ModuleFile.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleResources.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
@@ -557,6 +565,9 @@
     </Filter>
     <Filter Include="Tools\Containers">
       <UniqueIdentifier>{814347f5-e57d-4047-a87c-3162913580dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{996ff357-8524-450b-aac8-640fc012678b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
