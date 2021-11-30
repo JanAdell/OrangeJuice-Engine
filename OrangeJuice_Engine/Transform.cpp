@@ -24,6 +24,8 @@ Transform::Transform(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMP
 	{ 1, 0, 0,
 	0, 1, 0,
 	0, 0, 1 };
+
+	isChanged = false;
 }
 
 Transform::~Transform()

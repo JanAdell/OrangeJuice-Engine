@@ -38,6 +38,7 @@ public:
 	bool glSmoothLineOn = true;
 	bool glHardOn = true;
 	bool glWireframeOn = false;
+	bool showBBox = false;
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;

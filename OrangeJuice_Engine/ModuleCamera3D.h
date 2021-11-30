@@ -1,10 +1,13 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "Camera.h"
 #include "glmath.h"
 #include "json.hpp"
 #include <vector>
 #include "../OrangeJuice_Engine/MathGeoLib/Math/MathAll.h"
+
+class Camera;
 
 class ModuleCamera3D : public Module
 {
@@ -21,12 +24,12 @@ public:
 
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
+	void BeInCamera(const AABB& bbox);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
 	void GoAroundGeometry(GameObject* obj);
 
 	std::vector<float3> AABBVertex(GameObject* obj, std::vector<float3> vertices);
-
 
 private:
 
@@ -36,6 +39,9 @@ public:
 	
 	vec3 X, Y, Z, Position, Reference, ViewVector;
 	float camera_speed = 0.01;
+
+	Camera* camera;
+	AABB LookedBBox;
 
 private:
 

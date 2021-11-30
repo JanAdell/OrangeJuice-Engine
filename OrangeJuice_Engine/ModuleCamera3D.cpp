@@ -146,6 +146,20 @@ void ModuleCamera3D::LookAt( const vec3 &Spot)
 	CalculateViewMatrix();
 }
 
+void ModuleCamera3D::BeInCamera(const AABB& bbox)
+{
+	vec central = bbox.CenterPoint();
+	vec diagonal = bbox.Diagonal();
+
+	Position.x = central.x;
+	Position.y = central.y;
+	Position.z = central.z + diagonal.Length();
+
+	//Position.y = camera->frustum.pos.y = center.y;
+	//Position.x = camera->frustum.pos.x = center.x;
+	LookAt({ central.x, central.y, central.z });
+}
+
 
 // -----------------------------------------------------------------
 void ModuleCamera3D::Move(const vec3 &Movement)

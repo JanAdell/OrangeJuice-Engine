@@ -26,9 +26,14 @@ public:
 	int GetTextureId();
 	int SetTextureId(int id);
 
+	bool ContainsAABB(const AABB& boundingBox);
+	void CameraBBox();
+	void RecalculateBBox();
+
 public:
 
 	Frustum frustum;
+	AABB cameraBBox;
 
 	float nearPlane;
 	float farPlane;

@@ -63,6 +63,8 @@ public:
 	Quat quatRotation;
 
 	float R[3][3];
+
+	bool isChanged;
 };
 
 #endif

@@ -33,12 +33,19 @@ public:
 	void ShowObjectProperties(GameObject*, uint&, uint&);
 	void SaveMesh(FILE*);
 
+	void Select();
+	bool IsSelected();
+
 	Component* GetComponent(COMPONENT_TYPE type);
 	void GetPropierties();
 	Transform* GetTransform();
 	virtual void GetHierarchy();
 	uint GetUUID();
 	uint GetParentUUID();
+
+	void Draw();
+	void DrawBBox(const AABB& bbox) const;
+	void RecalculateBBox();
 
 	void ChangeName(std::string name);
 
@@ -51,9 +58,11 @@ public:
 	// all the components from this game object
 	Transform* transform = nullptr;
 	Camera* cam = nullptr;
+	Geometry* mesh;
 
 	bool toDelete = false;
 	bool isEnable = true;
+	bool isSelected = false;
 
 	bool showInspectorWindow = false;
 	bool showVertexNormals = false;

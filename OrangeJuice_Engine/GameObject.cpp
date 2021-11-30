@@ -8,6 +8,10 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 		else name = "GameObject " + std::to_string(App->scene->gameObjects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 	}
 
+	transform = nullptr;
+	cam = nullptr;
+	mesh = nullptr;
+
 	parentUUID = 0;
 	UUID = CreateUUID();
 }
@@ -354,6 +358,116 @@ uint GameObject::GetParentUUID() {
 	return parent->GetUUID();
 }
 
+void GameObject::Draw()
+{
+	if (mesh != nullptr)
+	{
+		glPushMatrix();
+		glMultMatrixf((float*)transform->globalMatrix.Transposed().v);
+		mesh->DebugDraw();
+		glPopMatrix();
+	}
+
+	if (App->renderer3D->showBBox)
+	{
+		DrawBBox(bbox);
+	}
+
+	if (transform != nullptr && transform->isChanged)
+	{
+		GameObject* bigParent = this;
+
+		while (bigParent->parent != nullptr)
+			bigParent = bigParent->parent;
+
+		bigParent->RecalculateBBox();
+
+		transform->isChanged = false;
+	}
+
+	for (size_t i = 0; i < children.size(); i++)
+	{
+		children[i]->Draw();
+	}
+}
+
+void GameObject::DrawBBox(const AABB& bbox) const
+{
+	glLineWidth(1.5f);
+	glColor3f(1, 1, 0);
+
+	glBegin(GL_LINES);
+
+	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
+	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
+
+	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
+	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
+
+	glVertex3f(bbox.CornerPoint(0).x, bbox.CornerPoint(0).y, bbox.CornerPoint(0).z);
+	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
+
+	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
+	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
+
+	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
+	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
+
+	glVertex3f(bbox.CornerPoint(3).x, bbox.CornerPoint(3).y, bbox.CornerPoint(3).z);
+	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
+
+	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
+	glVertex3f(bbox.CornerPoint(2).x, bbox.CornerPoint(2).y, bbox.CornerPoint(2).z);
+
+	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
+	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
+
+	glVertex3f(bbox.CornerPoint(6).x, bbox.CornerPoint(6).y, bbox.CornerPoint(6).z);
+	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
+
+	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
+	glVertex3f(bbox.CornerPoint(1).x, bbox.CornerPoint(1).y, bbox.CornerPoint(1).z);
+
+	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
+	glVertex3f(bbox.CornerPoint(4).x, bbox.CornerPoint(4).y, bbox.CornerPoint(4).z);
+
+	glVertex3f(bbox.CornerPoint(5).x, bbox.CornerPoint(5).y, bbox.CornerPoint(5).z);
+	glVertex3f(bbox.CornerPoint(7).x, bbox.CornerPoint(7).y, bbox.CornerPoint(7).z);
+
+	glEnd();
+
+	glColor3f(1, 1, 1);
+	glLineWidth(1.0f);
+}
+
+void GameObject::RecalculateBBox()
+{
+	if (transform != nullptr)
+	{
+		bbox.SetNegativeInfinity();
+
+		if (children.size() > 0)
+		{
+			for (std::vector<GameObject*>::iterator it_c = children.begin(); it_c != children.end(); it_c++)
+			{
+				(*it_c)->RecalculateBBox();
+				if ((*it_c)->bbox.IsFinite())
+					bbox.Enclose((*it_c)->bbox);
+			}
+		}
+
+		if (mesh != nullptr)
+		{
+			bbox.Enclose((float3*)mesh->vertices, mesh->numVertices);
+		}
+
+		if (children.size() <= 0)
+		{
+			bbox.TransformAsAABB(transform->globalMatrix);
+		}
+	}
+}
+
 void GameObject::ChangeName(std::string name)
 {
 	this->name = name;
@@ -376,3 +490,14 @@ void GameObject::SaveMesh(FILE* file)
 		}
 	}
 }
+
+void GameObject::Select()
+{
+	isSelected = true;
+}
+
+bool GameObject::IsSelected()
+{
+	return isSelected;
+}
+
