@@ -32,8 +32,8 @@ bool Octree::Clear()
 
 void Octree::Insert(GameObject* object)
 {
-	if (!object->isStatic)
-		return;
+	//if (!object->isStatic)
+	//	return;
 
 	if (!isDivided)
 	{

@@ -43,6 +43,9 @@ public:
 	uint GetUUID();
 	uint GetParentUUID();
 
+	void CreateBBOX();
+	AABB GetBBOX();
+
 	void Draw();
 	void DrawBBox(const AABB& bbox) const;
 	void RecalculateBBox();
@@ -56,9 +59,10 @@ public:
 	std::vector<Component*> components;
 
 	// all the components from this game object
-	Transform* transform = nullptr;
-	Camera* cam = nullptr;
+	Transform* transform;
+	Camera* cam;
 	Geometry* mesh;
+	Image* material;
 
 	bool toDelete = false;
 	bool isEnable = true;
@@ -74,7 +78,6 @@ public:
 	uint parentUUID;
 
 	AABB bbox;
-	OBB obb;	
 };
 
 #endif 

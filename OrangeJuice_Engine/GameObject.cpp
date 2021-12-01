@@ -11,6 +11,9 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 	transform = nullptr;
 	cam = nullptr;
 	mesh = nullptr;
+	material = nullptr;
+
+	//bbox = AABB({ 0,0,0 }, { 0, 0, 0 });
 
 	parentUUID = 0;
 	UUID = CreateUUID();
@@ -38,6 +41,8 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	Draw();
+
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		if ((*it)->toDelete)
@@ -52,14 +57,9 @@ void GameObject::Update()
 		else if ((*it)->GetComponentType() == COMPONENT_TYPE::COMPONENT_MESH)
 		{
 			ModuleMesh* mesh = (ModuleMesh*)*it;
-			obb = mesh->GetAABB();
-			obb.Transform(transform->globalMatrix);
-
-			bbox.SetNegativeInfinity();
-			bbox.Enclose(obb);
 
 			float3 points[8];
-			bbox.GetCornerPoints(points);
+			//bbox.GetCornerPoints(points);
 			App->renderer3D->DrawBoundingBox(points);
 		}
 	}
@@ -75,10 +75,7 @@ void GameObject::Update()
 			}
 
 			else if ((*it)->isEnable)
-			{
 				(*it)->Update();
-
-			}
 		}
 	}
 }
@@ -90,18 +87,22 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	{
 	case COMPONENT_TYPE::COMPONENT_TRANSFORM:
 		component = new Transform(this);
+		transform = (Transform*)component;
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::COMPONENT_MESH:
 		component = new Geometry(this);
+		mesh = (Geometry*)component;
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::COMPONENT_MATERIAL:
 		component = new Image(this);
+		material = (Image*)component;
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::COMPONENT_CAMERA:
 		component = new Camera(this);
+		cam = (Camera*)component;
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::NO_COMPONENT:
@@ -120,18 +121,13 @@ uint GameObject::CreateUUID()
 void GameObject::ShowNormalVertex(const bool& x)
 {
 	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
-	{
 		(*iter)->showVertexNormals = x;
-	}
 }
 
 void GameObject::ShowNormalFaces(const bool& x)
 {
 	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
-	{
 		(*iter)->showNormals = x;
-	}
-
 }
 
 void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint& nvertices)
@@ -147,9 +143,7 @@ void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint
 	if (!children.empty())
 	{
 		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter < object->children.end(); ++iter)
-		{
 			ShowObjectProperties(*iter, ntriangles, nvertices);
-		}
 	}
 }
 
@@ -158,9 +152,7 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 	for (int i = 0; i < components.size(); i++)
 	{
 		if (type == components[i]->GetComponentType())
-		{
 			return components[i];
-		}
 	}
 	return nullptr;
 }
@@ -358,6 +350,17 @@ uint GameObject::GetParentUUID() {
 	return parent->GetUUID();
 }
 
+void GameObject::CreateBBOX()
+{
+	bbox.SetNegativeInfinity();
+	bbox.Enclose((float3*)mesh->vertices, mesh->numVertices);
+}
+
+AABB GameObject::GetBBOX()
+{
+	return bbox;
+}
+
 void GameObject::Draw()
 {
 	if (mesh != nullptr)
@@ -444,7 +447,6 @@ void GameObject::RecalculateBBox()
 {
 	if (transform != nullptr)
 	{
-		bbox.SetNegativeInfinity();
 
 		if (children.size() > 0)
 		{
@@ -500,4 +502,3 @@ bool GameObject::IsSelected()
 {
 	return isSelected;
 }
-

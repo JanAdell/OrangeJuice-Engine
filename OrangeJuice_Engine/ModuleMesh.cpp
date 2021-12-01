@@ -183,17 +183,6 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 	}
 }
 
-void ModuleMesh::CreateAABB()
-{
-	bbox.SetNegativeInfinity();
-	//bbox.Enclose(vertices, num_vertices);
-}
-
-AABB ModuleMesh::GetAABB()
-{
-	return bbox;
-}
-
 std::string ModuleMesh::GenerateNameFromPath(std::string path)
 {
 	std::string name = "";

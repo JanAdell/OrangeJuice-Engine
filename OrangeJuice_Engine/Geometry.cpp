@@ -171,6 +171,8 @@ void Geometry::LoadData(aiMesh* mesh)
 		}
 	}
 	LoadBuffers();
+
+	parent->CreateBBOX();
 }
 
 void Geometry::ShowProperties()

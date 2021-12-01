@@ -29,7 +29,6 @@ public:
 
 	void Disable() override;
 	void CreatePrimitive(par_shapes_mesh* p_mesh, float col0 = 255, float col1 = 255, float col2 = 255, float col3 = 255);
-	void DrawPrimitives();
 
 	void Update() override;
 
@@ -69,7 +68,6 @@ public:
 public:
 
 	Transform* transform = nullptr;
-
 };
 
 #endif //_GEOMETRY_H
