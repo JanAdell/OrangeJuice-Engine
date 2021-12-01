@@ -32,6 +32,7 @@ public:
 	void ShowNormalFaces(const bool&);
 	void ShowObjectProperties(GameObject*, uint&, uint&);
 	void SaveMesh(FILE*);
+	void ImportMesh(char*& cursor, char* end_object);
 
 	void Select();
 	bool IsSelected();
@@ -63,6 +64,7 @@ public:
 	bool toDelete = false;
 	bool isEnable = true;
 	bool isSelected = false;
+	bool isStatic;
 
 	bool showInspectorWindow = false;
 	bool showVertexNormals = false;
