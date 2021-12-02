@@ -27,8 +27,9 @@ bool ModuleScene::Init()
 {
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;
+	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2);
+	octree = new Octree(first, 2, 4, 1);
 
 	return true;
 }
@@ -59,7 +60,7 @@ update_status ModuleScene::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
-
+	octree->Draw();
 	for (std::vector<GameObject*>::iterator object = gameObjects.begin(); object != gameObjects.end(); ++object)
 	{
 		if ((*object)->toDelete)
@@ -99,6 +100,10 @@ update_status ModuleScene::Update(float dt)
 		SaveScene(path);
 	}
 
+	for (std::vector<GameObject*>::iterator iter = gameObjects.begin(); iter != gameObjects.end(); ++iter)
+		(*iter)->Draw();
+	
+	
 	return UPDATE_CONTINUE;
 }
 

@@ -5,8 +5,8 @@
 #include "MathGeoLib\Math\float3.h"
 
 
-Octree::Octree(AABB limits, uint max_objects_in_level) :aabb(limits), maxObjects(max_objects_in_level)
-{
+Octree::Octree(AABB limits, uint max_objects_in_LVL, uint maxLVLs, uint currentLVL)
+	:aabb(limits), maxObjects(max_objects_in_LVL), maxLVLs(maxLVLs), currentLVL(currentLVL) {
 }
 
 Octree::~Octree()
@@ -94,9 +94,10 @@ void Octree::Subdivide()
 	AABBpoints[6] = aabb.FaceCenterPoint(4);//-Z
 	AABBpoints[7] = aabb.CenterPoint();
 	math::AABB newAABB;
+	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node0 = new Octree(newAABB, maxObjects);
+	Octree* node0 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL+1);
 	children.push_back(node0);
 
 	//2 division left-up-front
@@ -111,7 +112,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node1 = new Octree(newAABB, maxObjects);
+	Octree* node1 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node1);
 
 	//3 division right-down-front
@@ -126,7 +127,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node2 = new Octree(newAABB, maxObjects);
+	Octree* node2 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node2);
 
 	//4 division right-down-front
@@ -141,7 +142,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node3 = new Octree(newAABB, maxObjects);
+	Octree* node3 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node3);
 
 	//5 division left-down-back
@@ -156,7 +157,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node4 = new Octree(newAABB, maxObjects);
+	Octree* node4 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node4);
 
 	//6 division left-up-back
@@ -171,7 +172,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node5 = new Octree(newAABB, maxObjects);
+	Octree* node5 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node5);
 
 	//7 division right-down-back
@@ -186,7 +187,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node6 = new Octree(newAABB, maxObjects);
+	Octree* node6 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node6);
 
 	//8 division right-up-back
@@ -201,8 +202,24 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node7 = new Octree(newAABB, maxObjects);
+	Octree* node7 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
 	children.push_back(node7);
+
+	uint i = 0;
+	while (i < staticObjects.size())
+	{
+		if (staticObjects[i] != nullptr)
+		{
+			for (std::vector<Octree*>::iterator it = children.begin(); it != children.end(); ++it)
+			{
+				if ((*it)->aabb.Contains(staticObjects[i]->bbox))
+				{
+					(*it)->Insert(staticObjects[i]);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void Octree::Draw()

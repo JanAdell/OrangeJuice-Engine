@@ -36,6 +36,7 @@ public:
 
 	std::string GetTexturePath() { return std::string(); };
 
+	void CalculateParentBBox(GameObject* object);
 	void ShowProperties();
 	int GetTextureId() { return 0; };
 	void UpdateBuffer();

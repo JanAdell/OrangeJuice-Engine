@@ -50,6 +50,9 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 	texture->LoadCoords(p_mesh);	
+
+	CalculateParentBBox(parent);
+
 	LoadBuffers();
 
 	LOG("Primitive created");
@@ -93,6 +96,9 @@ void Geometry::DebugDraw()
 
 void Geometry::Update()
 {
+	//glPushMatrix();
+	//if (transform != nullptr) glMultMatrixf((GLfloat*)&transform->globalMatrix.Transposed());
+	
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -219,4 +225,22 @@ void Geometry::Save(FILE* file)
 		fprintf(file, "%i = '%s' ", i, std::to_string(indices[i]).c_str());
 	}
 	fputs("\n</indices>\n", file);
+}
+
+void Geometry::CalculateParentBBox(GameObject* object)
+{
+	std::vector <float3> vertex_array;
+
+	if (vertices == nullptr)
+		return;
+
+	for (int i = 0; i < numIndices * 3; i += 3)
+		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
+
+	object->bbox.Enclose(&vertex_array[0], (int)numVertices);
+
+	if (object->parent != nullptr)
+	{
+		CalculateParentBBox(object->parent);
+	}
 }

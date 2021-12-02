@@ -7,7 +7,7 @@
 class Octree
 {
 public:
-	Octree(AABB limits, uint max_objects_in_level);
+	Octree(AABB limits, uint max_objects_in_LVL, uint maxLVLs, uint currentLVL);
 	~Octree();
 
 	bool Clear();
@@ -23,6 +23,8 @@ private:
 	std::vector<Octree*> children;
 	AABB aabb;
 	uint maxObjects;
+	uint maxLVLs;
+	uint currentLVL;
 
 	bool isDivided = false;
 };

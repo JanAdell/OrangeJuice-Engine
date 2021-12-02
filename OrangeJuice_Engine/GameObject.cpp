@@ -168,6 +168,13 @@ void GameObject::GetPropierties()
 
 			if (ImGui::Checkbox("Active", &isEnable)) (&isEnable) ? true : false;
 
+			if (ImGui::Checkbox("Static", &isStatic))
+			{
+				(&isStatic) ? true : false;
+				if (isStatic) App->scene->octree->Insert(this);
+				else App->scene->octree->Remove(this);
+			}
+
 			ImGui::NewLine();
 			//this was a test, leaving it here because we may need similar something when we make selectable nodes
 			char a[100] = "";

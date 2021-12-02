@@ -812,10 +812,12 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 		break;
 	}
 
-	GameObject* game_object = new GameObject();
-	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
+	GameObject* gameObject = new GameObject();
+	Geometry* geo = dynamic_cast<Geometry*>(gameObject->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 	geo->CreatePrimitive(p_mesh, col[0], col[1], col[2], col[3]);
-	App->scene->gameObjects.push_back(game_object);
+	App->scene->gameObjects.push_back(gameObject);
+	gameObject->isStatic = true;
+	App->scene->octree->Insert(gameObject);
 	//App->camera->GoAroundGeometry(geo);
 	par_shapes_free_mesh(p_mesh);
 }
@@ -835,21 +837,21 @@ void GuiManager::HierarchyWindow()
 
 				for (uint i = 0; i < App->scene->gameObjects.size(); ++i)
 				{
-					GameObject* game_object = App->scene->gameObjects[i];
+					GameObject* gameObject = App->scene->gameObjects[i];
 
-					if (game_object != nullptr)
+					if (gameObject != nullptr)
 					{
 						// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
 						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 						if (selection_mask & (1 << i))
 							node_flags |= ImGuiTreeNodeFlags_Selected;
 					
-						bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
+						bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, gameObject->name.c_str());
 						if (ImGui::IsItemClicked())
 						{
 							selection_mask = (1 << i);
-							game_object->showInspectorWindow = true;
-							App->scene->gameObjectSelect = game_object;
+							gameObject->showInspectorWindow = true;
+							App->scene->gameObjectSelect = gameObject;
 							//al show inspector windows = false
 							std::vector<GameObject*>::iterator goIterator = App->scene->gameObjects.begin();
 							while (goIterator != App->scene->gameObjects.end())
@@ -879,7 +881,7 @@ void GuiManager::HierarchyWindow()
 		
 						if (node_open)
 						{
-							game_object->GetHierarchy(); ImGui::TreePop();
+							gameObject->GetHierarchy(); ImGui::TreePop();
 						}
 					}
 				}
