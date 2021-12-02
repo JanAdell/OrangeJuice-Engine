@@ -12,6 +12,7 @@ Application::Application()
 	mesh = new ModuleMesh(this);
 	gui = new GuiManager(this);
 	time = new ModuleTime(this);
+	file = new ModuleFile(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -21,6 +22,7 @@ Application::Application()
 	AddModule(window);
 	AddModule(camera);
 	AddModule(input);
+	AddModule(file);
 	AddModule(mesh);
 
 	// Scenes

@@ -11,13 +11,14 @@
 #include "GuiManager.h"
 #include "ModuleMesh.h"
 #include "ModuleTime.h"
-
+#include "ModuleFile.h"
 #include "ImGuizmo/ImGuizmo.h"
 
 #include <list>
 #include <vector>
  
 class ModuleTime; 
+class ModuleFile;
 
 struct HardwareSpecs
 {
@@ -51,6 +52,7 @@ public:
 	ModuleMesh* mesh;
 	GuiManager* gui;
 	ModuleTime* time;
+	ModuleFile* file;
 
 private:
 
