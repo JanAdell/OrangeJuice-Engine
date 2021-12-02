@@ -5,6 +5,7 @@
 #include "Geometry.h"
 #include "Module.h"
 #include "GameObject.h"
+#include "Camera.h"
 
 #include "glew/include/GL/glew.h"
 #include <gl/GL.h>
@@ -27,8 +28,12 @@ public:
 	bool LoadFBXFile(const char* file_name);
 	bool LoadTextureFile(const char* file_name);
 	void ChangeTex(GameObject* object, const char* file_name);
+	bool IsCulling(Geometry* g);
+
+	bool CheckInAABB(const AABB& bbox);
 
 	std::string GenerateNameFromPath(std::string path);
+		
 
 private:
 	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
@@ -36,7 +41,9 @@ private:
 	std::string modelName;
 
 public:
-	std::queue<math::AABB*> bbox;
+	std::queue<math::AABB*> bbox; 
+	std::queue<math::Frustum*> cFrustums; 
+	Camera* currentCamera = nullptr;
 };
 
 #endif //_MODULEMESH_H_ 

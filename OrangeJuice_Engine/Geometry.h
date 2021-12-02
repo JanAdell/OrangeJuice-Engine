@@ -60,6 +60,8 @@ public:
 	float r, g, b, a;
 	uint numFaceNormals = 0;
 	float* faceNormals = nullptr;
+	uint idCoords = 0;
+	uint uvCoords = 0;
 	
 	Image* texture = nullptr;
 

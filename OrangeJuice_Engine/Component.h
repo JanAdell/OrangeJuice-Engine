@@ -31,6 +31,11 @@ public:
 	virtual int GetTextureId() = 0;
 	virtual std::string GetTexturePath() = 0;
 
+	GameObject* GetParentObject()
+	{
+		return parent;
+	}
+
 public:
 
 	bool toDelete = false;

@@ -182,7 +182,6 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 			ChangeTex(*iter, file_name);
 	}
 }
-
 std::string ModuleMesh::GenerateNameFromPath(std::string path)
 {
 	std::string name = "";
@@ -203,3 +202,9 @@ std::string ModuleMesh::GenerateNameFromPath(std::string path)
 	}
 	return name;
 }
+
+bool ModuleMesh::IsCulling(Geometry* g)
+{
+	return currentCamera->frustum.Contains(g->GetParentObject()->bbox);
+}
+

@@ -10,7 +10,7 @@ Camera::Camera(GameObject* gameObject) : Component(gameObject, type)
 	frustum.SetUp(float3(0.0f, 1.0f, 0.0f));
 	frustum.SetViewPlaneDistances(0.3f, 5.0f);
 
-	nearPlane =frustum.NearPlaneDistance();
+	nearPlane = frustum.NearPlaneDistance();
 	farPlane = frustum.FarPlaneDistance();
 	horizontalFov = frustum.HorizontalFov();
 	verticalFov = frustum.VerticalFov();

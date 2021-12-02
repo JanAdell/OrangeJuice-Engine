@@ -89,6 +89,11 @@ private:
 
 	std::vector<float> vramLog;
 	std::vector<float> currVramLog;
+
+public:
+
+	bool frustumCulling = false;
+
 };
 
 

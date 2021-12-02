@@ -96,36 +96,71 @@ void Geometry::DebugDraw()
 
 void Geometry::Update()
 {
-	//glPushMatrix();
-	//if (transform != nullptr) glMultMatrixf((GLfloat*)&transform->globalMatrix.Transposed());
 	
-	glPushAttrib(GL_CURRENT_BIT);
-	glColor4f(r, g, b, a);
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, idVertices);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	if (texture != nullptr)
+	if (App->gui->frustumCulling)
 	{
-		if (texture->textureId != 0 && texture->show)
+		if (App->mesh->IsCulling(this))
 		{
-			//Bind textures
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glPushAttrib(GL_CURRENT_BIT);
+			glColor4f(r, g, b, a);
+			glEnableClientState(GL_VERTEX_ARRAY);
+
+			glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+			glVertexPointer(3, GL_FLOAT, 0, NULL);
+			if (texture != nullptr)
+			{
+				if (texture->textureId != 0 && texture->show)
+				{
+					//Bind textures
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					glBindTexture(GL_TEXTURE_2D, 0);
+					glBindTexture(GL_TEXTURE_2D, texture->textureId);
+					//glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+					glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+				}
+			}
+			else
+				glColor4f(r, g, b, a);
+
+			glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
 			glBindTexture(GL_TEXTURE_2D, 0);
-			glBindTexture(GL_TEXTURE_2D, texture->textureId);
-			glBindBuffer(GL_ARRAY_BUFFER, texture->idCoords);
-			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glPopAttrib();
+
+			DebugDraw();
 		}
 	}
 	else
+		glPushAttrib(GL_CURRENT_BIT);
 		glColor4f(r, g, b, a);
+		glEnableClientState(GL_VERTEX_ARRAY);
 
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glPopAttrib();
+		glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+		if (texture != nullptr)
+		{
+			if (texture->textureId != 0 && texture->show)
+			{
+				//Bind textures
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glBindTexture(GL_TEXTURE_2D, 0);
+				glBindTexture(GL_TEXTURE_2D, texture->textureId);
+				//glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+				glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+			}
+		}
+		else
+			glColor4f(r, g, b, a);
+
+		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glPopAttrib();
+
 
 	DebugDraw();
 }

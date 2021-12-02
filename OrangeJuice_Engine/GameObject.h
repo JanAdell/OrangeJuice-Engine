@@ -53,6 +53,8 @@ public:
 
 	void ChangeName(std::string name);
 
+	Component* CreateCamera(float z_near, float z_far);
+
 public:
 	std::string name;
 	GameObject* parent = nullptr;

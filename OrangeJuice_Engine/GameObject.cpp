@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Camera.h"
 
 GameObject::GameObject(GameObject* parent) : parent(parent)
 {
@@ -509,3 +510,4 @@ bool GameObject::IsSelected()
 {
 	return isSelected;
 }
+

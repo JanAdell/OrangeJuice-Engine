@@ -496,6 +496,8 @@ void GuiManager::ConfigWindow()
 	//-------- RENDERER TAB
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
+		ImGui::Checkbox("Frustum Culling", &frustumCulling);
+
 		if (ImGui::Checkbox("GL Depth", &App->renderer3D->glDepthOn))
 			(&App->renderer3D->glDepthOn) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 
