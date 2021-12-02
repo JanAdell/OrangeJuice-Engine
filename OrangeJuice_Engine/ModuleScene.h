@@ -7,6 +7,7 @@
 #include "Primitive.h"
 #include "Image.h"
 #include "GameObject.h"
+#include "Octree.h"
 
 
 #include <vector>
@@ -24,6 +25,7 @@ public:
 	ModuleScene(Application* app, bool start_enabled = true);
 	~ModuleScene();
 
+	bool Init();
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
@@ -38,6 +40,8 @@ public:
 	std::vector<GameObject*> gameObjects;
 	std::vector<int> textures;
 	GameObject* gameObjectSelect = nullptr;
+
+	Octree* octree;
 
 	bool isInGame;
 

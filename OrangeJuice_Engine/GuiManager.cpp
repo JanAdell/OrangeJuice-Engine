@@ -1006,12 +1006,12 @@ void GuiManager::GUIStyle()
 	auto& style = ImGui::GetStyle();
 	style.Colors[ImGuiCol_Text] = TEXT(0.78f);
 	style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
-	style.Colors[ImGuiCol_WindowBg] = BG(0.5f);
+	style.Colors[ImGuiCol_WindowBg] = BG(0.95f);
 	//style.Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
 	style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
 	style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
 	style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_FrameBg] = BG(1.00f);
+	style.Colors[ImGuiCol_FrameBg] = BG_MED(1.00f);
 	style.Colors[ImGuiCol_FrameBgHovered] = HI(0.78f);
 	style.Colors[ImGuiCol_FrameBgActive] = HI(1.00f);
 	style.Colors[ImGuiCol_TitleBg] = MED(0.75f);

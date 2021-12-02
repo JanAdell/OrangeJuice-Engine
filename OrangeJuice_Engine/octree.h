@@ -16,6 +16,7 @@ public:
 	void Intersect(GameObject*);
 
 	void Subdivide();
+	void Draw();
 
 private:
 	std::vector<GameObject*> staticObjects;

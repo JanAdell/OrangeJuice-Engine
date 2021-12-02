@@ -220,7 +220,7 @@
     <ClCompile Include="ResourceTexture.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="octree.cpp" />
+    <ClCompile Include="Octree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -554,7 +554,7 @@
     <ClInclude Include="ResourceTexture.h">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="octree.h" />
+    <ClInclude Include="Octree.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">

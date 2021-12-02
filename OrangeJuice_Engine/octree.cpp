@@ -1,4 +1,7 @@
+#include "Application.h"
 #include "Octree.h"
+#include "ModuleMesh.h"
+#include "GameObject.h"
 #include "MathGeoLib\Math\float3.h"
 
 
@@ -38,7 +41,10 @@ void Octree::Insert(GameObject* object)
 	if (!isDivided)
 	{
 		if (maxObjects < staticObjects.size())
-			Subdivide();
+		{
+			Subdivide(); 
+			isDivided = true;
+		}
 		else
 			staticObjects.push_back(object);
 	}
@@ -78,130 +84,133 @@ void Octree::Intersect(GameObject*)
 void Octree::Subdivide()
 {
 	//1 division left-down-front
-	std::vector<math::float3> AABBpoints;
-	AABBpoints.push_back(aabb.CornerPoint(0));
-	AABBpoints.push_back((aabb.CornerPoint(0) + aabb.CornerPoint(1)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(0) + aabb.CornerPoint(4)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(0) + aabb.CornerPoint(2)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(0));//-X
-	AABBpoints.push_back(aabb.FaceCenterPoint(2));//-Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(4));//-Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	float3 AABBpoints[8];
+	AABBpoints[0] = aabb.CornerPoint(0);
+	AABBpoints[1] = (aabb.CornerPoint(0) + aabb.CornerPoint(1)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(0) + aabb.CornerPoint(4)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(0) + aabb.CornerPoint(2)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(0);//-X
+	AABBpoints[5] = aabb.FaceCenterPoint(2);//-Y
+	AABBpoints[6] = aabb.FaceCenterPoint(4);//-Z
+	AABBpoints[7] = aabb.CenterPoint();
 	math::AABB newAABB;
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node0 = new Octree(newAABB, maxObjects);
 	children.push_back(node0);
 
 	//2 division left-up-front
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(2));
-	AABBpoints.push_back((aabb.CornerPoint(2) + aabb.CornerPoint(3)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(2) + aabb.CornerPoint(0)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(2) + aabb.CornerPoint(6)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(0));//-X
-	AABBpoints.push_back(aabb.FaceCenterPoint(3));//+Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(4));//-Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(2);
+	AABBpoints[1] = (aabb.CornerPoint(2) + aabb.CornerPoint(3)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(2) + aabb.CornerPoint(0)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(2) + aabb.CornerPoint(6)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(0);//-X
+	AABBpoints[5] = aabb.FaceCenterPoint(3);//+Y
+	AABBpoints[6] = aabb.FaceCenterPoint(4);//-Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node1 = new Octree(newAABB, maxObjects);
 	children.push_back(node1);
 
 	//3 division right-down-front
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(4));
-	AABBpoints.push_back((aabb.CornerPoint(4) + aabb.CornerPoint(5)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(4) + aabb.CornerPoint(0)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(4) + aabb.CornerPoint(6)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(1));//+X
-	AABBpoints.push_back(aabb.FaceCenterPoint(2));//-Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(4));//-Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(4);
+	AABBpoints[1] = (aabb.CornerPoint(4) + aabb.CornerPoint(5)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(4) + aabb.CornerPoint(0)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(4) + aabb.CornerPoint(6)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(1);//+X
+	AABBpoints[5] = aabb.FaceCenterPoint(2);//-Y
+	AABBpoints[6] = aabb.FaceCenterPoint(4);//-Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node2 = new Octree(newAABB, maxObjects);
 	children.push_back(node2);
 
 	//4 division right-down-front
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(6));
-	AABBpoints.push_back((aabb.CornerPoint(6) + aabb.CornerPoint(7)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(6) + aabb.CornerPoint(4)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(6) + aabb.CornerPoint(2)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(1));//+X
-	AABBpoints.push_back(aabb.FaceCenterPoint(3));//+Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(4));//-Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(6);
+	AABBpoints[1] = (aabb.CornerPoint(6) + aabb.CornerPoint(7) / 2);
+	AABBpoints[2] = (aabb.CornerPoint(6) + aabb.CornerPoint(4) / 2);
+	AABBpoints[3] = (aabb.CornerPoint(6) + aabb.CornerPoint(2) / 2);
+	AABBpoints[4] = aabb.FaceCenterPoint(1);//+X
+	AABBpoints[5] = aabb.FaceCenterPoint(3);//+Y
+	AABBpoints[6] = aabb.FaceCenterPoint(4);//-Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node3 = new Octree(newAABB, maxObjects);
 	children.push_back(node3);
 
 	//5 division left-down-back
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(1));
-	AABBpoints.push_back((aabb.CornerPoint(1) + aabb.CornerPoint(0)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(1) + aabb.CornerPoint(3)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(1) + aabb.CornerPoint(5)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(0));//-X
-	AABBpoints.push_back(aabb.FaceCenterPoint(2));//-Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(5));//+Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(1);
+	AABBpoints[1] = (aabb.CornerPoint(1) + aabb.CornerPoint(0)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(1) + aabb.CornerPoint(3)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(1) + aabb.CornerPoint(5)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(0);//-X
+	AABBpoints[5] = aabb.FaceCenterPoint(2);//-Y
+	AABBpoints[6] = aabb.FaceCenterPoint(5);//+Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node4 = new Octree(newAABB, maxObjects);
 	children.push_back(node4);
 
 	//6 division left-up-back
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(3));
-	AABBpoints.push_back((aabb.CornerPoint(3) + aabb.CornerPoint(1)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(3) + aabb.CornerPoint(2)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(3) + aabb.CornerPoint(7)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(0));//-X
-	AABBpoints.push_back(aabb.FaceCenterPoint(3));//+Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(5));//+Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(3);
+	AABBpoints[1] = (aabb.CornerPoint(3) + aabb.CornerPoint(1)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(3) + aabb.CornerPoint(2)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(3) + aabb.CornerPoint(7)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(0);//-X
+	AABBpoints[5] = aabb.FaceCenterPoint(3);//+Y
+	AABBpoints[6] = aabb.FaceCenterPoint(5);//+Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node5 = new Octree(newAABB, maxObjects);
 	children.push_back(node5);
 
 	//7 division right-down-back
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(5));
-	AABBpoints.push_back((aabb.CornerPoint(5) + aabb.CornerPoint(1)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(5) + aabb.CornerPoint(4)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(5) + aabb.CornerPoint(7)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(1));//+X
-	AABBpoints.push_back(aabb.FaceCenterPoint(2));//-Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(5));//+Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(5);
+	AABBpoints[1] = (aabb.CornerPoint(5) + aabb.CornerPoint(1)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(5) + aabb.CornerPoint(4)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(5) + aabb.CornerPoint(7)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(1);//+X
+	AABBpoints[5] = aabb.FaceCenterPoint(2);//-Y
+	AABBpoints[6] = aabb.FaceCenterPoint(5);//+Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node6 = new Octree(newAABB, maxObjects);
 	children.push_back(node6);
 
 	//8 division right-up-back
-	AABBpoints.clear();
-	AABBpoints.push_back(aabb.CornerPoint(7));
-	AABBpoints.push_back((aabb.CornerPoint(7) + aabb.CornerPoint(3)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(7) + aabb.CornerPoint(5)) / 2);
-	AABBpoints.push_back((aabb.CornerPoint(7) + aabb.CornerPoint(6)) / 2);
-	AABBpoints.push_back(aabb.FaceCenterPoint(1));//+X
-	AABBpoints.push_back(aabb.FaceCenterPoint(3));//+Y
-	AABBpoints.push_back(aabb.FaceCenterPoint(5));//+Z
-	AABBpoints.push_back(aabb.CenterPoint());
+	AABBpoints[0] = aabb.CornerPoint(7);
+	AABBpoints[1] = (aabb.CornerPoint(7) + aabb.CornerPoint(3)) / 2;
+	AABBpoints[2] = (aabb.CornerPoint(7) + aabb.CornerPoint(5)) / 2;
+	AABBpoints[3] = (aabb.CornerPoint(7) + aabb.CornerPoint(6)) / 2;
+	AABBpoints[4] = aabb.FaceCenterPoint(1);//+X
+	AABBpoints[5] = aabb.FaceCenterPoint(3);//+Y
+	AABBpoints[6] = aabb.FaceCenterPoint(5);//+Z
+	AABBpoints[7] = aabb.CenterPoint();
 	newAABB.SetNegativeInfinity();
-	newAABB.Enclose(&AABBpoints[0], (int)AABBpoints.size());
+	newAABB.Enclose(&AABBpoints[0], 8);
 
 	Octree* node7 = new Octree(newAABB, maxObjects);
 	children.push_back(node7);
+}
+
+void Octree::Draw()
+{
+	GameObject go;
+	go.DrawBBox(go.bbox);
+
+	if (isDivided)
+		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+			(*iter)->Draw();
 }

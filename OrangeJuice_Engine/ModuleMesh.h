@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <string>
+#include <queue>
 
 class ModuleMesh : public Module
 {
@@ -33,6 +34,9 @@ private:
 	float TriangleCenterAxis(const float& p1, const float& p2, const float& p3);
 	
 	std::string modelName;
+
+public:
+	std::queue<math::AABB*> bbox;
 };
 
 #endif //_MODULEMESH_H_ 

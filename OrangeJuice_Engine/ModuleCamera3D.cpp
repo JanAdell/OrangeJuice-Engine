@@ -198,7 +198,7 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 			if (type == COMPONENT_TYPE::COMPONENT_MESH)
 			{
 				//Generate AABBS for each geometry on scene
-				math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+				math::AABB newAABB(float3(0, 0, 0), float3(0, 0, 0));
 				std::vector <float3> vertex_array;
 
 				Geometry* g = dynamic_cast<Geometry*>(*iter2);
@@ -207,12 +207,12 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 					vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
 				}
 
-				new_aabb.Enclose(&vertex_array[0], g->numVertices);
+				newAABB.Enclose(&vertex_array[0], g->numVertices);
 
 				//Stores the 8 vertices of the box in a general array
 				for (int j = 0; j < 8; j++)
 				{
-					vertices.push_back(new_aabb.CornerPoint(j));
+					vertices.push_back(newAABB.CornerPoint(j));
 				}
 			}
 
@@ -228,7 +228,7 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 				if (type == COMPONENT_TYPE::COMPONENT_MESH)
 				{
 					//Generate AABBS for each geom in scene
-					math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+					math::AABB newAABB(float3(0, 0, 0), float3(0, 0, 0));
 					std::vector <float3> vertex_array;
 
 					Geometry* g = dynamic_cast<Geometry*>(*iter2);
@@ -237,12 +237,12 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 						vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
 					}
 
-					new_aabb.Enclose(&vertex_array[0], g->numVertices);
+					newAABB.Enclose(&vertex_array[0], g->numVertices);
 
 					//Stores the 8 vertices of the box in a general array
 					for (int j = 0; j < 8; j++)
 					{
-						vertices.push_back(new_aabb.CornerPoint(j));
+						vertices.push_back(newAABB.CornerPoint(j));
 					}
 				}
 			}
