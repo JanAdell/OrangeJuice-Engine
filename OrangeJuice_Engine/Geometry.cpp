@@ -125,7 +125,7 @@ void Geometry::Update()
 					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 					glBindTexture(GL_TEXTURE_2D, 0);
 					glBindTexture(GL_TEXTURE_2D, texture->textureId);
-					//glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+					glBindBuffer(GL_ARRAY_BUFFER, idCoords);
 					glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 				}
 			}
@@ -157,7 +157,7 @@ void Geometry::Update()
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glBindTexture(GL_TEXTURE_2D, texture->textureId);
-				//glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+				glBindBuffer(GL_ARRAY_BUFFER, idCoords);
 				glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 			}
 		}
