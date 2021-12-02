@@ -37,10 +37,19 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	vertices = new float[numVertices * 3];
 	indices = new uint[numIndices];
 	normals = new float[numVertices * 3];
-
+	uvCoords = new float[numCoords];
 	memcpy(vertices, p_mesh->points, sizeof(float) * numVertices * 3);
 	memcpy(indices, p_mesh->triangles, sizeof(uint) * numIndices);
-	memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
+
+	if (p_mesh->normals != NULL)
+	{
+		memcpy(normals, p_mesh->normals, sizeof(float) * numVertices * 3);
+		numNormals = numVertices * 3;
+	}
+	if (p_mesh->tcoords != nullptr)
+	{
+		memcpy(uvCoords, p_mesh->tcoords, sizeof(float) * numCoords);
+	}
 
 	r = col0;
 	g = col1;
@@ -210,6 +219,20 @@ void Geometry::LoadData(aiMesh* mesh)
 			faceNormals[j + 5] = faceNormals[j + 2] + (u[0] * v[1] - u[1] * v[0]);
 			j += 6;
 		}
+
+		if (mesh->HasTextureCoords(0))
+		{
+			numCoords = mesh->mNumVertices * 2;
+			uvCoords = new float[numCoords];
+			for (uint i = 0; i < mesh->GetNumUVChannels(); ++i)
+			{
+				for (uint k = 0; k < mesh->mNumVertices; ++k) {
+					uvCoords[k * 2] = mesh->mTextureCoords[i][k].x;
+					uvCoords[k * 2 + 1] = mesh->mTextureCoords[i][k].y;
+					
+				}
+			}
+		}
 	}
 	LoadBuffers();
 
@@ -232,6 +255,10 @@ void Geometry::LoadBuffers()
 	glGenBuffers(1, (uint*)&(idIndices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * numIndices, indices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (uint*)&(idCoords));
+	glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numCoords, uvCoords, GL_STATIC_DRAW);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
