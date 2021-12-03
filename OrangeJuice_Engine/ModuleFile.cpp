@@ -154,6 +154,24 @@ char* ModuleFile::DataValue(char*& cursor, std::string info, int size, char* end
 	return value;
 }
 
+char* ModuleFile::DataValue(std::string& cursor, std::string info, int size, std::string end)
+{
+	if (cursor.find(info) == std::string::npos)
+		return";";
+	int pos = cursor.find(info) + sizeof(char) * (info.size());
+
+	int final_pos = cursor.find(end, pos + sizeof(char) * info.size()) - sizeof(char) * (end.size());
+
+	std::string value = cursor.substr(pos, final_pos);
+
+	std::string a(cursor.substr(pos));
+	if (!a.empty())
+		cursor.assign(a);
+	char* final_value = new char[value.size()];
+	strcpy(final_value, value.c_str());
+	return final_value;
+}
+
 bool ModuleFile::SaveScene(char* path, std::vector<GameObject*>objects)
 {
 	bool ret = true;
@@ -227,30 +245,12 @@ bool ModuleFile::ImportScene(char* path)
 			if (parent_object != nullptr)
 				parent_object->children.push_back(new_object);
 		}
-
-
-		App->scene->gameObjects.push_back(new_object);
-
+		
 	}
+	for (std::vector<GameObject*>::iterator iter = importedObjects.begin(); iter != importedObjects.end(); ++iter)
+		App->scene->gameObjects.push_back(*iter);
+
 	return true;
-}
-
-char* ModuleFile::DataValue(std::string& cursor, std::string info, int size, std::string end)
-{
-	if (cursor.find(info) == std::string::npos)
-		return";";
-	int pos = cursor.find(info) + sizeof(char) * (info.size() + 1);
-
-	int final_pos = cursor.find(end, sizeof(char) * info.size()) - sizeof(char) * (end.size() + 1);
-
-	std::string value = cursor.substr(pos, final_pos);
-
-	std::string a(cursor.substr(pos));
-	if (!a.empty())
-		cursor.assign(a);
-	char* final_value = new char[value.size()];
-	strcpy(final_value, value.c_str());
-	return final_value;
 }
 
 GameObject* ModuleFile::GetParentByID(const int& id)
