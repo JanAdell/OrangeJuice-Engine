@@ -485,13 +485,21 @@ void GameObject::ChangeName(std::string name)
 
 void GameObject::SaveMesh(FILE* file)
 {
-	std::fputs("<GameObject> \n", file);
+	std::fputs("GameObject:\n", file);
+	if (parent != nullptr)
+		std::fprintf(file, "parentID: %i;\n", parent->UUID);
+	else
+		std::fprintf(file, "parentID: %i;\n", 0);
+
+	std::fprintf(file, "ID: %i;\n", UUID);
+
+	std::fprintf(file, "name: %s;\n", name.c_str());
 	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
 	{
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			dynamic_cast<Geometry*>(*comp)->Save(file);
 	}
-	std::fputs("</GameObject> \n", file);
+	std::fprintf(file, "//\n", UUID);
 	if (children.size() > 0)
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
@@ -516,6 +524,9 @@ void GameObject::ImportMesh(char*& cursor, char* end_object)
 	//assign ID
 	std::stringstream convertor(App->file->DataValue(cursor, "ID:", 10));
 	convertor >> UUID;
+
+	name.assign(App->file->DataValue(cursor, "name:", 20));
+	name.pop_back();
 
 	char* vertex = strstr(cursor, "vertices:");
 	if (vertex < end_object)
