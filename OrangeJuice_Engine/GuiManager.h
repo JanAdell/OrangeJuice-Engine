@@ -93,6 +93,7 @@ private:
 public:
 
 	bool frustumCulling = false;
+	bool debugDraw = false;
 
 };
 

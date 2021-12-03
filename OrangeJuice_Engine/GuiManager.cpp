@@ -157,12 +157,19 @@ update_status GuiManager::Update(float dt)
 	float big_row_size = (screenY * 60) / 100;
 	float small_row_size = (screenY * 40) / 100;
 
-	if (showConsoleWindow) {
+	if (showConsoleWindow) 
+	{
 		ImVec2 textSize = ImGui::CalcTextSize("Console");
 		ImVec2 windowSize = ImVec2(big_col_size, small_row_size - 20);
 		ImGui::SetNextWindowPos(ImVec2((guiIO.DisplaySize.x - windowSize.x) * 0.5f, (guiIO.DisplaySize.y - windowSize.y)));
 		ImGui::SetNextWindowSize(windowSize);
 		ShowAppConsole(showConsoleWindow);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		debugDraw = !debugDraw;
+		LOG("Toggle debugDraw");
 	}
 	
 	return UPDATE_CONTINUE;

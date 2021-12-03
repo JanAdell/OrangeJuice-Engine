@@ -66,7 +66,15 @@ update_status ModuleScene::PreUpdate(float dt)
 	{
 		if ((*object)->toDelete)
 		{
-			gameObjects.erase(object);
+			if (*object == gameObjectSelect)
+				gameObjectSelect = nullptr;
+			if ((*object)->isStatic)
+			{
+				octree->Remove(*object);
+			}
+			delete(*object);
+			(*object) = nullptr;
+			object = gameObjects.erase(object);
 			break;
 		}
 	}
@@ -80,14 +88,6 @@ update_status ModuleScene::Update(float dt)
 	BasePlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-	
-
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-	{
-		debugDraw = !debugDraw;
-		
-		if (debugDraw == true) LOG("debugDraw on, showing normals.");
-	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{

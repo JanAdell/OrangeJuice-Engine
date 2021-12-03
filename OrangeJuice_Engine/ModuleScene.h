@@ -44,10 +44,10 @@ public:
 	Octree* octree;
 
 	bool isInGame;
+	bool debugDraw = false;
 
 private:
 	
-	bool debugDraw = false;
 	uint idVertex = 0;
 	uint idIndex = 0;
 };

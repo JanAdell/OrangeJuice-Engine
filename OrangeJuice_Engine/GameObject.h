@@ -17,6 +17,12 @@
 
 class Camera;
 
+struct BoundingBox
+{
+	AABB aabb;
+	OBB obb;
+};
+
 class GameObject
 {
 public:
@@ -51,6 +57,8 @@ public:
 	void DrawBBox(const AABB& bbox) const;
 	void RecalculateBBox();
 
+	void TransformBBox(math::float4x4 matrix);
+
 	void ChangeName(std::string name);
 
 	Component* CreateCamera(float z_near, float z_far);
@@ -70,7 +78,7 @@ public:
 	bool toDelete = false;
 	bool isEnable = true;
 	bool isSelected = false;
-	bool isStatic;
+	bool isStatic = false;
 
 	bool showInspectorWindow = false;
 	bool showVertexNormals = false;
@@ -81,7 +89,7 @@ public:
 	uint UUID;
 	uint parentUUID;
 
-	AABB bbox;
+	BoundingBox* bbox = nullptr;
 };
 
 #endif 

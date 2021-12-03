@@ -16,6 +16,9 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 
 	//bbox = AABB({ 0,0,0 }, { 0, 0, 0 });
 
+	bbox = new BoundingBox();
+	bbox->aabb.SetNegativeInfinity();
+
 	parentUUID = 0;
 	UUID = CreateUUID();
 }
@@ -48,7 +51,9 @@ void GameObject::Update()
 	{
 		if ((*it)->toDelete)
 		{
-			components.erase(it);
+			delete(*it);
+			(*it) = nullptr;
+			it = components.erase(it);
 			break;
 		}
 		else if ((*it)->isEnable)
@@ -71,7 +76,11 @@ void GameObject::Update()
 		{
 			if ((*it)->toDelete)
 			{
-				children.erase(it);
+				if (*it == App->scene->gameObjectSelect)
+					App->scene->gameObjectSelect = nullptr;
+				delete(*it);
+				(*it) = nullptr;
+				it = children.erase(it);
 				break;
 			}
 
@@ -292,6 +301,20 @@ Transform* GameObject::GetTransform()
 	return transform;
 }
 
+void GameObject::TransformBBox(math::float4x4 matrix)
+{
+	// Generate global OBB
+	if (bbox != nullptr)
+	{
+		bbox->obb.SetNegativeInfinity();
+		bbox->obb = bbox->aabb;
+		bbox->obb.Transform(matrix);
+		// Generate global AABB
+		bbox->aabb.SetNegativeInfinity();
+		bbox->aabb.Enclose(bbox->obb);
+	}
+}
+
 void GameObject::GetHierarchy()
 {
 	static int selection_mask = (1 << 0);
@@ -360,13 +383,13 @@ uint GameObject::GetParentUUID() {
 
 void GameObject::CreateBBOX()
 {
-	bbox.SetNegativeInfinity();
-	bbox.Enclose((float3*)mesh->vertices, mesh->numVertices);
+	bbox->aabb.SetNegativeInfinity();
+	bbox->aabb.Enclose((float3*)mesh->vertices, mesh->numVertices);
 }
 
 AABB GameObject::GetBBOX()
 {
-	return bbox;
+	return bbox->aabb;
 }
 
 void GameObject::Draw()
@@ -381,7 +404,7 @@ void GameObject::Draw()
 
 	if (App->renderer3D->showBBox)
 	{
-		DrawBBox(bbox);
+		DrawBBox(bbox->aabb);
 	}
 
 	if (transform != nullptr && transform->isChanged)
@@ -461,19 +484,19 @@ void GameObject::RecalculateBBox()
 			for (std::vector<GameObject*>::iterator it_c = children.begin(); it_c != children.end(); it_c++)
 			{
 				(*it_c)->RecalculateBBox();
-				if ((*it_c)->bbox.IsFinite())
-					bbox.Enclose((*it_c)->bbox);
+				if ((*it_c)->bbox->aabb.IsFinite())
+					bbox->aabb.Enclose((*it_c)->bbox->aabb);
 			}
 		}
 
 		if (mesh != nullptr)
 		{
-			bbox.Enclose((float3*)mesh->vertices, mesh->numVertices);
+			bbox->aabb.Enclose((float3*)mesh->vertices, mesh->numVertices);
 		}
 
 		if (children.size() <= 0)
 		{
-			bbox.TransformAsAABB(transform->globalMatrix);
+			bbox->aabb.TransformAsAABB(transform->globalMatrix);
 		}
 	}
 }

@@ -1,21 +1,20 @@
 #include "Application.h"
 #include "Octree.h"
 #include "ModuleMesh.h"
+#include "ModuleScene.h"
+#include "Transform.h"
 #include "GameObject.h"
 #include "MathGeoLib\Math\float3.h"
 
 
-Octree::Octree(AABB limits, uint max_objects_in_LVL, uint maxLVLs, uint currentLVL)
-	:aabb(limits), maxObjects(max_objects_in_LVL), maxLVLs(maxLVLs), currentLVL(currentLVL) {
+Octree::Octree(AABB limits, uint max_objects_in_LVL, uint maxLVL, uint currentLVL, Octree* p)
+	:aabb(limits), maxObjects(max_objects_in_LVL), maxLVLs(maxLVL), currentLVL(currentLVL), parent(p)
+{
 }
 
 Octree::~Octree()
 {
-	for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
-	{
-		delete* iter;
-		*iter = nullptr;
-	}
+	Clear();
 }
 
 bool Octree::Clear()
@@ -35,30 +34,27 @@ bool Octree::Clear()
 
 void Octree::Insert(GameObject* object)
 {
-	if (!object->isStatic)
-		return;
 
 	if (!isDivided)
 	{
-		if (maxObjects < staticObjects.size())
+		staticObjects.push_back(object);
+		if (maxObjects < staticObjects.size() && currentLVL <= maxLVLs)
 		{
 			Subdivide(); 
 			isDivided = true;
 		}
-		else
-			staticObjects.push_back(object);
 	}
 	else
 	{
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
 		{
-			if ((*iter)->aabb.Contains(object->bbox))
+			if ((*iter)->aabb.Contains(object->bbox->aabb))
 				(*iter)->Insert(object);
 		}
 	}
 }
 
-void Octree::Remove(GameObject* object)
+bool Octree::Remove(GameObject* object)
 {
 	bool is_removed = false;
 	for (std::vector<GameObject*>::iterator iter = staticObjects.begin(); iter != staticObjects.end(); ++iter)
@@ -73,12 +69,62 @@ void Octree::Remove(GameObject* object)
 	if (!is_removed)
 	{
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
-			(*iter)->Remove(object);
+		{
+			if ((*iter)->Remove(object))
+			{
+				DeleteChildren();
+				if (Resize())
+				{
+					return true;
+				}
+				break;
+			}
+		}
 	}
+	else
+	{
+		if (Resize())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
-void Octree::Intersect(GameObject*)
+void Octree::Intersect(std::vector<GameObject*>& frustumObjects)
 {
+
+}
+
+bool Octree::Resize()
+{
+	if (isDivided)
+		return false;
+
+	if (parent != nullptr)
+	{
+		float numObjects = staticObjects.size();
+
+		for (std::vector<Octree*>::iterator iter = parent->children.begin(); iter != parent->children.end(); ++iter)
+		{
+			numObjects += parent->staticObjects.size();
+			for (std::vector<GameObject*>::iterator it = (*iter)->staticObjects.begin(); it != (*iter)->staticObjects.end(); ++it)
+			{
+				if (*iter != this)
+					staticObjects.push_back(*it);
+
+			}
+		}
+		if (numObjects <= maxObjects)
+		{
+			for (std::vector<GameObject*>::iterator it = staticObjects.begin(); it != staticObjects.end(); ++it)
+			{
+				parent->staticObjects.push_back(*it);
+			}
+			return true;
+		}
+	}
+	return false;
 }
 
 void Octree::Subdivide()
@@ -97,7 +143,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node0 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL+1);
+	Octree* node0 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL+1, this);
 	children.push_back(node0);
 
 	//2 division left-up-front
@@ -112,7 +158,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node1 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node1 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node1);
 
 	//3 division right-down-front
@@ -127,7 +173,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node2 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node2 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node2);
 
 	//4 division right-down-front
@@ -142,7 +188,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node3 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node3 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node3);
 
 	//5 division left-down-back
@@ -157,7 +203,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node4 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node4 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node4);
 
 	//6 division left-up-back
@@ -172,7 +218,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node5 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node5 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node5);
 
 	//7 division right-down-back
@@ -187,7 +233,7 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node6 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node6 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node6);
 
 	//8 division right-up-back
@@ -202,22 +248,26 @@ void Octree::Subdivide()
 	newAABB.SetNegativeInfinity();
 	newAABB.Enclose(&AABBpoints[0], 8);
 
-	Octree* node7 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1);
+	Octree* node7 = new Octree(newAABB, maxObjects, maxLVLs, currentLVL + 1, this);
 	children.push_back(node7);
 
-	uint i = 0;
-	while (i < staticObjects.size())
+	std::vector<GameObject*>::iterator iter = staticObjects.begin();
+	while (iter != staticObjects.end())
 	{
-		if (staticObjects[i] != nullptr)
+		if (*iter != nullptr)
 		{
+			bool inserted = false;
 			for (std::vector<Octree*>::iterator it = children.begin(); it != children.end(); ++it)
 			{
-				if ((*it)->aabb.Contains(staticObjects[i]->bbox))
+				if ((*it)->aabb.Contains((*iter)->bbox->aabb))
 				{
-					(*it)->Insert(staticObjects[i]);
+					(*it)->Insert((*iter));
+					iter = staticObjects.erase(iter);
+					inserted = true;
 					break;
 				}
 			}
+			if (!inserted) ++iter;
 		}
 	}
 }
@@ -225,9 +275,52 @@ void Octree::Subdivide()
 void Octree::Draw()
 {
 	GameObject go;
-	go.DrawBBox(go.bbox);
+	go.DrawBBox(go.bbox->aabb);
+
+	for (int i = 0; i < 4; i++)
+	{
+		glVertex3f(aabb.CornerPoint(i + 4).x, aabb.CornerPoint(i + 4).y, aabb.CornerPoint(i + 4).z);
+		glVertex3f(aabb.CornerPoint(i).x, aabb.CornerPoint(i).y, aabb.CornerPoint(i).z);
+	}
+
+	//create the vertices that define the faces that form the mesh box
+	for (int i = 0; i <= 4; i += 4)
+	{
+		glVertex3f(aabb.CornerPoint(i).x, aabb.CornerPoint(i).y, aabb.CornerPoint(i).z);
+		glVertex3f(aabb.CornerPoint(i + 1).x, aabb.CornerPoint(i + 1).y, aabb.CornerPoint(i + 1).z);
+
+		glVertex3f(aabb.CornerPoint(i + 2).x, aabb.CornerPoint(i + 2).y, aabb.CornerPoint(i + 2).z);
+		glVertex3f(aabb.CornerPoint(i + 3).x, aabb.CornerPoint(i + 3).y, aabb.CornerPoint(i + 3).z);
+
+		glVertex3f(aabb.CornerPoint(i).x, aabb.CornerPoint(i).y, aabb.CornerPoint(i).z);
+		glVertex3f(aabb.CornerPoint(i + 2).x, aabb.CornerPoint(i + 2).y, aabb.CornerPoint(i + 2).z);
+
+		glVertex3f(aabb.CornerPoint(i + 1).x, aabb.CornerPoint(i + 1).y, aabb.CornerPoint(i + 1).z);
+		glVertex3f(aabb.CornerPoint(i + 3).x, aabb.CornerPoint(i + 3).y, aabb.CornerPoint(i + 3).z);
+	}
+
 
 	if (isDivided)
+	{
+		LOG("is divided");
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+		{
 			(*iter)->Draw();
+			LOG("Drawing octree");
+		}
+	}
+
+	
+}
+
+void Octree::DeleteChildren()
+{
+	for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+	{
+		delete* iter;
+		*iter = nullptr;
+	}
+
+	isDivided = false;
+	children.clear();
 }

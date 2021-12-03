@@ -52,6 +52,9 @@ bool ModuleMesh::Init()
 
 update_status ModuleMesh::PostUpdate(float dt)
 {
+	if(App->gui->debugDraw)
+		App->scene->octree->Draw();
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -205,6 +208,6 @@ std::string ModuleMesh::GenerateNameFromPath(std::string path)
 
 bool ModuleMesh::IsCulling(Geometry* g)
 {
-	return currentCamera->frustum.Contains(g->GetParentObject()->bbox);
+	return currentCamera->frustum.Contains(g->GetParentObject()->bbox->aabb);
 }
 
