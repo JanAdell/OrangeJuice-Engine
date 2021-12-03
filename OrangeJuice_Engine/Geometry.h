@@ -37,6 +37,7 @@ public:
 	std::string GetTexturePath() { return std::string(); };
 
 	void CalculateParentBBox(GameObject* object);
+	void ImportNewMesh(char*& cursor);
 	void ShowProperties();
 	int GetTextureId() { return 0; };
 	void UpdateBuffer();

@@ -10,6 +10,7 @@
 #include "SDL/include/SDL_opengl.h"
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleFile.h"
 
 #include "../OrangeJuice_Engine/MathGeoLib/MathGeoLib.h"
 #include "../OrangeJuice_Engine/MathGeoLib/MathBuildConfig.h"
@@ -97,7 +98,13 @@ update_status ModuleScene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
 		char* path = "TestScene.oj";
-		SaveScene(path);
+		App->file->SaveScene(path, gameObjects);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	{
+		char* path = "TestScene.oj";
+		App->file->ImportScene(path);
 	}
 
 	for (std::vector<GameObject*>::iterator iter = gameObjects.begin(); iter != gameObjects.end(); ++iter)
@@ -146,7 +153,7 @@ GameObject* ModuleScene::CreateGameObject(std::string name)
 	gameObjects.push_back(go);
 	return go;
 }
-
+/*
 bool ModuleScene::SaveScene(char* path)
 {
 	bool ret = true;
@@ -167,4 +174,4 @@ bool ModuleScene::SaveScene(char* path)
 	}
 	std::fclose(file);
 	return ret;
-}
+}*/

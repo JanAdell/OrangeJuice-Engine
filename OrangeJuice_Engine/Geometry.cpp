@@ -4,6 +4,7 @@
 #include "Assimp/include/scene.h"
 #include "GameObject.h"
 #include "Application.h"
+#include "ModuleFile.h"
 #include "ModuleInput.h"
 #include <fstream>
 
@@ -108,37 +109,50 @@ void Geometry::Update()
 	
 	if (App->gui->frustumCulling)
 	{
-		if (App->mesh->IsCulling(this))
+		glPushMatrix();
+		if (transform->globalMatrix.IsInvertible())
+			glMultMatrixf((GLfloat*)&transform->globalMatrix.Transposed());
+		glPushAttrib(GL_CURRENT_BIT);
+		glColor4f(r, g, b, a);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+		if (texture != nullptr)
 		{
-			glPushAttrib(GL_CURRENT_BIT);
-			glColor4f(r, g, b, a);
-			glEnableClientState(GL_VERTEX_ARRAY);
-
-			glBindBuffer(GL_ARRAY_BUFFER, idVertices);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-			if (texture != nullptr)
+			if (App->mesh->IsCulling(this))
 			{
-				if (texture->textureId != 0 && texture->show)
-				{
-					//Bind textures
-					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-					glBindTexture(GL_TEXTURE_2D, 0);
-					glBindTexture(GL_TEXTURE_2D, texture->textureId);
-					glBindBuffer(GL_ARRAY_BUFFER, idCoords);
-					glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-				}
-			}
-			else
+				glPushAttrib(GL_CURRENT_BIT);
 				glColor4f(r, g, b, a);
+				glEnableClientState(GL_VERTEX_ARRAY);
 
-			glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			glPopAttrib();
+				glBindBuffer(GL_ARRAY_BUFFER, idVertices);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+				glVertexPointer(3, GL_FLOAT, 0, NULL);
+				if (texture != nullptr)
+				{
+					if (texture->textureId != 0 && texture->show)
+					{
+						//Bind textures
+						glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+						glBindTexture(GL_TEXTURE_2D, 0);
+						glBindTexture(GL_TEXTURE_2D, texture->textureId);
+						glBindBuffer(GL_ARRAY_BUFFER, idCoords);
+						glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+					}
+				}
+				else
+					glColor4f(r, g, b, a);
 
-			DebugDraw();
+				glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, NULL);
+				glBindTexture(GL_TEXTURE_2D, 0);
+				glDisableClientState(GL_VERTEX_ARRAY);
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				glPopAttrib();
+
+				DebugDraw();
+			}
 		}
 	}
 	else
@@ -274,20 +288,33 @@ void Geometry::UpdateBuffer()
 
 void Geometry::Save(FILE* file)
 {
-	fputs("<vertices> \n", file);
+	fputs("vertices: ", file);
 	for (int i = 0; i < numVertices * 3; ++i)
 	{
-		fprintf(file, "%i = '%s' ", i, std::to_string(vertices[i]).c_str());
+		fprintf(file, "vertex: %f ", vertices[i]);
 
 	}
-	fputs("\n</vertices>\n", file);
-	fputs("<indices>\n", file);
+	fputs(";\n", file);
+	fputs("indices: ", file);
 	for (int i = 0; i < numIndices; ++i)
 	{
-		fprintf(file, "%i = '%s' ", i, std::to_string(indices[i]).c_str());
+		fprintf(file, "indice: %u ", indices[i]);
 	}
-	fputs("\n</indices>\n", file);
+	fputs(";\n", file);
+	fputs("normals: ", file);
+	for (int i = 0; i < numNormals; ++i)
+	{
+		fprintf(file, "normal: %f ", normals[i]);
+	}
+	fputs(";\n", file);
+	fputs("face_normals: ", file);
+	for (int i = 0; i < numFaceNormals / 3; ++i)
+	{
+		fprintf(file, "face_normal: %f ", faceNormals[i]);
+	}
+	fputs(";\n", file);
 }
+
 
 void Geometry::CalculateParentBBox(GameObject* object)
 {
@@ -305,4 +332,54 @@ void Geometry::CalculateParentBBox(GameObject* object)
 	{
 		CalculateParentBBox(object->parent);
 	}
+}
+
+void Geometry::ImportNewMesh(char*& cursor)
+{
+	//vertices	
+	std::string data = App->file->DataValue(cursor, "vertices:", 100000, ";");
+	std::vector<float> elements;
+	while (1)
+	{
+		char* value = App->file->DataValue(data, "vertex:", 10, "vertex:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		float el;
+		convertor >> el;
+		elements.push_back(el);
+	}
+
+	numVertices = elements.size() / 3;
+	vertices = new float[numVertices];
+
+	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
+	{
+		*vertices = (*i);
+		++vertices;
+	}
+
+	//indices	
+	std::string data2 = App->file->DataValue(cursor, "indices:", 100000, ";");
+	std::vector<uint>elements2;
+	while (1)
+	{
+		char* value = App->file->DataValue(data2, "indice:", 2, "indice:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		uint el;
+		convertor >> el;
+		elements2.push_back(el);
+	}
+
+	numIndices = elements2.size() / 3;
+	indices = new uint[numIndices];
+	for (std::vector<uint>::iterator i = elements2.begin(); i != elements2.end(); ++i)
+	{
+		*indices = *i;
+		++indices;
+	}
+
+	LoadBuffers();
 }

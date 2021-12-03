@@ -27,6 +27,12 @@ public:
 	std::string GetFolder(const char* path);
 	GameObject* GetParentByID(const int& ID);
 
+	
+	bool SaveScene(char* path, std::vector<GameObject*> objects);
+	bool ImportScene(char* path);
+	char* DataValue(char*& cursor, std::string info, int size, char* end = ";");
+	char* DataValue(std::string& cursor, std::string info, int size, std::string end = ";");
+
 public:
 	std::vector<GameObject*> importedObjects;
 
