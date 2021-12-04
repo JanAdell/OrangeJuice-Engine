@@ -45,11 +45,22 @@ bool ModuleCamera3D::Load(nlohmann::json & j)
 	return true;
 }
 
+update_status ModuleCamera3D::PreUpdate(float dt)
+{
+	bool ret = true;
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && !write)
+		MousePicking();
+
+	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
+}
+
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
 	// Implement a debug camera with keys and mouse
 	// Now we can make this movememnt frame rate independant!
+
+	camFrustum = &camera->frustum;
 
 	vec3 newPos(0,0,0);
 	float speed = 6.0f * dt;
@@ -289,4 +300,28 @@ std::vector<float3> ModuleCamera3D::AABBVertex(GameObject* obj, std::vector<floa
 		}
 	}
 	return vertices;
+}
+
+void ModuleCamera3D::MousePicking()
+{
+	float2 mouse_normal(App->input->GetMouseX(), App->input->GetMouseY());
+	mouse_normal.x = -(1.0f - (float(mouse_normal.x) * 2.0f) / SCREEN_WIDTH);
+	mouse_normal.y = 1.0f - (float(mouse_normal.y) * 2.0f) / SCREEN_HEIGHT;
+	ray = camFrustum->UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
+
+	float ray_direction = ray.Length();
+	GameObject* picked_obj = nullptr;
+
+	std::vector<GameObject*>::iterator iter = App->scene->gameObjects.begin();
+	for (; iter != App->scene->gameObjects.end(); ++iter)
+	{
+		(*iter)->LookForRayCollision(picked_obj, ray, ray_direction);
+	}
+
+	if (picked_obj)
+	{
+		App->scene->gameObjectSelect = picked_obj;
+		App->scene->gameObjectSelect->showInspectorWindow = true;
+	}
+
 }

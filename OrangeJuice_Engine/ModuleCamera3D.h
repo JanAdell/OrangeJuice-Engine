@@ -16,6 +16,7 @@ public:
 	~ModuleCamera3D();
 
 	bool Start();
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	bool CleanUp();
 
@@ -28,6 +29,7 @@ public:
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
 	void GoAroundGeometry(GameObject* obj);
+	void MousePicking();
 
 	std::vector<float3> AABBVertex(GameObject* obj, std::vector<float3> vertices);
 
@@ -38,12 +40,15 @@ private:
 public:
 	
 	vec3 X, Y, Z, Position, Reference, ViewVector;
-	float camera_speed = 0.01;
+	float cameraSpeed = 0.01;
+	bool write = false;
 
 	Camera* camera;
 	AABB LookedBBox;
 
-private:
+	LineSegment ray;
 
+private:
+	Frustum* camFrustum = nullptr;
 	mat4x4 ViewMatrix, ViewMatrixInverse;
 };

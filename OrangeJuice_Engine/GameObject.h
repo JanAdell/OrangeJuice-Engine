@@ -44,7 +44,7 @@ public:
 	bool IsSelected();
 
 	Component* GetComponent(COMPONENT_TYPE type);
-	void GetPropierties();
+	void GetProperties();
 	Transform* GetTransform();
 	virtual void GetHierarchy();
 	uint GetUUID();
@@ -62,6 +62,9 @@ public:
 	void ChangeName(std::string name);
 
 	Component* CreateCamera(float z_near, float z_far);
+
+	void LookForRayCollision(GameObject* &near, LineSegment& raySegment, float& fromOrigin);
+	void LookForMeshCollision(GameObject* &near, LineSegment& raySegment, float& fromOrigin);
 
 public:
 	std::string name;

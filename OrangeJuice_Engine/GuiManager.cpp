@@ -92,6 +92,9 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::EndMainMenuBar();
 	}
 
+	if (App->scene->gameObjectSelect)
+		showHierachyWindow = true;
+
 	if (showConsoleWindow)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
@@ -897,7 +900,7 @@ void GuiManager::HierarchyWindow()
 				if (App->scene->gameObjectSelect != nullptr && App->scene->gameObjectSelect->showInspectorWindow)
 				{
 					if (App->scene->gameObjectSelect != nullptr)
-						App->scene->gameObjectSelect->GetPropierties();
+						App->scene->gameObjectSelect->GetProperties();
 				}
 			}
 		}

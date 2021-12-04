@@ -167,7 +167,7 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 	return nullptr;
 }
 
-void GameObject::GetPropierties()
+void GameObject::GetProperties()
 {
 	App->scene->gameObjectSelect = this;
 	if (ImGui::Begin("Inspector", &showInspectorWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
@@ -365,7 +365,7 @@ void GameObject::GetHierarchy()
 		{
 			if (game_object->showInspectorWindow)
 			{
-				game_object->GetPropierties();
+				game_object->GetProperties();
 			}
 		}*/
 
@@ -561,3 +561,52 @@ void GameObject::ImportMesh(char*& cursor, char* end_object)
 	}
 }
 
+void GameObject::LookForRayCollision(GameObject* &nearOne, LineSegment& raySegment, float& fromOrigin)
+{
+	for (int i = 0; i < children.size(); ++i)
+	{
+		if (children[i] != nullptr)
+		{
+			if (children[i]->bbox->aabb.IsFinite())
+			{
+				if (raySegment.Intersects(children[i]->bbox->aabb))
+				{
+					children[i]->LookForMeshCollision(nearOne, raySegment, fromOrigin);
+				}
+				children[i]->LookForRayCollision(nearOne, raySegment, fromOrigin);
+			}
+		}
+	}
+}
+
+void GameObject::LookForMeshCollision(GameObject* & nearOne, LineSegment& raySegment, float& fromOrigin)
+{
+	Transform* transform = (Transform*)GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+	Geometry* mesh = (Geometry*)GetComponent(COMPONENT_TYPE::COMPONENT_MESH);
+
+	float* vertices = (float*)((Geometry*)mesh)->vertices;
+	uint* indices = (uint*)((Geometry*)mesh)->indices;
+
+	math::Triangle triangle;
+	
+	math::LineSegment segLocalized(raySegment);
+	float4x4 invMatrix = transform->globalMatrix.Transposed().Inverted();
+	segLocalized = invMatrix * segLocalized;
+
+	for (int j = 0; j < ((Geometry*)mesh)->numIndices;)
+	{
+		triangle.a.Set(&vertices[indices[j++] * 3]);
+		triangle.b.Set(&vertices[indices[j++] * 3]);
+		triangle.c.Set(&vertices[indices[j++] * 3]);
+
+		float tmpDistance;
+		if (segLocalized.Intersects(triangle, &tmpDistance, nullptr))
+		{
+			if (tmpDistance < fromOrigin)
+			{
+				fromOrigin = tmpDistance;
+				nearOne = this;
+			}
+		}
+	}
+}
