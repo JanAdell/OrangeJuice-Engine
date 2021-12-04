@@ -662,7 +662,7 @@ bool ModuleMesh::SaveCurrentScene(const char* s_name)
 
 	std::string file_path = App->file->CreateFolderInLibrary("Scenes");
 	file_path += s_name;
-	file_path += ".Amazing";
+	file_path += ".oj";
 
 	//Write all to new file
 	std::ofstream new_file(file_path.c_str(), std::ofstream::binary);
@@ -954,24 +954,25 @@ GameObject* ModuleMesh::LoadSceneFromFormat(const char* s_name)
 	cursor += size_of;
 
 	//Load all obj 
+	std::vector<GameObject*> objects_in_scene;
 	for (int i = 0; i < nums_objects[0]; i++)
 	{
-		App->scene->gameObjects.push_back(LoadObjectFromFormat(cursor));
+		objects_in_scene.push_back(LoadObjectFromFormat(cursor));
 	}
 
 	//Set all parents properly
-	std::vector<GameObject*> objects_in_scene = App->scene->gameObjects;
 	for (uint i = 0; i < objects_in_scene.size(); ++i)
 	{
 		if (tmpParentIds[i] == 0)
 			continue;
 
+		GameObject* parent;
 		for (int j = 0; j < objects_in_scene.size(); j++)
 		{
 			if (objects_in_scene[j] == objects_in_scene[i])
 				continue;
 
-			GameObject* parent = objects_in_scene[j]->FindChildByID(tmpParentIds[i]);
+			parent = objects_in_scene[j]->FindChildByID(tmpParentIds[i]);
 
 			if (parent != nullptr)
 			{
@@ -979,6 +980,12 @@ GameObject* ModuleMesh::LoadSceneFromFormat(const char* s_name)
 				break;
 			}
 		}
+	}
+
+	for (uint i = 0; i < objects_in_scene.size(); ++i)
+	{
+		if (objects_in_scene[i]->parent == nullptr)
+			App->scene->gameObjects.push_back(objects_in_scene[i]);
 	}
 
 	/*std::vector<GameObject*> objects_in_scene = App->scene->root->GetChildrens();
