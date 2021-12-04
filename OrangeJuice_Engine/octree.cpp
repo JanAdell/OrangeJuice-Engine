@@ -91,11 +91,6 @@ bool Octree::Remove(GameObject* object)
 	return false;
 }
 
-void Octree::Intersect(std::vector<GameObject*>& frustumObjects)
-{
-
-}
-
 bool Octree::Resize()
 {
 	if (isDivided)
@@ -274,8 +269,8 @@ void Octree::Subdivide()
 
 void Octree::Draw()
 {
-	GameObject go;
-	go.DrawBBox(go.bbox->aabb);
+	//GameObject go;
+	//go.DrawBBox(go.bbox->aabb);
 
 	for (int i = 0; i < 4; i++)
 	{

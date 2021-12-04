@@ -55,8 +55,17 @@ bool ModuleMesh::Init()
 
 update_status ModuleMesh::PostUpdate(float dt)
 {
-	if(App->gui->debugDraw)
-		App->scene->octree->Draw();
+	if (App->gui->debugDraw)
+	{
+		glBegin(GL_LINES);
+		DrawRay();
+
+		App->renderer3D->showBBox;
+
+		if (App->gui->activateOctree)
+			App->scene->octree->Draw();
+		glEnd();
+	}
 	
 	return UPDATE_CONTINUE;
 }
@@ -592,3 +601,12 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 	}
 }
 
+void ModuleMesh::DrawRay()
+{
+	glLineWidth(0.2);
+	glColor3f(204, 255, 0.0f);
+	float3 a = App->camera->ray.a;
+	float3 b = App->camera->ray.b;
+	glVertex3f(a.x, a.y, a.z);
+	glVertex3f(b.x, b.y, b.z);
+}

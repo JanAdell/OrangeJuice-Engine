@@ -511,31 +511,35 @@ void GuiManager::ConfigWindow()
 		if (ImGui::Checkbox("GL Depth", &App->renderer3D->glDepthOn))
 			(&App->renderer3D->glDepthOn) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 
-		if (ImGui::Checkbox("GL Cull Face", &App->renderer3D->glCullingOn))
+		else if (ImGui::Checkbox("GL Cull Face", &App->renderer3D->glCullingOn))
 			(App->renderer3D->glCullingOn) ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 
-		if (ImGui::Checkbox("GL Lighting", &App->renderer3D->glLightingOn))
+		else if (ImGui::Checkbox("GL Lighting", &App->renderer3D->glLightingOn))
 			(App->renderer3D->glLightingOn) ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
 
-		if (ImGui::Checkbox("GL Color Material", &App->renderer3D->glMatColorOn))
+		else if (ImGui::Checkbox("GL Color Material", &App->renderer3D->glMatColorOn))
 			(App->renderer3D->glMatColorOn) ? glEnable(GL_COLOR_MATERIAL) : glDisable(GL_COLOR_MATERIAL);
 
-		if (ImGui::Checkbox("GL Texture 2D", &App->renderer3D->glTex2dOn))
+		else if (ImGui::Checkbox("GL Texture 2D", &App->renderer3D->glTex2dOn))
 			(App->renderer3D->glTex2dOn) ? glEnable(GL_TEXTURE_2D) : glDisable(GL_TEXTURE_2D);
 
-		if (ImGui::Checkbox("GL Line Smooth", &App->renderer3D->glSmoothLineOn))
+		else if (ImGui::Checkbox("GL Line Smooth", &App->renderer3D->glSmoothLineOn))
 			(App->renderer3D->glSmoothLineOn) ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH);
 
-		if (ImGui::Checkbox("Hard Poly", &App->renderer3D->glHardOn))
+		else if (ImGui::Checkbox("Hard Poly", &App->renderer3D->glHardOn))
 			(App->renderer3D->glHardOn) ? glShadeModel(GL_FLAT) : glShadeModel(GL_SMOOTH);
 
-		if (ImGui::Checkbox("Wireframe mode", &App->renderer3D->glWireframeOn))
-		{
-			if (App->renderer3D->glWireframeOn)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		if (ImGui::Checkbox("Bounding Boxes", &App->renderer3D->showBBox));
+		else if (ImGui::Checkbox("Wireframe mode", &App->renderer3D->glWireframeOn))
+			{
+				if (App->renderer3D->glWireframeOn)
+					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		else if (ImGui::Checkbox("Bounding Boxes", &App->renderer3D->showBBox));
+
+		else if (ImGui::Checkbox("Octree", &activateOctree)) (&activateOctree) ? true : false;
+		
+
 	}
 
 	if (ImGui::CollapsingHeader("Timer")) {

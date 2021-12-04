@@ -94,6 +94,7 @@ public:
 
 	bool frustumCulling = false;
 	bool debugDraw = false;
+	bool activateOctree = true;
 
 };
 

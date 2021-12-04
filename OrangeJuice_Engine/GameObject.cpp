@@ -569,45 +569,41 @@ void GameObject::ImportMesh(char*& cursor, char* end_object)
 	}
 }
 
-void GameObject::LookForRayCollision(GameObject*& nearOne, LineSegment raySegment, float& fromOrigin, std::vector<MouseHit>& hit)
+void GameObject::LookForRayCollision(LineSegment raySegment, std::vector<MouseHit>& hit)
 {
+	LookForMeshCollision(raySegment, hit);
 	for (int i = 0; i < children.size(); ++i)
 	{
-		if (children[i] != nullptr)
+		if (raySegment.Intersects(children[i]->bbox->aabb))
 		{
-			if (children[i]->bbox->aabb.IsFinite())
-			{
-				if (raySegment.Intersects(children[i]->bbox->aabb))
-				{
-					children[i]->LookForMeshCollision(nearOne, raySegment, fromOrigin, hit);
-				}
-				children[i]->LookForRayCollision(nearOne, raySegment, fromOrigin, hit);
-			}
+			children[i]->LookForMeshCollision(raySegment, hit);
 		}
 	}
 }
 
-void GameObject::LookForMeshCollision(GameObject*& nearOne, LineSegment raySegment, float& fromOrigin, std::vector<MouseHit>& hit)
+void GameObject::LookForMeshCollision(LineSegment raySegment, std::vector<MouseHit>& hit)
 {
 	Transform* transform = dynamic_cast<Transform*>(GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	Geometry* mesh = dynamic_cast<Geometry*>(GetComponent(COMPONENT_TYPE::COMPONENT_MESH));
 
+	if (mesh == nullptr) return;
+
 	float* vertices = (float*)(mesh)->vertices;
 	uint* indices = (uint*)(mesh)->indices;
 
-	math::Triangle triangle;
-
-	math::LineSegment segLocalized(raySegment);
+	LineSegment segLocalized = raySegment;
 	float4x4 invMatrix = transform->globalMatrix.Transposed().Inverted();
 	segLocalized = invMatrix * segLocalized;
 
-	float tmpDistance;
 	for (int j = 0; j < (mesh)->numIndices;)
 	{
+		Triangle triangle;
+
 		triangle.a.Set(&vertices[indices[j++] * 3]);
 		triangle.b.Set(&vertices[indices[j++] * 3]);
 		triangle.c.Set(&vertices[indices[j++] * 3]);
 
+		float tmpDistance;
 		if (segLocalized.Intersects(triangle, &tmpDistance, nullptr))
 		{
 			MouseHit mHit;

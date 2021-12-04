@@ -323,10 +323,28 @@ void ModuleCamera3D::MousePicking()
 	float rayDir = ray.Length();
 	GameObject* pickedObj = nullptr;
 
-	std::vector<GameObject*>::iterator iter = App->scene->gameObjects.begin();
-	for (; iter != App->scene->gameObjects.end(); ++iter)
+	Timer whithoutOctree;
+	whithoutOctree.Start();
+	
+	if (!App->gui->activateOctree)
 	{
-		(*iter)->LookForRayCollision(pickedObj, ray, rayDir, hit);
+		for (std::vector<GameObject*>::iterator iter = App->scene->gameObjects.begin(); iter != App->scene->gameObjects.end(); ++iter)
+		{
+			(*iter)->LookForRayCollision(ray, hit);
+		}
+		LOG("Collect ray objects without octree %f", whithoutOctree.Read());
+		////with octree
+	}
+	else
+	{
+
+		std::vector<GameObject*>objects_picked;
+		App->scene->octree->CollectObjects(ray, objects_picked);
+		for (std::vector<GameObject*>::iterator iter = objects_picked.begin(); iter != objects_picked.end(); ++iter)
+		{
+			(*iter)->LookForRayCollision(ray, hit);
+		}
+		LOG("Collect ray objects with octree %f", whithoutOctree.Read());
 	}
 
 	if (!hit.empty())

@@ -40,7 +40,8 @@ public:
 	GLuint GetID();
 	std::string RandomName(aiMesh* mesh);
 
-	//
+	void DrawRay();
+
 	bool IsCulling(Geometry* g);
 	bool CheckInAABB(const AABB& bbox);
 
