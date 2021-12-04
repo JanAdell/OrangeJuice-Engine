@@ -66,6 +66,9 @@ public:
 	void LookForRayCollision(LineSegment raySegment, std::vector<MouseHit>& hit);
 	void LookForMeshCollision(LineSegment raySegment, std::vector<MouseHit>& hit);
 
+	GameObject* GameObject::FindChildByID(uint other_uid) const;
+	void GameObject::SetParent(GameObject* new_parent);
+
 public:
 	std::string name;
 	GameObject* parent = nullptr;

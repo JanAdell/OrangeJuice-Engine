@@ -32,7 +32,7 @@ public:
 	void LoadMeshFromFormat(const char* file_name, GameObject* g_object);
 		
 	void LoadTemporalMaterials(const aiScene* scene);
-	GLuint LoadImages(const char* p_tex);
+	GLuint LoadImages(const char* p_tex, bool loading_scene = false);
 	void LoadTextureFromFormat(const char*, GameObject* g_object);
 	void LoadMaterials(const aiScene* scene, GameObject* g_object, const char* file_name, int last_mat_ind);
 	void ImportTextureToDDSFile(const char* file_name) const;
@@ -46,6 +46,11 @@ public:
 	bool CheckInAABB(const AABB& bbox);
 
 	std::string GenerateNameFromPath(std::string path);
+
+	bool SaveCurrentScene(const char* s_name);
+	uint SaveGameObjects(std::list<std::pair<char*, uint>>& buffer, GameObject* g_object);
+	GameObject* LoadSceneFromFormat(const char* s_name);
+	GameObject* LoadObjectFromFormat(char*& cursor);
 		
 
 private:
@@ -58,6 +63,8 @@ public:
 	std::queue<math::Frustum*> cFrustums; 
 	Camera* currentCamera = nullptr;
 	std::vector<std::pair<aiMaterial*, int>> tmpMaterial;
+	std::vector<std::pair <std::string, int>> tmpTextures; 
+	std::vector<uint> tmpParentIds; 
 	int randId = 0;
 };
 

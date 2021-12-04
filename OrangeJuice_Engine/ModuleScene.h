@@ -34,6 +34,7 @@ public:
 	GameObject* CreateGameObject(std::string name);
 	
 	bool SaveScene(char* path);
+	void RemoveSceneContent();
 
 public:
 	std::vector<GameObject*> gameObjects;

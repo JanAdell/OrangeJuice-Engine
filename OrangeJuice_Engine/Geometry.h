@@ -70,6 +70,8 @@ public:
 	Image* texture = nullptr;
 
 	bool isPrimitive = false;
+	
+	std::string name;
 	//par_shapes_mesh* primitive_mesh = nullptr;
 
 public:

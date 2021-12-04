@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "Camera.h"
+#include "Component.h"
 
 GameObject::GameObject(GameObject* parent) : parent(parent)
 {
@@ -616,4 +617,43 @@ void GameObject::LookForMeshCollision(LineSegment raySegment, std::vector<MouseH
 			hit.push_back(mHit);
 		}
 	}
+}
+
+GameObject* GameObject::FindChildByID(uint other_id) const
+{
+	GameObject* ret = nullptr;
+
+	if (UUID == other_id)
+	{
+		ret = (GameObject*)this;
+	}
+
+	else for (int i = 0; i < children.size(); i++)
+	{
+		ret = children[i]->FindChildByID(other_id);
+		if (ret != nullptr)
+			break;
+	}
+
+
+	return ret;
+}
+
+void GameObject::SetParent(GameObject* new_parent)
+{
+	if (parent)
+	{//Delete this object from the old parent childrens	
+		for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); it++)
+		{
+			if ((*it) == this)
+			{
+				parent->children.erase(it);
+				break;
+			}
+		}
+	}
+
+	parent = new_parent;
+	parent->children.push_back(this);
+
 }
