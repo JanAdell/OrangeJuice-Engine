@@ -46,11 +46,16 @@ void Octree::Insert(GameObject* object)
 	}
 	else
 	{
+		bool isPushed = false;
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
 		{
 			if ((*iter)->aabb.Contains(object->bbox->aabb))
+			{
 				(*iter)->Insert(object);
+				isPushed = true;
+			}
 		}
+		if (!isPushed) staticObjects.push_back(object);
 	}
 }
 
@@ -298,11 +303,9 @@ void Octree::Draw()
 	if (isDivided)
 	{
 		LOG("is divided");
-		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
-		{
-			(*iter)->Draw();
-			LOG("Drawing octree");
-		}
+		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)		
+		(*iter)->Draw();
+		
 	}
 
 	

@@ -81,7 +81,8 @@ public:
 	bool toDelete = false;
 	bool isEnable = true;
 	bool isSelected = false;
-	bool isStatic = false;
+	bool isStatic = true;
+	bool isInsert = false;
 
 	bool showInspectorWindow = false;
 	bool showVertexNormals = false;

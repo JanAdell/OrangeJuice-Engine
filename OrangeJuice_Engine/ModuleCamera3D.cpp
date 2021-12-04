@@ -332,7 +332,8 @@ void ModuleCamera3D::MousePicking()
 		{
 			(*iter)->LookForRayCollision(ray, hit);
 		}
-		LOG("Collect ray objects without octree %f", whithoutOctree.Read());
+		float time = whithoutOctree.Read();
+		LOG("Collect ray objects without octree %f", time);
 		////with octree
 	}
 	else
@@ -344,7 +345,8 @@ void ModuleCamera3D::MousePicking()
 		{
 			(*iter)->LookForRayCollision(ray, hit);
 		}
-		LOG("Collect ray objects with octree %f", whithoutOctree.Read());
+		float time = whithoutOctree.Read();
+		LOG("Collect ray objects with octree %f", time);
 	}
 
 	if (!hit.empty())

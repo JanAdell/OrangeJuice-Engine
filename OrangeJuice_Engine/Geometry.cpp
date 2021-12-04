@@ -330,7 +330,7 @@ void Geometry::CalculateParentBBox(GameObject* object)
 	if (vertices == nullptr)
 		return;
 
-	for (int i = 0; i < numIndices * 3; i += 3)
+	for (int i = 0; i < numVertices * 3; i += 3)
 		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
 	object->bbox->aabb.Enclose(&vertex_array[0], (int)numVertices);

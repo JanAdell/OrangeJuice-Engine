@@ -21,6 +21,12 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 
 	parentUUID = 0;
 	UUID = CreateUUID();
+
+	isStatic = true;
+	/*if (isStatic) 
+	{ 
+		App->scene->octree->Insert(this); 
+	}*/
 }
 
 GameObject::~GameObject()
@@ -574,10 +580,8 @@ void GameObject::LookForRayCollision(LineSegment raySegment, std::vector<MouseHi
 	LookForMeshCollision(raySegment, hit);
 	for (int i = 0; i < children.size(); ++i)
 	{
-		if (raySegment.Intersects(children[i]->bbox->aabb))
-		{
-			children[i]->LookForMeshCollision(raySegment, hit);
-		}
+		children[i]->LookForRayCollision(raySegment, hit);
+
 	}
 }
 

@@ -107,10 +107,50 @@ update_status ModuleScene::Update(float dt)
 		App->file->ImportScene(path);
 	}
 
-	for (std::vector<GameObject*>::iterator iter = gameObjects.begin(); iter != gameObjects.end(); ++iter)
-		(*iter)->Draw();
-	
-	
+	if (App->gui->frustumCulling)
+	{
+
+		Timer frustrumTime;
+		frustrumTime.Start();
+
+		if (App->gui->activateOctree)
+		{
+			std::vector<GameObject*> draw_objects;
+			App->scene->octree->CollectObjects(App->camera->camera->frustum, draw_objects);
+
+			for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+			{
+				(*iter)->Draw();
+			}
+			draw_objects.clear();
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+			{
+				float time = frustrumTime.Read();
+				LOG("Frustrum time with octree: %f", time);
+			}
+		}
+		else
+		{
+			for (std::vector<GameObject*>::iterator iter = gameObjects.begin(); iter != gameObjects.end(); ++iter)
+			{
+				(*iter)->Draw();
+			}
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+			{
+				float time = frustrumTime.Read();
+				LOG("Frustrum time without octree: %f", time);
+			}
+
+		}
+	}
+	else
+	{
+		for (std::vector<GameObject*>::iterator iter = gameObjects.begin(); iter != gameObjects.end(); ++iter)
+		{
+			(*iter)->Draw();
+		}
+	}
+
 	return UPDATE_CONTINUE;
 }
 
