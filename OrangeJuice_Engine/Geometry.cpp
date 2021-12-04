@@ -340,7 +340,7 @@ void Geometry::CalculateParentBBox(GameObject* object)
 		CalculateParentBBox(object->parent);
 	}
 }
-
+/*
 void Geometry::ImportNewMesh(char*& cursor)
 {
 	//vertices	
@@ -474,4 +474,4 @@ void Geometry::ImportNewMaterial(char*& cursor)
 	int el;
 	convertor >> el;
 	texture->textureId = el;
-}
+}*/

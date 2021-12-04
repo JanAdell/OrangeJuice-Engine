@@ -118,7 +118,8 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 			GameObject* newfbx = new GameObject();
 			newfbx->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 			// Use scene->mNumMeshes to iterate on scene->mMeshes array
-			int last_material_index = 0; //HACER: CAMBIA ESTO
+			
+			int index_material = 0;
 			for (int i = 0; i < scene->mNumMeshes; ++i)
 			{
 				GameObject* game_object = new GameObject(newfbx);
@@ -131,11 +132,9 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 				my_geo->transform->Init(my_geo->vertices[0], my_geo->vertices[1], my_geo->vertices[2]);
 				LOG("New mesh created from %s", file_name);
 				
-				last_material_index = scene->mMeshes[i]->mMaterialIndex;
+				index_material = scene->mMeshes[i]->mMaterialIndex;
 
-				LoadMaterials(scene, game_object, file_name, last_material_index);
-
-				LoadMaterials(scene, game_object, file_name, last_material_index);
+				LoadMaterials(scene, game_object, file_name, index_material);
 				LOG("New material created from %s", file_name);
 
 				newfbx->children.push_back(game_object);
@@ -174,7 +173,7 @@ float ModuleMesh::TriangleCenterAxis(const float& p1, const float& p2, const flo
 	return (middle_point + p3) * 0.5;
 }
 
-void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
+void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* texture)
 {
 	if (object->children.empty())
 	{
@@ -183,15 +182,35 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 			if ((*iter)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
 			{
 				Image* tex = dynamic_cast<Image*>(*iter);
-				tex->textureId = tex->LoadImage(file_name);
-				App->scene->textures.push_back(tex->textureId);
+				if (texture == nullptr)
+				{
+					tex->textureId = LoadImages(file_name);
+					tex->tmpId = tex->textureId;
+					tex->pTex.assign(file_name);
+					App->scene->textures.push_back(tex);
+					
+				}
+				else
+				{
+					tex = texture;
+				}
+				for (std::vector<Component*>::iterator it = object->components.begin(); it != object->components.end(); ++it)
+				{
+					if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+					{
+						Geometry* mesh = dynamic_cast<Geometry*>(*it);
+						mesh->texture = tex;
+						break;
+					}
+				}
+				break;
 			}
 		}
 	}
 	else
 	{
 		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter != object->children.end(); ++iter)
-			ChangeTex(*iter, file_name);
+			ChangeTex(*iter, file_name, texture);
 	}
 }
 std::string ModuleMesh::GenerateNameFromPath(std::string path)
@@ -559,7 +578,7 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 			}
 		}
 		else
-			LOG("It hasn't been detected a material");
+			LOG("Material could not be loaded");
 
 		Image* tex = dynamic_cast<Image*>(g_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 		tex->checkId = check_id;
@@ -568,6 +587,7 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 		tex->pTex = p_tex;
 		tex->LoadCheckerTexture();
 		dynamic_cast<Geometry*>(g_object->GetComponent(COMPONENT_TYPE::COMPONENT_MESH))->texture = tex;
+		tex->toDelete;
 		LOG("Mesh Loaded in : %i", load.Read());
 	}
 }

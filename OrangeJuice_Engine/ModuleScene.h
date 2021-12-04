@@ -13,9 +13,6 @@
 #include <vector>
 #include <string>
 
-#define MAX_SNAKE 2
-#define MAX_CIRCUITSIZE 700
-
 struct PhysBody3D;
 struct PhysMotor3D;
 
@@ -31,6 +28,7 @@ public:
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
+	void DeleteTexture(Image* tex);
 	bool CleanUp();
 
 	GameObject* CreateGameObject(std::string name);
@@ -39,7 +37,7 @@ public:
 
 public:
 	std::vector<GameObject*> gameObjects;
-	std::vector<int> textures;
+	std::vector<Image*> textures;
 	GameObject* gameObjectSelect = nullptr;
 	Octree* octree;
 

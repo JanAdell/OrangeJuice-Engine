@@ -175,3 +175,15 @@ bool ModuleScene::SaveScene(char* path)
 	std::fclose(file);
 	return ret;
 }*/
+
+void ModuleScene::DeleteTexture(Image* tex)
+{
+	for (std::vector<Image*>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		if (tex == *it)
+		{
+			textures.erase(it);
+			break;
+		}
+	}
+}

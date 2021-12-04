@@ -48,7 +48,7 @@ void Image::Save(FILE* file)
 	fputs(";\n", file);
 }
 
-
+/*
 GLuint Image::LoadImage(const char* p_tex)
 {
 	//Gen image
@@ -106,7 +106,7 @@ GLuint Image::LoadImage(const char* p_tex)
 
 	return imgID;
 }
-
+*/
 void Image::LoadCoords(aiMesh* scene)
 {
 	if (scene->HasTextureCoords(0))
@@ -130,7 +130,7 @@ void Image::LoadCoords(par_shapes_mesh* p_mesh)
 	uvCoord = p_mesh->tcoords;
 	LoadBuffers();
 }
-
+/*
 void Image::LoadMaterials(const aiScene* scene, std::string file_name, std::vector<std::pair<aiMaterial*, int>>& tmp_mat, int last_mat_ind)
 {
 	if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
@@ -169,7 +169,7 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name, std::vect
 
 	}
 }
-
+*/
 void Image::LoadBuffers()
 {
 	glGenBuffers(1, (uint*)&(idCoords));

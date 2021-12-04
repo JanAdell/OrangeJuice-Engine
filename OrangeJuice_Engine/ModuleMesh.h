@@ -27,7 +27,7 @@ public:
 	bool LoadFile(const char* fileName);
 	bool LoadFBXFile(const char* file_name);
 	
-	void ChangeTex(GameObject* object, const char* file_name);
+	void ChangeTex(GameObject* object, const char* file_name, Image* texture);
 	std::string LoadData(aiMesh* mesh);
 	void LoadMeshFromFormat(const char* file_name, GameObject* g_object);
 		
