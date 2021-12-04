@@ -26,10 +26,22 @@ public:
 
 	bool LoadFile(const char* fileName);
 	bool LoadFBXFile(const char* file_name);
-	bool LoadTextureFile(const char* file_name);
+	
 	void ChangeTex(GameObject* object, const char* file_name);
-	bool IsCulling(Geometry* g);
+	std::string LoadData(aiMesh* mesh);
+	void LoadMeshFromFormat(const char* file_name, GameObject* g_object);
+		
+	void LoadTemporalMaterials(const aiScene* scene);
+	GLuint LoadImages(const char* p_tex);
+	void LoadTextureFromFormat(const char*, GameObject* g_object);
+	void LoadMaterials(const aiScene* scene, GameObject* g_object, const char* file_name, int last_mat_ind);
+	void ImportTextureToDDSFile(const char* file_name) const;
 
+	GLuint GetID();
+	std::string RandomName(aiMesh* mesh);
+
+	//
+	bool IsCulling(Geometry* g);
 	bool CheckInAABB(const AABB& bbox);
 
 	std::string GenerateNameFromPath(std::string path);
@@ -44,6 +56,8 @@ public:
 	std::queue<math::AABB*> bbox; 
 	std::queue<math::Frustum*> cFrustums; 
 	Camera* currentCamera = nullptr;
+	std::vector<std::pair<aiMaterial*, int>> tmpMaterial;
+	int randId = 0;
 };
 
 #endif //_MODULEMESH_H_ 

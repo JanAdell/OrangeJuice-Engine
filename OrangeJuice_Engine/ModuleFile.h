@@ -27,6 +27,12 @@ public:
 	std::string GetFolder(const char* path);
 	GameObject* GetParentByID(const int& ID);
 
+	void SaveTextureToDDS(const char* data, uint size, const char* name);
+
+	bool SaveMeshToFormat(const char* name, uint num_vert, uint num_ind, const float* vert, uint* ind, const float* normals, uint num_normals, uint num_face_normals, const float* texture_coords, uint num_coords, uint id_coords);
+
+	std::string CreateFolderInLibrary(const char* folder);
+
 	
 	bool SaveScene(char* path, std::vector<GameObject*> objects);
 	bool ImportScene(char* path);

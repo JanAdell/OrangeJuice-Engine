@@ -159,12 +159,12 @@ void GameObject::ShowObjectProperties(GameObject* object, uint& ntriangles, uint
 
 Component* GameObject::GetComponent(COMPONENT_TYPE type)
 {
-	for (int i = 0; i < components.size(); i++)
+	for (std::vector<Component*>::iterator iter = components.begin(); iter < components.end(); ++iter)
 	{
-		if (type == components[i]->GetComponentType())
-			return components[i];
+		if ((*iter)->type == type)
+			return (*iter);
 	}
-	return nullptr;
+	return false;
 }
 
 void GameObject::GetProperties()
@@ -522,7 +522,14 @@ void GameObject::SaveMesh(FILE* file)
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			dynamic_cast<Geometry*>(*comp)->Save(file);
 	}
-	std::fprintf(file, "//\n", UUID);
+	
+	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
+	{
+		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			dynamic_cast<Image*>(*comp)->Save(file);
+	}
+	std::fprintf(file, "//\n");
+
 	if (children.size() > 0)
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
@@ -558,6 +565,7 @@ void GameObject::ImportMesh(char*& cursor, char* end_object)
 		mesh->transform = dynamic_cast<Transform*>(CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 		mesh->texture = dynamic_cast<Image*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 		mesh->ImportNewMesh(cursor);
+		mesh->ImportNewMaterial(cursor);
 	}
 }
 

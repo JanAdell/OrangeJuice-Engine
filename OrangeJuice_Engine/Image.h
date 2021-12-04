@@ -8,9 +8,11 @@
 
 #include <gl/GL.h>
 #include <string>
+#include <vector>
 
 struct aiScene;
 struct aiMesh;
+struct aiMaterial;
 
 class Image : public Component
 {
@@ -22,11 +24,13 @@ public:
 	void Update() override;
 	void Disable() override;
 
+	void Save(FILE* file);
+
 	GLuint LoadImage(const char* p_tex);
 	void LoadCoords(aiMesh* scene);
 	void LoadCoords(par_shapes_mesh* p_mesh);
 
-	void LoadMaterials(const aiScene* scene, std::string file_name);
+	void LoadMaterials(const aiScene* scene, std::string file_name, std::vector<std::pair<aiMaterial*, int>>& tmp_mat, int last_mat_ind);
 	void LoadBuffers();
 	void LoadCheckerTexture();
 	void ShowProperties() {};

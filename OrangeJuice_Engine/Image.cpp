@@ -1,6 +1,7 @@
 #include "Image.h"
 #include "Application.h"
-
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental\filesystem>
 #include "ImGui/imgui.h"
 #include "DevIL/include/IL/il.h"
 #include "DevIL/include/IL/ilu.h"
@@ -19,7 +20,7 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-	LoadCheckerTexture();
+	//LoadCheckerTexture();
 }
 
 Image::~Image()
@@ -38,6 +39,13 @@ void Image::Disable()
 {
 	delete[] uvCoord;
 	uvCoord = nullptr;
+}
+
+void Image::Save(FILE* file)
+{
+	fputs("texture_id: ", file);
+	fprintf(file, "%i", textureId);
+	fputs(";\n", file);
 }
 
 
@@ -123,12 +131,12 @@ void Image::LoadCoords(par_shapes_mesh* p_mesh)
 	LoadBuffers();
 }
 
-void Image::LoadMaterials(const aiScene* scene, std::string file_name)
+void Image::LoadMaterials(const aiScene* scene, std::string file_name, std::vector<std::pair<aiMaterial*, int>>& tmp_mat, int last_mat_ind)
 {
 	if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 	{
 		aiString textPath;
-		scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &textPath);
+		tmp_mat[last_mat_ind].first->GetTexture(aiTextureType_DIFFUSE, 0, &textPath);
 		std::string  tex = textPath.C_Str();
 		std::string  pGeo = App->NormalizePath(file_name.c_str());
 
@@ -138,11 +146,27 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 		}
 		pGeo += tex;
 		pTex = pGeo;
-		textureId = LoadImage(pGeo.c_str());
+		pTex = std::experimental::filesystem::path(tex).stem().string().c_str();
 
-		tmpId = textureId;
+		//Look for if the texture has been already loaded
+		if (tmp_mat[last_mat_ind].second == -1)
+		{
+			textureId = LoadImage(pGeo.c_str());
+			tmpId = textureId;
+			//Sending texture to our texture folder inside library folder
+			App->mesh->ImportTextureToDDSFile(tex.c_str());
+			tmp_mat[last_mat_ind].second = textureId;
+			if (textureId == 0)
+			{
+				LOG("Warning: --------Scene missing textures");
+			}
+		}
+		else
+		{
+			textureId = tmp_mat[last_mat_ind].second;
+			tmpId = textureId;
+		}
 
-		LoadBuffers();
 	}
 }
 

@@ -188,7 +188,7 @@ void Geometry::Update()
 	DebugDraw();
 }
 
-void Geometry::LoadData(aiMesh* mesh)
+/*void Geometry::LoadData(aiMesh* mesh)
 {
 	//Load vertex
 	numVertices = mesh->mNumVertices;
@@ -251,7 +251,7 @@ void Geometry::LoadData(aiMesh* mesh)
 	LoadBuffers();
 
 	parent->CreateBBOX();
-}
+}*/
 
 void Geometry::ShowProperties()
 {
@@ -389,6 +389,7 @@ void Geometry::ImportNewMesh(char*& cursor)
 		indices[j] = *i;
 		++j;
 	}
+	elements2.clear();
 
 	//normals
 	data = App->file->DataValue(cursor, "normals:", 100000, ";");
@@ -460,6 +461,17 @@ void Geometry::ImportNewMesh(char*& cursor)
 		uvCoords[j] = (*i);
 		++j;
 	}
-
+	elements.clear();
 	LoadBuffers();
+	
+	CalculateParentBBox(parent);
+}
+
+void Geometry::ImportNewMaterial(char*& cursor)
+{
+	std::string data = App->file->DataValue(cursor, "texture_id:", 100000, ";");
+	std::stringstream convertor(data);
+	int el;
+	convertor >> el;
+	texture->textureId = el;
 }
