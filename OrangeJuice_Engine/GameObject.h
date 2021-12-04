@@ -30,7 +30,7 @@ public:
 	~GameObject();
 
 	void Update();
-
+	void CleanUp();
 	Component* CreateComponent(COMPONENT_TYPE type);
 	uint CreateUUID();
 	

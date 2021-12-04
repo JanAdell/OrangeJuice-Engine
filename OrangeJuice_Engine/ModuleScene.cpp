@@ -246,5 +246,5 @@ void ModuleScene::RemoveSceneContent()
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;
 	first.Enclose(&aux[0], 8);
-	//octree = new Octree(first, 2);
+	octree = new Octree(first, 2, 4, 1);
 }
