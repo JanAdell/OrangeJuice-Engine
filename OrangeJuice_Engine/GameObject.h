@@ -16,7 +16,7 @@
 #include <vector>
 
 class Camera;
-
+struct MouseHit;
 struct BoundingBox
 {
 	AABB aabb;
@@ -63,8 +63,8 @@ public:
 
 	Component* CreateCamera(float z_near, float z_far);
 
-	void LookForRayCollision(GameObject* &near, LineSegment& raySegment, float& fromOrigin);
-	void LookForMeshCollision(GameObject* &near, LineSegment& raySegment, float& fromOrigin);
+	void LookForRayCollision(GameObject* &near, LineSegment raySegment, float& fromOrigin, std::vector<MouseHit>& hit);
+	void LookForMeshCollision(GameObject* &near, LineSegment raySegment, float& fromOrigin, std::vector<MouseHit>& hit);
 
 public:
 	std::string name;

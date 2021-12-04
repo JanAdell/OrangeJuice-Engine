@@ -164,7 +164,7 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 		if ((*iter)->type == type)
 			return (*iter);
 	}
-	return false;
+	return nullptr;
 }
 
 void GameObject::GetProperties()
@@ -569,7 +569,7 @@ void GameObject::ImportMesh(char*& cursor, char* end_object)
 	}
 }
 
-void GameObject::LookForRayCollision(GameObject* &nearOne, LineSegment& raySegment, float& fromOrigin)
+void GameObject::LookForRayCollision(GameObject*& nearOne, LineSegment raySegment, float& fromOrigin, std::vector<MouseHit>& hit)
 {
 	for (int i = 0; i < children.size(); ++i)
 	{
@@ -579,42 +579,41 @@ void GameObject::LookForRayCollision(GameObject* &nearOne, LineSegment& raySegme
 			{
 				if (raySegment.Intersects(children[i]->bbox->aabb))
 				{
-					children[i]->LookForMeshCollision(nearOne, raySegment, fromOrigin);
+					children[i]->LookForMeshCollision(nearOne, raySegment, fromOrigin, hit);
 				}
-				children[i]->LookForRayCollision(nearOne, raySegment, fromOrigin);
+				children[i]->LookForRayCollision(nearOne, raySegment, fromOrigin, hit);
 			}
 		}
 	}
 }
 
-void GameObject::LookForMeshCollision(GameObject* & nearOne, LineSegment& raySegment, float& fromOrigin)
+void GameObject::LookForMeshCollision(GameObject*& nearOne, LineSegment raySegment, float& fromOrigin, std::vector<MouseHit>& hit)
 {
-	Transform* transform = (Transform*)GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
-	Geometry* mesh = (Geometry*)GetComponent(COMPONENT_TYPE::COMPONENT_MESH);
+	Transform* transform = dynamic_cast<Transform*>(GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+	Geometry* mesh = dynamic_cast<Geometry*>(GetComponent(COMPONENT_TYPE::COMPONENT_MESH));
 
-	float* vertices = (float*)((Geometry*)mesh)->vertices;
-	uint* indices = (uint*)((Geometry*)mesh)->indices;
+	float* vertices = (float*)(mesh)->vertices;
+	uint* indices = (uint*)(mesh)->indices;
 
 	math::Triangle triangle;
-	
+
 	math::LineSegment segLocalized(raySegment);
 	float4x4 invMatrix = transform->globalMatrix.Transposed().Inverted();
 	segLocalized = invMatrix * segLocalized;
 
-	for (int j = 0; j < ((Geometry*)mesh)->numIndices;)
+	float tmpDistance;
+	for (int j = 0; j < (mesh)->numIndices;)
 	{
 		triangle.a.Set(&vertices[indices[j++] * 3]);
 		triangle.b.Set(&vertices[indices[j++] * 3]);
 		triangle.c.Set(&vertices[indices[j++] * 3]);
 
-		float tmpDistance;
 		if (segLocalized.Intersects(triangle, &tmpDistance, nullptr))
 		{
-			if (tmpDistance < fromOrigin)
-			{
-				fromOrigin = tmpDistance;
-				nearOne = this;
-			}
+			MouseHit mHit;
+			mHit.distance = tmpDistance;
+			mHit.object = this;
+			hit.push_back(mHit);
 		}
 	}
 }

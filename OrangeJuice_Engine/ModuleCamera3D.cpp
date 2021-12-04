@@ -13,6 +13,8 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	Position = vec3(0.0f, 0.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
+
+	camera = new Camera(nullptr);
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -48,7 +50,7 @@ bool ModuleCamera3D::Load(nlohmann::json & j)
 update_status ModuleCamera3D::PreUpdate(float dt)
 {
 	bool ret = true;
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && !write)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && !write)
 		MousePicking();
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
@@ -304,24 +306,39 @@ std::vector<float3> ModuleCamera3D::AABBVertex(GameObject* obj, std::vector<floa
 
 void ModuleCamera3D::MousePicking()
 {
-	float2 mouse_normal(App->input->GetMouseX(), App->input->GetMouseY());
-	mouse_normal.x = -(1.0f - (float(mouse_normal.x) * 2.0f) / SCREEN_WIDTH);
-	mouse_normal.y = 1.0f - (float(mouse_normal.y) * 2.0f) / SCREEN_HEIGHT;
-	ray = camFrustum->UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
+	//normalize mouse pos
+	int width;
+	int height;
+	SDL_GetWindowSize(App->window->window, &width, &height);
+	float2 mouseNormal;
+	mouseNormal.x = -1.0 + 2.0 * App->input->GetMouseX() / width;
+	mouseNormal.y = 1.0 - 2.0 * App->input->GetMouseY() / height;
 
-	float ray_direction = ray.Length();
-	GameObject* picked_obj = nullptr;
+	// Create the list of distances and objects that we will use 
+	// to select the closest gameobject that was hit
+	std::vector<MouseHit> hit;
+
+	ray = camFrustum->UnProjectLineSegment(mouseNormal.x, mouseNormal.y);
+
+	float rayDir = ray.Length();
+	GameObject* pickedObj = nullptr;
 
 	std::vector<GameObject*>::iterator iter = App->scene->gameObjects.begin();
 	for (; iter != App->scene->gameObjects.end(); ++iter)
 	{
-		(*iter)->LookForRayCollision(picked_obj, ray, ray_direction);
+		(*iter)->LookForRayCollision(pickedObj, ray, rayDir, hit);
 	}
 
-	if (picked_obj)
+	if (!hit.empty())
 	{
-		App->scene->gameObjectSelect = picked_obj;
-		App->scene->gameObjectSelect->showInspectorWindow = true;
+		std::sort(hit.begin(), hit.end(), LesThanKey());
+		std::vector<MouseHit>::iterator it = hit.begin();
+		pickedObj = (*it).object;
+		if (pickedObj)
+		{
+			App->scene->gameObjectSelect = pickedObj;
+			App->scene->gameObjectSelect->showInspectorWindow = true;
+		}
 	}
 
 }

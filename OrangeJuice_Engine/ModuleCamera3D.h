@@ -9,6 +9,20 @@
 
 class Camera;
 
+struct MouseHit
+{
+	float distance = 0.f;
+	GameObject* object = nullptr;
+};
+
+struct LesThanKey
+{
+	inline bool operator()(const MouseHit& struct1, const MouseHit& struct2)
+	{
+		return (struct1.distance < struct2.distance);
+	}
+};
+
 class ModuleCamera3D : public Module
 {
 public:
@@ -30,6 +44,7 @@ public:
 	float* GetViewMatrix();
 	void GoAroundGeometry(GameObject* obj);
 	void MousePicking();
+	bool LessThan(float i, float j) { return i < j; }
 
 	std::vector<float3> AABBVertex(GameObject* obj, std::vector<float3> vertices);
 
