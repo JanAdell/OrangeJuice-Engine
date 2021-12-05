@@ -127,6 +127,8 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 		{
 			GameObject* newfbx = new GameObject();
 			newfbx->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+			App->scene->gameObjects.push_back(newfbx);
+			App->scene->octree->Insert(newfbx);
 			// Use scene->mNumMeshes to iterate on scene->mMeshes array
 			
 			int index_material = 0;
@@ -435,6 +437,7 @@ void ModuleMesh::LoadMeshFromFormat(const char* file_name, GameObject* g_object)
 	mesh->numCoords = num_coords;
 	mesh->idCoords = id_coords;
 	mesh->name = file_name;
+	mesh->transform = dynamic_cast<Transform*>(g_object->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	mesh->CalculateParentBBox(mesh->parent);
 	mesh->LoadBuffers();
 
@@ -1083,6 +1086,8 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char*& cursor)
 		transform->quatRotation.y = rot[1];
 		transform->quatRotation.z = rot[2];
 		transform->quatRotation.w = rot[3];
+		transform->rotMat = math::float4x4::FromTRS(transform->pos, transform->quatRotation, transform->scale);
+		transform->RotateObjects(new_obj);
 	}
 
 	uint num_meshes = 0;

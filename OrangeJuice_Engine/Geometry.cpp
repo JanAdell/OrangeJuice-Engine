@@ -112,7 +112,7 @@ void Geometry::DrawMesh()
 {
 	glPushMatrix();
 	if (transform != nullptr)
-		glMultMatrixf((GLfloat*)&transform->globalMatrix.Transposed());
+		glMultMatrixf((GLfloat*)&transform->rotMat.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -225,6 +225,8 @@ void Geometry::CalculateParentBBox(GameObject* object)
 		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
 	object->bbox->aabb.Enclose(&vertex_array[0], (int)numVertices);
+	object->bbox->obb.SetNegativeInfinity();
+	object->bbox->obb = object->bbox->aabb.ToOBB();
 
 	if (object->parent != nullptr)
 	{

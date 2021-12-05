@@ -65,12 +65,16 @@ public:
 	float4x4 localMatrix;
 	float4x4 globalMatrix;
 	float4x4 rotMat;
+	float4x4 finalMat;
 
 	Quat quatRotation;
 
 	float R[3][3];
 
 	bool isChanged;
+
+private:
+	bool transformNow = false;
 };
 
 #endif
