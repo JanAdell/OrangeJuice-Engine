@@ -35,7 +35,6 @@ public:
 
 	
 	bool SaveScene(char* path, std::vector<GameObject*> objects);
-	bool ImportScene(char* path);
 	char* DataValue(char*& cursor, std::string info, int size, char* end = ";");
 	char* DataValue(std::string& cursor, std::string info, int size, std::string end = ";");
 

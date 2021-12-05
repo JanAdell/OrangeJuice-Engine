@@ -417,13 +417,12 @@ AABB GameObject::GetBBOX()
 
 void GameObject::Draw()
 {
+	Geometry* mesh = dynamic_cast<Geometry*>(GetComponent(COMPONENT_TYPE::COMPONENT_MESH));
 	if (mesh != nullptr)
-	{
-		glPushMatrix();
-		glMultMatrixf((float*)transform->globalMatrix.Transposed().v);
-		mesh->DebugDraw();
-		glPopMatrix();
-	}
+		mesh->DrawMesh();
+
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+		(*iter)->Draw();
 
 	if (App->renderer3D->showBBox)
 	{
@@ -570,26 +569,6 @@ void GameObject::Select()
 bool GameObject::IsSelected()
 {
 	return isSelected;
-}
-
-void GameObject::ImportMesh(char*& cursor, char* end_object)
-{
-	//assign ID
-	std::stringstream convertor(App->file->DataValue(cursor, "ID:", 10));
-	convertor >> UUID;
-
-	name.assign(App->file->DataValue(cursor, "name:", 20));
-	name.pop_back();
-
-	char* vertex = strstr(cursor, "vertices:");
-	if (vertex < end_object)
-	{
-		Geometry* mesh = dynamic_cast<Geometry*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
-		mesh->transform = dynamic_cast<Transform*>(CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-		mesh->texture = dynamic_cast<Image*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		//mesh->ImportNewMesh(cursor);
-		//mesh->ImportNewMaterial(cursor);
-	}
 }
 
 void GameObject::LookForRayCollision(LineSegment raySegment, std::vector<MouseHit>& hit)

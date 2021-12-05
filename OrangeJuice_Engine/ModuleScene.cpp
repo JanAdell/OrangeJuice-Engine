@@ -51,7 +51,7 @@ bool ModuleScene::Start()
 	GameObject* camera = CreateGameObject("Camera");
 	camera->cam = (Camera*)camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
 
-	App->mesh->LoadFile("../Assets/BakerHouse.fbx");
+	App->mesh->LoadFile("..\\Assets\\Street environment_V01.fbx");
 	
 	return ret;
 }
@@ -242,6 +242,7 @@ void ModuleScene::DeleteTexture(Image* tex)
 
 void ModuleScene::RemoveSceneContent()
 {
+	App->scene->gameObjectSelect = nullptr;
 	CleanUp();
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;

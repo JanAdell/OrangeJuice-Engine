@@ -32,6 +32,8 @@ public:
 
 	void Update() override;
 
+	void DrawMesh();
+
 	void LoadData(aiMesh* mesh);
 
 	std::string GetTexturePath() { return std::string(); };

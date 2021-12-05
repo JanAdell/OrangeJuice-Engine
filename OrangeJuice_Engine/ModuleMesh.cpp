@@ -478,7 +478,7 @@ void ModuleMesh::LoadTemporalMaterials(const aiScene* scene)
 GLuint ModuleMesh::LoadImages(const char* p_tex, bool loading_scene)
 {
 	ILuint img_id = GetID();
-
+	ilutRenderer(ILUT_OPENGL);
 	//load from path
 	ilLoadImage(p_tex);
 
@@ -513,7 +513,7 @@ GLuint ModuleMesh::LoadImages(const char* p_tex, bool loading_scene)
 
 	//Send texture to GPU
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &img_id);
+	//glGenTextures(1, &img_id);
 	glBindTexture(GL_TEXTURE_2D, img_id);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -522,6 +522,8 @@ GLuint ModuleMesh::LoadImages(const char* p_tex, bool loading_scene)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
 		0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
 
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	ILuint devilError3 = ilGetError();
 	if (devilError3 != IL_NO_ERROR)
 	{
@@ -556,8 +558,19 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 		{
 			aiString text_path;
 			tmpMaterial[last_mat_ind].first->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
+			if (text_path.length == 0)
+				return;
+
 			std::string  tex = text_path.C_Str();
 			std::string  p_geo = file_name;
+
+			std::reverse(tex.begin(), tex.end());
+
+			while (tex.back() == '.' || tex.back() == '\\')
+			{
+				tex.pop_back();
+			}
+			std::reverse(tex.begin(), tex.end());
 
 			//We change the name of the fbx for the texture name, with this made we have the general path
 			if (std::strcmp(p_geo.c_str(), "") == 0)
@@ -568,7 +581,7 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 				}
 			}
 			p_geo += tex;
-			p_tex = p_geo;
+			//p_tex = p_geo;
 			p_tex = std::experimental::filesystem::path(tex).stem().string().c_str();
 
 			//Look for if the texture has been already loaded
@@ -988,26 +1001,7 @@ GameObject* ModuleMesh::LoadSceneFromFormat(const char* s_name)
 		if (objects_in_scene[i]->parent == nullptr)
 			App->scene->gameObjects.push_back(objects_in_scene[i]);
 	}
-
-	/*std::vector<GameObject*> objects_in_scene = App->scene->root->GetChildrens();
-	for (int i = 0; i < objects_in_scene.size(); i++)
-	{
-		if (tmp_parent_ids[i] == 0)
-			continue;
-		for (int j = 0; j < objects_in_scene.size(); j++)
-		{
-			if (objects_in_scene[j] == objects_in_scene[i])
-				continue;
-			GameObject* parent = objects_in_scene[j]->FindChildByID(tmp_parent_ids[i]);
-			if (parent != nullptr)
-			{
-				objects_in_scene[i]->SetParent(parent);
-				break;
-			}
-		}
-	}
-*/
-
+		
 	delete[] data;
 	LOG("Loading scene %s", s_name);
 
