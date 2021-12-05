@@ -128,6 +128,7 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 			GameObject* newfbx = new GameObject();
 			LoadObjects(scene->mRootNode, scene, file_name, newfbx);
 			App->scene->gameObjects.push_back(newfbx);
+			App->scene->octree->Insert(newfbx);
 		}
 		
 		aiReleaseImport(scene);
@@ -160,7 +161,15 @@ void ModuleMesh::LoadObjects(aiNode* node, const aiScene* scene, const char*& fi
 
 		//--------------------------TRANSFORMATION-----------------------------------\\
 		my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-		
+		my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+		aiVector3D ai_location;
+		aiVector3D ai_scale;
+		aiQuaternion ai_rotation;
+		node->mTransformation.Decompose(ai_scale, ai_rotation, ai_location);
+		float4x4 rot_matrix = math::float4x4::FromTRS(float3(ai_location[0], ai_location[1], ai_location[2]),
+			Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w),
+			float3(ai_scale[0], ai_scale[1], ai_scale[2]));
+		my_geo->transform->Init(rot_matrix);
 		LOG("New mesh created from %s", file_name);
 
 		//-----------------------------TEXTURELOAD-------------------------------------\\
@@ -1196,14 +1205,17 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char*& cursor)
 
 
 		//new_obj->CreateComponent_Material(texture_ID, text_name, mat_id);
-		Image* material = dynamic_cast<Image*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		material->textureId = texture_ID;
-		material->tmpId = material->textureId;
-		material->pTex = text_name;
-		material->componentUUID = mat_id;
-		material->LoadCheckerTexture();
-		dynamic_cast<Geometry*>(new_obj->GetComponent(COMPONENT_TYPE::COMPONENT_MESH))->texture = material;
-		delete[] text_name;
+		if (dynamic_cast<Geometry*>(new_obj->GetComponent(COMPONENT_TYPE::COMPONENT_MESH))->parIndices == 0)
+		{
+			Image* material = dynamic_cast<Image*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
+			material->textureId = texture_ID;
+			material->tmpId = material->textureId;
+			material->pTex = text_name;
+			material->componentUUID = mat_id;
+			material->LoadCheckerTexture();
+			dynamic_cast<Geometry*>(new_obj->GetComponent(COMPONENT_TYPE::COMPONENT_MESH))->texture = material;
+			delete[] text_name;
+		}
 	}
 
 	//UID of camera - near dist - far dist

@@ -66,6 +66,14 @@ void Transform::Init(const int& x, const int& y, const int& z)
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
+	rotMat = math::float4x4::FromTRS(pos, quatRotation, scale);
+	RotateObjects(parent);
+}
+
+void Transform::Init(float4x4 r)
+{
+	rotMat = r;
+	RotateObjects(parent);
 }
 
 float3 Transform::GetTranslation()
