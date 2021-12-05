@@ -894,6 +894,12 @@ void GuiManager::HierarchyWindow()
 								++goIterator;
 							}
 						}
+
+						if (gameObject->showInspectorWindow && gameObject != App->scene->gameObjectSelect)
+						{
+							gameObject->GetProperties();
+							App->scene->gameObjectSelect = gameObject;
+						}
 		
 						if (node_open)
 						{
@@ -901,11 +907,11 @@ void GuiManager::HierarchyWindow()
 						}
 					}
 				}
-				if (App->scene->gameObjectSelect != nullptr && App->scene->gameObjectSelect->showInspectorWindow)
-				{
-					if (App->scene->gameObjectSelect != nullptr)
-						App->scene->gameObjectSelect->GetProperties();
-				}
+			}
+			if (App->scene->gameObjectSelect && App->scene->gameObjectSelect->showInspectorWindow)
+			{
+				if (App->scene->gameObjectSelect != nullptr)
+					App->scene->gameObjectSelect->GetProperties();
 			}
 		}
 		ImGui::End();

@@ -196,7 +196,6 @@ Component* GameObject::GetComponent(COMPONENT_TYPE type)
 
 void GameObject::GetProperties()
 {
-	App->scene->gameObjectSelect = this;
 	if (ImGui::Begin("Inspector", &showInspectorWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
 	{
 		if (ImGui::CollapsingHeader("Properties"))
@@ -388,13 +387,13 @@ void GameObject::GetHierarchy()
 			ImGui::TreePop();
 		}
 
-		/*if (game_object != nullptr)
+		if (game_object != nullptr)
 		{
 			if (game_object->showInspectorWindow)
 			{
-				game_object->GetProperties();
+				App->scene->gameObjectSelect = game_object;
 			}
-		}*/
+		}
 
 	}
 }
