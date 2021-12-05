@@ -126,30 +126,7 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 		if (scene->HasMeshes())
 		{
 			GameObject* newfbx = new GameObject();
-			newfbx->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
-			App->scene->gameObjects.push_back(newfbx);
-			App->scene->octree->Insert(newfbx);
-			// Use scene->mNumMeshes to iterate on scene->mMeshes array
-			
-			int index_material = 0;
-			for (int i = 0; i < scene->mNumMeshes; ++i)
-			{
-				GameObject* game_object = new GameObject(newfbx);
-				std::string g_name = LoadData(scene->mMeshes[i]);
-				LoadMeshFromFormat(g_name.c_str(), game_object);
-				Geometry* my_geo = dynamic_cast<Geometry*>(game_object->GetComponent(COMPONENT_TYPE::COMPONENT_MESH));
-							
-				my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-				my_geo->transform->Init(my_geo->vertices[0], my_geo->vertices[1], my_geo->vertices[2]);
-				LOG("New mesh created from %s", file_name);
-				
-				index_material = scene->mMeshes[i]->mMaterialIndex;
-
-				LoadMaterials(scene, game_object, file_name, index_material);
-				LOG("New material created from %s", file_name);
-
-				newfbx->children.push_back(game_object);
-			}
+			LoadObjects(scene->mRootNode, scene, file_name, newfbx);
 			App->scene->gameObjects.push_back(newfbx);
 		}
 		
@@ -161,6 +138,49 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 
 
 	return ret;
+}
+
+void ModuleMesh::LoadObjects(aiNode* node, const aiScene* scene, const char*& file_name, GameObject*& parent)
+{
+	//FIRST PARENT
+	parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+
+	int index_material = 0;
+	for (uint k = 0; k < node->mNumMeshes; ++k)
+	{
+		//CHILDREN
+		GameObject* game_object = new GameObject(parent);
+
+		//-----------------------------MESHLOAD--------------------------------------\\
+						//FILLING COMPONENT MESH
+		std::string g_name = LoadData(scene->mMeshes[node->mMeshes[k]]);
+		//LOADING TO OUR FORMAT
+		LoadMeshFromFormat(g_name.c_str(), game_object);
+		Geometry* my_geo = dynamic_cast<Geometry*>(game_object->GetComponent(COMPONENT_TYPE::COMPONENT_MESH));
+
+		//--------------------------TRANSFORMATION-----------------------------------\\
+		my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+		
+		LOG("New mesh created from %s", file_name);
+
+		//-----------------------------TEXTURELOAD-------------------------------------\\
+						//Get the material index to then compare if this has been loaded before
+		index_material = scene->mMeshes[node->mMeshes[k]]->mMaterialIndex;
+
+		LoadMaterials(scene, game_object, file_name, index_material);
+		LOG("New material created from %s", file_name);
+
+		//------------------------------------------------------------------------------\\
+						
+		LOG("-----------------------------------------");
+		parent->children.push_back(game_object);
+	}
+	//------------------------------CHILDRENS---------------------------------------\\
+		
+	for (uint i = 0; i < node->mNumChildren; ++i)
+	{
+		LoadObjects(node->mChildren[i], scene, file_name, parent);
+	}
 }
 
 void ModuleMesh::ImportTextureToDDSFile(const char* file_name) const
@@ -505,8 +525,6 @@ GLuint ModuleMesh::LoadImages(const char* p_tex, bool loading_scene)
 
 	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 
-
-
 	ILuint devilError2 = ilGetError();
 	if (devilError2 != IL_NO_ERROR)
 	{
@@ -576,15 +594,13 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 			std::reverse(tex.begin(), tex.end());
 
 			//We change the name of the fbx for the texture name, with this made we have the general path
-			if (std::strcmp(p_geo.c_str(), "") == 0)
+			
+			while (p_geo.back() != '\\')
 			{
-				while (p_geo.back() != '\\')
-				{
-					p_geo.pop_back();
-				}
+				p_geo.pop_back();
 			}
+			
 			p_geo += tex;
-			//p_tex = p_geo;
 			p_tex = std::experimental::filesystem::path(tex).stem().string().c_str();
 
 			//Look for if the texture has been already loaded
@@ -592,10 +608,11 @@ void ModuleMesh::LoadMaterials(const aiScene* scene, GameObject* g_object, const
 			{
 				texture_id = LoadImages(p_geo.c_str());
 				tmp_id = texture_id;
-				//Sending texture to our texture folder inside library folder
+				
 				ImportTextureToDDSFile(tex.c_str());
 
 				tmpMaterial[last_mat_ind].second = texture_id;
+
 				if (texture_id == 0)
 				{
 					LOG("Warning: --------Scene missing textures");

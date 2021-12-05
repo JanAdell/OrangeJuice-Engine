@@ -51,7 +51,7 @@ bool ModuleScene::Start()
 	GameObject* camera = CreateGameObject("Camera");
 	camera->cam = (Camera*)camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
 
-	App->mesh->LoadFile("..\\Assets\\Street environment_V01.fbx");
+	App->mesh->LoadFile("..\\Assets\\Street_environment_V01_test.fbx");
 	
 	return ret;
 }
