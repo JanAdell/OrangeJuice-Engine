@@ -30,7 +30,7 @@ bool ModuleScene::Init()
 	AABB first;
 	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2, 4, 1);
+	octree = new Octree(first, 2, 3, 1);
 
 	return true;
 }
@@ -68,10 +68,9 @@ update_status ModuleScene::PreUpdate(float dt)
 		{
 			if (*object == gameObjectSelect)
 				gameObjectSelect = nullptr;
-			if ((*object)->isStatic)
-			{
-				octree->Remove(*object);
-			}
+
+			octree->Remove(*object);
+
 			delete(*object);
 			(*object) = nullptr;
 			object = gameObjects.erase(object);

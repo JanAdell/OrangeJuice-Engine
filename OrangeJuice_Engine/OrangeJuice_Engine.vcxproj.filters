@@ -221,6 +221,9 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="ImGuizmo\ImGuizmo.cpp">
+      <Filter>ImGuizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -555,6 +558,9 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="ImGuizmo\ImGuizmo.h">
+      <Filter>ImGuizmo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ImGui">
@@ -586,6 +592,9 @@
     </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{996ff357-8524-450b-aac8-640fc012678b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGuizmo">
+      <UniqueIdentifier>{8efede3c-9932-4bfc-9786-3f5b88ab0b99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

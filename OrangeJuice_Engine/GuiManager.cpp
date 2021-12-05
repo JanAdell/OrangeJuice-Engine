@@ -212,7 +212,7 @@ void GuiManager::AboutWindow()
 {
 	ImGui::Text("Orange Juice Engine v0.1");
 	ImGui::NewLine();
-	ImGui::Text("A 3D engine created by Jan Adell Mill and Oscar Reguera Parera");
+	ImGui::Text("A 3D engine created by Jan Adell Mill, Oscar Reguera Parera and Magdalena Ostrowska");
 	ImGui::NewLine();
 
 	if (ImGui::CollapsingHeader("License"))

@@ -38,7 +38,7 @@ void Octree::Insert(GameObject* object)
 	if (!isDivided)
 	{
 		staticObjects.push_back(object);
-		if (maxObjects < staticObjects.size() && currentLVL <= maxLVLs)
+		if (maxObjects <= staticObjects.size() && currentLVL <= maxLVLs)
 		{
 			Subdivide(); 
 			isDivided = true;
@@ -61,17 +61,17 @@ void Octree::Insert(GameObject* object)
 
 bool Octree::Remove(GameObject* object)
 {
-	bool is_removed = false;
+	bool isRemoved = false;
 	for (std::vector<GameObject*>::iterator iter = staticObjects.begin(); iter != staticObjects.end(); ++iter)
 	{
 		if (object == *iter)
 		{
 			staticObjects.erase(iter);
-			is_removed = true;
+			isRemoved = true;
 			break;
 		}
 	}
-	if (!is_removed)
+	if (!isRemoved)
 	{
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
 		{
@@ -104,23 +104,23 @@ bool Octree::Resize()
 	if (parent != nullptr)
 	{
 		float numObjects = staticObjects.size();
-
+		std::vector<GameObject*>obj;
 		for (std::vector<Octree*>::iterator iter = parent->children.begin(); iter != parent->children.end(); ++iter)
 		{
 			numObjects += parent->staticObjects.size();
 			for (std::vector<GameObject*>::iterator it = (*iter)->staticObjects.begin(); it != (*iter)->staticObjects.end(); ++it)
 			{
-				if (*iter != this)
-					staticObjects.push_back(*it);
+				obj.push_back(*it);
 
 			}
 		}
 		if (numObjects <= maxObjects)
 		{
-			for (std::vector<GameObject*>::iterator it = staticObjects.begin(); it != staticObjects.end(); ++it)
+			for (std::vector<GameObject*>::iterator it = obj.begin(); it != obj.end(); ++it)
 			{
 				parent->staticObjects.push_back(*it);
 			}
+			obj.clear();
 			return true;
 		}
 	}
@@ -302,7 +302,6 @@ void Octree::Draw()
 
 	if (isDivided)
 	{
-		LOG("is divided");
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)		
 		(*iter)->Draw();
 		
@@ -315,6 +314,7 @@ void Octree::DeleteChildren()
 {
 	for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)
 	{
+		(*iter)->staticObjects.clear(); 
 		delete* iter;
 		*iter = nullptr;
 	}

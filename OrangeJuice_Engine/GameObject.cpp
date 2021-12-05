@@ -24,10 +24,10 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 	UUID = CreateUUID();
 
 	isStatic = true;
-	/*if (isStatic) 
+	if (isStatic) 
 	{ 
 		App->scene->octree->Insert(this); 
-	}*/
+	}
 }
 
 GameObject::~GameObject()
@@ -44,7 +44,10 @@ GameObject::~GameObject()
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		if ((*it) != nullptr)
+		{
+			App->scene->octree->Remove(*it);
 			delete (*it);
+		}
 		(*it) = nullptr;
 	}
 	children.clear();
@@ -85,6 +88,7 @@ void GameObject::Update()
 			{
 				if (*it == App->scene->gameObjectSelect)
 					App->scene->gameObjectSelect = nullptr;
+				App->scene->octree->Remove(*it);
 				delete(*it);
 				(*it) = nullptr;
 				it = children.erase(it);

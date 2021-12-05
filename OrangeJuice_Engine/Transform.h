@@ -32,6 +32,8 @@ public:
 	void Rotate(Geometry* mesh, float rd, float axs[3]);
 	void DoRotation(Geometry* mesh, float  r_matrix[3][3]);
 
+	void RotateObjects(GameObject* objectToRotate);
+
 	void SetTranslation(float3 position);
 	void SetScale(float3 scale);
 	void SetRotation(float3 rot);
@@ -50,7 +52,10 @@ public:
 public:
 
 	float3 translation;
-	float scale[3] = { 1.0f,1.0f,1.0f };
+	float3 scale;
+	float3 eulerAng;
+	float3 pos;
+
 	float3 scl;
 	int rad;
 	float3 axis;
@@ -59,6 +64,7 @@ public:
 
 	float4x4 localMatrix;
 	float4x4 globalMatrix;
+	float4x4 rotMat;
 
 	Quat quatRotation;
 

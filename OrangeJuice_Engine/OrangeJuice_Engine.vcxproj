@@ -90,6 +90,7 @@
     <ClInclude Include="DevIL\include\IL\ilu.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="glmath.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="GuiManager.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />

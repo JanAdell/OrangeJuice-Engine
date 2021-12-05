@@ -1,16 +1,19 @@
+//#include "Application.h"
 #include "Transform.h"
 #include "Globals.h"
 #include "GameObject.h"
+//#include "ModuleScene.h"
 #include "Geometry.h"
 #include "par_shapes.h"
 #include <vector>
 #include "ImGui/imgui.h"
+#include "ImGuizmo/ImGuizmo.h"
 #include "Assimp/include/scene.h"
 #include "../OrangeJuice_Engine/MathGeoLib/MathGeoLib.h"
 
 Transform::Transform(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMPONENT_TRANSFORM)
 {
-	translation = { 0.0f,0.0f,0.0f };
+	//translation = { 0.0f,0.0f,0.0f };
 	scl = { scale[0], scale[1], scale[2] };
 	rad = 0;
 	axis = { 0.0f,0.0f,0.0f };
@@ -19,6 +22,12 @@ Transform::Transform(GameObject* parent) :Component(parent, COMPONENT_TYPE::COMP
 
 	localMatrix = float4x4::identity;
 	globalMatrix = float4x4::identity;
+	rotMat = float4x4::identity;
+	quatRotation = Quat::identity;
+
+	scale = float3::one;
+	eulerAng = float3::zero;
+	pos = float3::zero;
 
 	float R[3][3] =
 	{ 1, 0, 0,
@@ -46,14 +55,14 @@ void Transform::Disable()
 
 void Transform::Init(const int& x, const int& y, const int& z)
 {
-	translation.x = x;
-	translation.y = y;
-	translation.z = z;
+	pos.x = x;
+	pos.y = y;
+	pos.z = z;
 }
 
 float3 Transform::GetTranslation()
 {
-	return translation;
+	return pos;
 }
 
 float3 Transform::GetScale()
@@ -63,66 +72,81 @@ float3 Transform::GetScale()
 
 void Transform::CalculateMatrix()
 {
-	localMatrix.Set(float4x4::FromTRS(translation, quatRotation, scl));
+	localMatrix.Set(float4x4::FromTRS(pos, quatRotation, scl));
 }
 
 bool Transform::LoadTransformation(Geometry* mesh)
 {
 	bool ret = false;
 
-	float new_position[3] = { translation[0], translation[1] ,translation[2] };
-	//change name
-	//scale
-	if (ImGui::InputFloat3("scale", scale, "%i", ImGuiInputTextFlags_EnterReturnsTrue))
-		ret = true;
-	if (ImGui::InputFloat3("position", new_position, "%i", ImGuiInputTextFlags_EnterReturnsTrue))
-	{
-		float translation_x = new_position[0] - translation.x;
-		float translation_y = new_position[1] - translation.y;
-		float translation_z = new_position[2] - translation.z;
-		//ChangePosition(mesh, translation_x, translation_y, translation_z);
-		for (uint i = 0; i < 3; ++i)
-		{
-			translation[i] = new_position[i];
-		}
-		ret = true;
-	}
-	ImGui::TextWrapped("Rotation");
-	ImGui::Separator();
-	if (ImGui::SliderInt("Radiant", &rad, 0, 360))
-		ret = true;
+	float newPos[3] = { pos[0], pos[1] ,pos[2] };
 
-	static int item_current = 0;
-	const char* items[] = { "X", "Y", "Z" };
-	ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-	switch (item_current)
+	math::float3 current_pos = pos;
+	math::float3 current_angles = eulerAng;	//scale
+
+	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-	case 0:
-		axis[0] = 1;
-		axis[1] = 0;
-		axis[2] = 0;
-		break;
-	case 1:
-		axis[0] = 0;
-		axis[1] = 1;
-		axis[2] = 0;
-		break;
-	case 2:
-		axis[0] = 0;
-		axis[1] = 0;
-		axis[2] = 1;
-		break;
+		rotMat = math::float4x4::FromTRS(pos.zero, quatRotation.identity, scale);
+		ret = true;
 	}
-	if (mesh != nullptr)
+	//position
+	if (ImGui::InputFloat3("position", (float*)&pos, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		if (parent != nullptr)
+		rotMat = math::float4x4::FromTRS(pos - current_pos, quatRotation.identity, scale.one);
+		ret = true;
+	}
+	//rotation
+	if (ImGui::InputFloat3("rotation", (float*)&eulerAng, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		quatRotation = math::Quat::FromEulerXYZ(math::DegToRad(eulerAng - current_angles).x, math::DegToRad(eulerAng - current_angles).y, math::DegToRad(eulerAng - current_angles).z);
+		rotMat = math::float4x4::FromTRS(pos.zero, quatRotation, scale.one);
+		ret = true;
+	}
+
+	/*static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::SCALE;*/
+
+	ImGuiIO& io = ImGui::GetIO();
+	//ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	float4x4 view_matrix = App->camera->camera->frustum.ViewMatrix();
+	float4x4 proj_matrix = App->camera->camera->frustum.ProjectionMatrix();
+	view_matrix.Transpose();
+	proj_matrix.Transpose();
+	float4x4 trs_matrix = globalMatrix;
+	//ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), NULL, NULL);
+
+	/*if (ImGuizmo::IsUsing())
+	{
+		trs_matrix.Transpose();
+		float3 new_pos;
+		float3 new_scale;
+		Quat new_q;
+		trs_matrix.Decompose(new_pos, new_q, new_scale);
+		new_pos.Normalize();
+
+		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
+			rotMat = math::float4x4::FromTRS(new_pos * 0.5, quatRotation.identity, scale.one);
+		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+			rotMat = math::float4x4::FromTRS(float3::zero, quatRotation.identity, new_scale);
+		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 		{
-			for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
-			{
-				Transform* comp = dynamic_cast<Transform*>((*it)->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-				comp->LoadTransformation(mesh);
-			}
+			rotMat = math::float4x4::FromQuat(new_q.Conjugated());
 		}
+
+		ret = true;
+	}*/
+
+	if (ret)
+	{
+		RotateObjects(parent);
+		App->scene->octree->Remove(parent);
+		App->scene->octree->Insert(parent);	
 	}
 
 return ret;
@@ -131,7 +155,7 @@ return ret;
 void Transform::UnLoadTransformation()
 {
 	//ChangeScale(mesh, scale[0], scale[1], scale[3]);
-	ChangePosition(mesh, translation.x, translation.y, translation.z);
+	ChangePosition(mesh, pos.x, pos.y, pos.z);
 	//par_shapes_rotate(mesh, rad, axis);
 
 	//if parent have childs apply the transformation in all of them 
@@ -235,7 +259,7 @@ void Transform::DoRotation(Geometry* mesh, float  r_matrix[3][3])
 
 void Transform::SetTranslation(float3 position)
 {
-	translation = position;
+	pos = position;
 	CalculateMatrix();
 }
 
@@ -267,4 +291,25 @@ float3 Transform::GetEulerRotation()
 Quat Transform::GetQuatRotation()
 {
 	return quatRotation;
+}
+
+void Transform::RotateObjects(GameObject* objectToRotate)
+{
+	for (std::vector<Component*>::iterator component_iterator = objectToRotate->components.begin(); component_iterator != objectToRotate->components.end(); ++component_iterator)
+	{
+		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
+		{
+			Transform* mesh = dynamic_cast<Transform*>(*component_iterator);
+			mesh->globalMatrix = mesh->globalMatrix * globalMatrix;
+
+		}
+	}
+	if (objectToRotate->children.size() > 0)
+	{
+		for (std::vector<GameObject*>::iterator it = objectToRotate->children.begin(); it != objectToRotate->children.end(); ++it)
+		{
+			RotateObjects(*it);
+		}
+	}
+	objectToRotate->TransformBBox(globalMatrix);
 }
