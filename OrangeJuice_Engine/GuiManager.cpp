@@ -895,11 +895,11 @@ void GuiManager::HierarchyWindow()
 							}
 						}
 
-						if (gameObject->showInspectorWindow && gameObject != App->scene->gameObjectSelect)
+						/*if (gameObject->showInspectorWindow && gameObject != App->scene->gameObjectSelect)
 						{
 							gameObject->GetProperties();
 							App->scene->gameObjectSelect = gameObject;
-						}
+						}*/
 		
 						if (node_open)
 						{
