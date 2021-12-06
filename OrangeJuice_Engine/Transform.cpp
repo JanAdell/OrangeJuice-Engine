@@ -193,8 +193,8 @@ void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
 	glScalef(x, y, z);
 	for (uint i = 0; i < mesh->numVertices; i += 3) {
 		mesh->vertices[i] *= x;
-		mesh->vertices[i + 1] *= y;
-		mesh->vertices[i + 2] *= z;
+		mesh->vertices[i] *= y;
+		mesh->vertices[i] *= z;
 	}
 }
 

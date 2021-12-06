@@ -322,7 +322,7 @@ void ModuleCamera3D::MousePicking()
 	whithoutOctree.Start();
 
 	ray = camera->frustum.UnProjectLineSegment(mouseNormal.x, mouseNormal.y);
-
+	
 	App->scene->octree->CollectObjects(ray, hit);
 	for (std::vector<MouseHit>::iterator iter = hit.begin(); iter != hit.end(); ++iter)
 		(*iter).object->LookForMeshCollision(ray, *iter);

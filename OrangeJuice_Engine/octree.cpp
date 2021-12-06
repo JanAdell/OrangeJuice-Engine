@@ -34,7 +34,8 @@ bool Octree::Clear()
 
 void Octree::Insert(GameObject* object)
 {
-
+	if (object->bbox == nullptr)
+		return;
 	if (!isDivided)
 	{
 		staticObjects.push_back(object);
@@ -123,6 +124,7 @@ bool Octree::Resize()
 			obj.clear();
 			return true;
 		}
+		obj.clear();
 	}
 	return false;
 }
@@ -303,7 +305,7 @@ void Octree::Draw()
 	if (isDivided)
 	{
 		for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)		
-		(*iter)->Draw();
+			(*iter)->Draw();
 		
 	}
 

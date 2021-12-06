@@ -832,7 +832,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>>& buffer, Game
 	//Copy pos
 	if (transform != nullptr)
 	{
-		math::float3 pos = transform->translation;
+		math::float3 pos = transform->pos;
 		size_of = sizeof(float);
 		memcpy(cursor, &pos.x, size_of);
 		cursor += size_of;
@@ -843,7 +843,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>>& buffer, Game
 
 
 		//Copy scale
-		math::float3 scale = transform->scl;
+		math::float3 scale = transform->scale;
 		memcpy(cursor, &scale.x, size_of);
 		cursor += size_of;
 		memcpy(cursor, &scale.y, size_of);
@@ -1102,9 +1102,9 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char*& cursor)
 
 		Transform* transform = dynamic_cast<Transform*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 		transform->componentUUID = transform_id;
-		transform->translation.x = pos[0];
-		transform->translation.y = pos[1];
-		transform->translation.z = pos[2];
+		transform->pos.x = pos[0];
+		transform->pos.y = pos[1];
+		transform->pos.z = pos[2];
 		transform->scl.x = scale[0];
 		transform->scl.y = scale[1];
 		transform->scl.z = scale[2];
@@ -1112,7 +1112,7 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char*& cursor)
 		transform->quatRotation.y = rot[1];
 		transform->quatRotation.z = rot[2];
 		transform->quatRotation.w = rot[3];
-		transform->rotMat = math::float4x4::FromTRS(transform->pos, transform->quatRotation, transform->scale);
+		transform->rotMat = math::float4x4::FromTRS(transform->pos, transform->quatRotation, transform->scl);
 		transform->RotateObjects(new_obj);
 	}
 
