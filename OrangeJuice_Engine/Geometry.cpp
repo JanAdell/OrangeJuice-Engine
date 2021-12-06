@@ -67,7 +67,6 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	LOG("Primitive created");
 }
 
-
 //DebugDraw for all geometries
 void Geometry::DebugDraw()
 {
@@ -206,7 +205,6 @@ void Geometry::Save(FILE* file)
 	fputs(";\n", file);
 }
 
-
 void Geometry::CalculateParentBBox(GameObject* object)
 {
 	std::vector <float3> vertex_array;
@@ -217,9 +215,9 @@ void Geometry::CalculateParentBBox(GameObject* object)
 	for (int i = 0; i < numVertices * 3; i += 3)
 		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
-	object->bbox->aabb.Enclose(&vertex_array[0], (int)numVertices);
-	object->bbox->obb.SetNegativeInfinity();
-	object->bbox->obb = object->bbox->aabb.ToOBB();
+	//object->bbox->aabb.Enclose(&vertex_array[0], (int)numVertices);
+	//object->bbox->obb.SetNegativeInfinity();
+	//object->bbox->obb = object->bbox->aabb.ToOBB();
 
 	if (object->parent != nullptr)
 	{

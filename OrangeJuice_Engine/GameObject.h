@@ -17,11 +17,6 @@
 
 class Camera;
 struct MouseHit;
-struct BoundingBox
-{
-	AABB aabb;
-	OBB obb;
-};
 
 class GameObject
 {
@@ -57,11 +52,7 @@ public:
 	void DrawBBox(const AABB& bbox) const;
 	void RecalculateBBox();
 
-	void TransformBBox(math::float4x4 matrix);
-
 	void ChangeName(std::string name);
-
-	Component* CreateCamera(float z_near, float z_far);
 
 	void LookForMeshCollision(LineSegment raySegment, MouseHit& hit);
 
@@ -95,7 +86,7 @@ public:
 	uint UUID;
 	uint parentUUID;
 
-	BoundingBox* bbox = nullptr;
+	AABB bbox;
 };
 
 #endif 

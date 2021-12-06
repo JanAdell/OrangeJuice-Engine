@@ -34,8 +34,6 @@ public:
 
 	void DrawMesh();
 
-	void LoadData(aiMesh* mesh);
-
 	std::string GetTexturePath() { return std::string(); };
 
 	void CalculateParentBBox(GameObject* object);
@@ -46,8 +44,6 @@ public:
 	void Save(FILE*);
 	void LoadBuffers();
 
-private:
-	
 
 public:
 

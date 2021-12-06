@@ -16,10 +16,7 @@ GameObject::GameObject(GameObject* parent) : parent(parent)
 	mesh = nullptr;
 	material = nullptr;
 
-	//bbox = AABB({ 0,0,0 }, { 0, 0, 0 });
-
-	bbox = new BoundingBox();
-	bbox->aabb.SetNegativeInfinity();
+	bbox = AABB({ 0,0,0 }, { 0, 0, 0 });
 
 	parentUUID = 0;
 	UUID = CreateUUID();
@@ -333,20 +330,6 @@ Transform* GameObject::GetTransform()
 	return transform;
 }
 
-void GameObject::TransformBBox(math::float4x4 matrix)
-{
-	// Generate global OBB
-	if (bbox != nullptr)
-	{
-		bbox->obb.SetNegativeInfinity();
-		bbox->obb = bbox->aabb;
-		bbox->obb.Transform(matrix);
-		// Generate global AABB
-		bbox->aabb.SetNegativeInfinity();
-		bbox->aabb.Enclose(bbox->obb);
-	}
-}
-
 void GameObject::GetHierarchy()
 {
 	static int selection_mask = (1 << 0);
@@ -415,13 +398,13 @@ uint GameObject::GetParentUUID() {
 
 void GameObject::CreateBBOX()
 {
-	bbox->aabb.SetNegativeInfinity();
-	bbox->aabb.Enclose((float3*)mesh->vertices, mesh->numVertices);
+	bbox.SetNegativeInfinity();
+	bbox.Enclose((float3*)mesh->vertices, mesh->numVertices);
 }
 
 AABB GameObject::GetBBOX()
 {
-	return bbox->aabb;
+	return bbox;
 }
 
 void GameObject::Draw()
@@ -435,7 +418,7 @@ void GameObject::Draw()
 
 	if (App->renderer3D->showBBox)
 	{
-		DrawBBox(bbox->aabb);
+		DrawBBox(bbox);
 	}
 
 	if (transform != nullptr && transform->isChanged)
@@ -515,19 +498,19 @@ void GameObject::RecalculateBBox()
 			for (std::vector<GameObject*>::iterator it_c = children.begin(); it_c != children.end(); it_c++)
 			{
 				(*it_c)->RecalculateBBox();
-				if ((*it_c)->bbox->aabb.IsFinite())
-					bbox->aabb.Enclose((*it_c)->bbox->aabb);
+				if ((*it_c)->bbox.IsFinite())
+					bbox.Enclose((*it_c)->bbox);
 			}
 		}
 
 		if (mesh != nullptr)
 		{
-			bbox->aabb.Enclose((float3*)mesh->vertices, mesh->numVertices);
+			bbox.Enclose((float3*)mesh->vertices, mesh->numVertices);
 		}
 
 		if (children.size() <= 0)
 		{
-			bbox->aabb.TransformAsAABB(transform->globalMatrix);
+			bbox.TransformAsAABB(transform->globalMatrix);
 		}
 	}
 }

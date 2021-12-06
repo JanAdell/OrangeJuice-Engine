@@ -131,7 +131,7 @@ bool Transform::LoadTransformation()
 	static math::float4x4 gizmoMatrix = globalMatrix;
 
 	float3* corners = new float3[8];
-	parent->bbox->obb.GetCornerPoints(corners);
+	parent->bbox.GetCornerPoints(corners);
 	//ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, gizmoMatrix.ptr(), NULL, NULL);
 
 	if (ImGuizmo::IsUsing())
@@ -315,7 +315,7 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 {
 	App->scene->octree->Remove(object_to_rotate);
 
-	object_to_rotate->TransformBBox(dynamic_cast<Transform*>(object_to_rotate->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix.Inverted());
+	//object_to_rotate->TransformBBox(dynamic_cast<Transform*>(object_to_rotate->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix.Inverted());
 	for (std::vector<Component*>::iterator component_iterator = object_to_rotate->components.begin(); component_iterator != object_to_rotate->components.end(); ++component_iterator)
 	{
 		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
@@ -332,6 +332,6 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 			RotateObjects(*it);
 		}
 	}
-	object_to_rotate->TransformBBox(dynamic_cast<Transform*>(object_to_rotate->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix);
+	//object_to_rotate->TransformBBox(dynamic_cast<Transform*>(object_to_rotate->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix);
 	App->scene->octree->Insert(object_to_rotate);
 }

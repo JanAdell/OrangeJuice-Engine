@@ -37,6 +37,7 @@ public:
 	void RemoveSceneContent();
 
 public:
+	GameObject* GetGameObjectByName(std::string name);
 	std::vector<GameObject*> gameObjects;
 	std::vector<Image*> textures;
 	GameObject* gameObjectSelect = nullptr;

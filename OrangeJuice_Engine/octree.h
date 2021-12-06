@@ -43,7 +43,7 @@ void Octree::CollectObjects(const TYPE& primitive, std::vector<MouseHit>& object
 {
 	for (std::vector<GameObject*>::iterator iter = staticObjects.begin(); iter != staticObjects.end(); ++iter)
 	{
-		if ((*iter)->bbox->aabb.Intersects(primitive))
+		if ((*iter)->bbox.Intersects(primitive))
 		{
 			MouseHit h;
 			h.object = *iter;

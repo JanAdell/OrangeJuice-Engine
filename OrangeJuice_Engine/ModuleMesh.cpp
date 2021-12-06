@@ -126,6 +126,7 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 		if (scene->HasMeshes())
 		{
 			GameObject* newfbx = new GameObject();
+			newfbx->name = modelName;
 			LoadObjects(scene->mRootNode, scene, file_name, newfbx);
 			App->scene->gameObjects.push_back(newfbx);
 			App->scene->octree->Insert(newfbx);
@@ -276,7 +277,7 @@ std::string ModuleMesh::GenerateNameFromPath(std::string path)
 
 bool ModuleMesh::IsCulling(Geometry* g)
 {
-	return currentCamera->frustum.Contains(g->GetParentObject()->bbox->aabb);
+	return currentCamera->frustum.Contains(g->GetParentObject()->bbox);
 }
 
 std::string ModuleMesh::LoadData(aiMesh* mesh)
@@ -358,6 +359,9 @@ std::string ModuleMesh::LoadData(aiMesh* mesh)
 
 	//Copying and saving the mesh info into the mesh file on our library
 	App->file->SaveMeshToFormat(name.c_str(), mesh->mNumVertices, mesh->mNumFaces * 3, vertices, indices, normals, num_normals, num_face_normals, uv_coord, num_coords, id_coords);
+
+	GameObject* parent = App->scene->GetGameObjectByName(modelName);
+	//parent->CreateBBOX();
 
 	return name;
 }

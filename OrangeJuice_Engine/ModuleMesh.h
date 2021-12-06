@@ -45,7 +45,6 @@ public:
 	void DrawRay();
 
 	bool IsCulling(Geometry* g);
-	bool CheckInAABB(const AABB& bbox);
 
 	std::string GenerateNameFromPath(std::string path);
 

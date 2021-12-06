@@ -202,6 +202,7 @@ GameObject* ModuleScene::CreateGameObject(std::string name)
 {
 	GameObject* go = new GameObject();
 	go->name = name;
+	
 	go->transform = (Transform*)go->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	gameObjects.push_back(go);
 	return go;
@@ -249,4 +250,16 @@ void ModuleScene::RemoveSceneContent()
 	AABB first;
 	first.Enclose(&aux[0], 8);
 	octree = new Octree(first, 2, 4, 1);
+}
+
+GameObject* ModuleScene::GetGameObjectByName(std::string name)
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i]->name == name)
+		{
+			return gameObjects[i];
+		}
+	}
+	return nullptr;
 }
