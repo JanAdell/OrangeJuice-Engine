@@ -51,7 +51,7 @@ bool ModuleScene::Start()
 	GameObject* camera = CreateGameObject("Camera");
 	camera->cam = (Camera*)camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
 
-	App->mesh->LoadFile("..\\Assets\\Street_environment_V01_test.fbx");
+	App->mesh->LoadFile("..\\Assets\\street2.fbx");
 	
 	return ret;
 }
@@ -76,6 +76,8 @@ update_status ModuleScene::PreUpdate(float dt)
 			object = gameObjects.erase(object);
 			break;
 		}
+		if (gameObjectSelect != *object)
+			(*object)->showInspectorWindow = false;
 	}
 
 	return UPDATE_CONTINUE;
