@@ -163,7 +163,7 @@ update_status GuiManager::Update(float dt)
 	if (showConsoleWindow) 
 	{
 		ImVec2 textSize = ImGui::CalcTextSize("Console");
-		ImVec2 windowSize = ImVec2(big_col_size, small_row_size - 20);
+		ImVec2 windowSize = ImVec2(screenX, screenY/4);
 		ImGui::SetNextWindowPos(ImVec2((guiIO.DisplaySize.x - windowSize.x) * 0.5f, (guiIO.DisplaySize.y - windowSize.y)));
 		ImGui::SetNextWindowSize(windowSize);
 		ShowAppConsole(showConsoleWindow);
@@ -584,7 +584,7 @@ void GuiManager::ConfigWindow()
 
 void GuiManager::ShowAppConsole(bool show_console)
 {
-	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+	//ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 	
 	console.Draw("Orange Juice Engine", &show_console);
 

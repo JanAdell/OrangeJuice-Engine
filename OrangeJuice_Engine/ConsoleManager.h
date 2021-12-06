@@ -19,7 +19,7 @@ struct AppConsole
 
 	AppConsole()
 	{
-		ClearLog();
+		
 		memset(InputBuf, 0, sizeof(InputBuf));
 		HistoryPos = -1;
 		//Commands.push_back("HELP");
@@ -28,6 +28,7 @@ struct AppConsole
 		//Commands.push_back("CLASSIFY");  // "classify" is only here to provide an example of "C"+[tab] completing to "CL" and displaying matches.
 		AutoScroll = true;
 		ScrollToBottom = true;
+		ClearLog();
 		//AddLog("Welcome to Dear ImGui!");
 	}
 	~AppConsole()
@@ -68,7 +69,7 @@ struct AppConsole
 	void Draw(const char* title, bool* p_open)
 	{
 		//ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
-		if (!ImGui::Begin(title, NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
+		if (!ImGui::Begin(title, NULL))
 		{
 			ImGui::End();
 			return;
