@@ -41,7 +41,6 @@ public:
 	void CalculateParentBBox(GameObject* object);
 	void ImportNewMesh(char*& cursor);
 	void ImportNewMaterial(char*& cursor);
-	void ShowProperties();
 	int GetTextureId() { return 0; };
 	void UpdateBuffer();
 	void Save(FILE*);

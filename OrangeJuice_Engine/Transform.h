@@ -22,7 +22,7 @@ public:
 	void Init(const int& x, const int& y, const int& z);
 	void Init(float4x4 r);
 
-	bool LoadTransformation(Geometry* p_mesh);
+	bool LoadTransformation();
 	void UnLoadTransformation();
 
 	void ShowProperties() {};

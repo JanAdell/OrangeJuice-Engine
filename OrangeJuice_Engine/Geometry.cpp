@@ -112,7 +112,7 @@ void Geometry::DrawMesh()
 {
 	glPushMatrix();
 	if (transform != nullptr)
-		glMultMatrixf((GLfloat*)&transform->rotMat.Transposed());
+		glMultMatrixf((GLfloat*)&transform->globalMatrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -142,13 +142,6 @@ void Geometry::DrawMesh()
 	glPopAttrib();
 	glPopMatrix();
 	DebugDraw();
-}
-
-void Geometry::ShowProperties()
-{
-	
-	if (transform->LoadTransformation(this))
-		UpdateBuffer();
 }
 
 void Geometry::LoadBuffers()

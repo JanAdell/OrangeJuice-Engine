@@ -44,6 +44,7 @@ public:
 
 	Component* GetComponent(COMPONENT_TYPE type);
 	void GetProperties();
+	void ShowProperties(GameObject*, uint&, uint&);
 	Transform* GetTransform();
 	virtual void GetHierarchy();
 	uint GetUUID();

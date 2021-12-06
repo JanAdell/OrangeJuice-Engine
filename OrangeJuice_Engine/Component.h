@@ -27,7 +27,7 @@ public:
 
 	COMPONENT_TYPE GetComponentType();
 	
-	virtual void ShowProperties() = 0;
+	//virtual void ShowProperties() = 0;
 	virtual int GetTextureId() = 0;
 	virtual std::string GetTexturePath() = 0;
 

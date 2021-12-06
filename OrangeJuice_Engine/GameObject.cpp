@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "Component.h"
+#include "ModuleRenderer3D.h"
 
 GameObject::GameObject(GameObject* parent) : parent(parent)
 {
@@ -211,7 +212,7 @@ void GameObject::GetProperties()
 				else App->scene->octree->Remove(this);
 			}
 
-			ImGui::NewLine();
+			
 			//this was a test, leaving it here because we may need similar something when we make selectable nodes
 			char a[100] = "";
 			memcpy(a, name.c_str(), name.size());
@@ -225,7 +226,7 @@ void GameObject::GetProperties()
 			ImGui::NewLine();
 		}
 
-		if (ImGui::Checkbox("show vertices normals", &showVertexNormals))
+		if (ImGui::Checkbox("Show vertices normals", &showVertexNormals))
 		{
 			(&showVertexNormals) ? true : false;
 			ShowNormalVertex(showVertexNormals);
@@ -233,36 +234,38 @@ void GameObject::GetProperties()
 
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("show faces normals", &showVertexNormals))
+		if (ImGui::Checkbox("Show faces normals", &showNormals))
 		{
-			(&showVertexNormals) ? true : false;
+			(&showNormals) ? true : false;
 			ShowNormalFaces(showNormals);
 		}
 
-		Geometry* mesh = nullptr;
 		std::vector<Component*>::iterator it = components.begin();
 		int id = 0;
 		while (it != components.end())
 		{
-			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+			if ((*it)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 			{
-				mesh = dynamic_cast<Geometry*>(*it);
-				mesh->ShowProperties();
+				dynamic_cast<Transform*>(*it)->LoadTransformation();
 				break;
 			}
 			++it;
 		}
-		if (mesh != nullptr)
+
+		
+		if (ImGui::CollapsingHeader("Information"))
 		{
-			if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+			uint num_vertices = 0;
+			uint num_triangles = 0;
+
+			ShowProperties(this, num_triangles, num_vertices);
+
+			ImGui::Text("triangles: %u", num_triangles);
+			ImGui::Text("vertices: %u", num_vertices);
+
+			if (ImGui::Checkbox("Bounding Box", &App->renderer3D->showBBox))
 			{
-				num_vertices = 0;
-				uint num_triangles = 0;
-
-				ShowObjectProperties(this, num_triangles, num_vertices);
-
-				ImGui::Text("triangles: %u", num_triangles);
-				ImGui::Text("vertices: %u", num_vertices);
+				(&App->renderer3D->showBBox) ? true : false;
 			}
 		}
 
@@ -644,4 +647,25 @@ void GameObject::SetParent(GameObject* new_parent)
 	parent = new_parent;
 	parent->children.push_back(this);
 
+}
+
+void GameObject::ShowProperties(GameObject* object, uint& ntriangles, uint& nvertices)
+{
+
+	for (std::vector<Component*>::iterator it = object->components.begin(); it < object->components.end(); ++it)
+	{
+		if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+		{
+			ntriangles += dynamic_cast<Geometry*>(*it)->numIndices / 3;
+			nvertices += dynamic_cast<Geometry*>(*it)->numVertices;
+		}
+	}
+
+	if (!object->children.empty())
+	{
+		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter < object->children.end(); ++iter)
+		{
+			ShowProperties(*iter, ntriangles, nvertices);
+		}
+	}
 }

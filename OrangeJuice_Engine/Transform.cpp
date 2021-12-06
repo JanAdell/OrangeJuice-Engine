@@ -49,7 +49,7 @@ void Transform::Enable()
 void Transform::Update()
 {
 	globalMatrix.Decompose(pos, quatRotation, scale);
-	eulerAng = quatRotation.ToEulerXYZ();
+	eulerAng = math::RadToDeg(quatRotation.ToEulerXYZ());
 	if (transformNow)
 		globalMatrix = rotMat;
 
@@ -89,26 +89,26 @@ void Transform::CalculateMatrix()
 	localMatrix.Set(float4x4::FromTRS(pos, quatRotation, scl));
 }
 
-bool Transform::LoadTransformation(Geometry* mesh)
+bool Transform::LoadTransformation()
 {
 	bool ret = false;
-
-	//scale
+		
 	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		ret = true;
+			ret = true;
 	}
-	//position
+		//position
 	if (ImGui::InputFloat3("position", (float*)&pos, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		ret = true;
+			ret = true;
 	}
-	//rotation
+		//rotation
 	if (ImGui::InputFloat3("rotation", (float*)&eulerAng, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		quatRotation = math::Quat::FromEulerXYZ(math::DegToRad(eulerAng).x, math::DegToRad(eulerAng).y, math::DegToRad(eulerAng).z);
-		ret = true;
+			quatRotation = math::Quat::FromEulerXYZ(math::DegToRad(eulerAng).x, math::DegToRad(eulerAng).y, math::DegToRad(eulerAng).z);
+			ret = true;
 	}
+
 
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
 	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
@@ -126,13 +126,13 @@ bool Transform::LoadTransformation(Geometry* mesh)
 	float4x4 proj_matrix = App->camera->camera->frustum.ProjectionMatrix();
 	view_matrix.Transpose();
 	proj_matrix.Transpose();
-	float4x4 trs_matrix = globalMatrix;
+	
 
 	static math::float4x4 gizmoMatrix = globalMatrix;
 
-	//float3* corners = new float3[8];
-	//parent->bbox->obb.GetCornerPoints(corners);
-	ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, gizmoMatrix.ptr(), NULL, NULL);
+	float3* corners = new float3[8];
+	parent->bbox->obb.GetCornerPoints(corners);
+	//ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, gizmoMatrix.ptr(), NULL, NULL);
 
 	if (ImGuizmo::IsUsing())
 	{
@@ -141,15 +141,21 @@ bool Transform::LoadTransformation(Geometry* mesh)
 		Quat new_q;
 		gizmoMatrix.Transposed().Decompose(new_pos, new_q, new_scale);
 
-		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE) pos = new_pos;
-		if (mCurrentGizmoOperation == ImGuizmo::SCALE) scale = new_scale;
+		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
+		{
+			pos = new_pos;
+		}
+		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+		{
+			scale = new_scale;
+		}
+
 		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 		{
-			rotMat = new_q.Conjugated();
+			quatRotation = new_q.Conjugated();
 			float3 euler = math::RadToDeg(quatRotation.ToEulerXYZ());
 			eulerAng = -euler;
 		}
-
 		ret = true;
 	}
 
