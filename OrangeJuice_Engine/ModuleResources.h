@@ -4,8 +4,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "Resource.h"
-//#include "ResourceTexture.h"
-//#include "ResourceMesh.h"
+#include "ResourceTexture.h"
+#include "ResourceMesh.h"
 //#include "ResourceScene.h"
 //#include "ResourceAnimation.h"
 #include "ModuleFile.h"
@@ -40,9 +40,11 @@ public:
 	Resource* RequestResource(uint uid);
 	void ReleaseResource(uint uid);
 
+	Resource* GetResource(uint uid);
+
 private:
 
-	Resource* CreateNewResource(const char* assetsPath, ResourceType type);
+	Resource* CreateNewResource(ResourceType type);
 
 private:
 

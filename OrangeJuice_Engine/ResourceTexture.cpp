@@ -1,5 +1,4 @@
 #include "ResourceTexture.h"
-#include "glew/include/GL/glew.h"
 
 ResourceTexture::ResourceTexture(uint id) : Resource(uid, ResourceType::TEXTURE)
 {
@@ -8,13 +7,19 @@ ResourceTexture::ResourceTexture(uint id) : Resource(uid, ResourceType::TEXTURE)
 	depth = 0;
 	mips = 0;
 	bytes = 0;
-	gpu_id = 0;
+	id = 0;
 	format = NOTKNOWN;
 }
 
 ResourceTexture::~ResourceTexture()
 {
-	glDeleteTextures(1, &gpu_id);
+	glDeleteTextures(1, &id);
+}
+
+void ResourceTexture::SetData(uint textureId, const char* textureName)
+{
+	id = textureId;
+	this->textureName = textureName;
 }
 
 uint ResourceTexture::GetWidth()
@@ -32,12 +37,17 @@ uint ResourceTexture::GetDepth()
 	return depth;
 }
 
-uint ResourceTexture::GetGpuID()
+uint ResourceTexture::GetId()
 {
-	return gpu_id;
+	return id;
 }
 
 Format ResourceTexture::GetFormat()
 {
 	return format;
+}
+
+std::string ResourceTexture::GetTextureName()
+{
+	return textureName;
 }
