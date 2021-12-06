@@ -42,32 +42,7 @@ void ModuleResources::ReleaseResource(uint uid)
 {
 }
 
-Resource* ModuleResources::GetResource(uint uid)
+Resource* ModuleResources::CreateNewResource(const char* assetsPath, ResourceType type)
 {
-	Resource* res = nullptr;
-	if (resources.count(uid) > 0)
-		res = resources[uid];
-
-	return res;
-}
-
-Resource* ModuleResources::CreateNewResource(ResourceType type)
-{
-	Resource* resource = nullptr;
-	LCG rand_gen;
-	uint uid = rand_gen.Int();
-	switch (type)
-	{
-	case ResourceType::MESH:
-		resource = (Resource*) new ResourceMesh(uid);
-		break;
-	case ResourceType::MATERIAL:
-		resource = (Resource*) new ResourceTexture(uid);
-		break;
-	}
-
-	if (resource != nullptr)
-		resources[uid] = resource;
-
-	return resource;
+	return nullptr;
 }

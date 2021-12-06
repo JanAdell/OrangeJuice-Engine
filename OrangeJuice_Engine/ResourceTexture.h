@@ -1,8 +1,6 @@
 #pragma once
 #include "Resource.h"
-#include "glew/include/GL/glew.h"
 #include "json.hpp"
-#include <string>
 
 enum Format 
 {
@@ -22,26 +20,24 @@ public:
 	virtual ~ResourceTexture();
 
 	//bool LoadInMemory() override;
+
 	//void Save(nlohmann::json & config) const override;
 	//void Load(const nlohmann::json & config) override;
-	void SetData(uint textureId, const char* textureName);
 
 	uint GetWidth();
 	uint GetHeight();
 	uint GetDepth();
-	uint GetId();
+	uint GetGpuID();
 	Format GetFormat();
-	std::string GetTextureName();
 
 public:
 
-	std::string textureName;
 	uint width;
 	uint height;
 	uint depth;
 	uint mips;
 	uint bytes;
-	uint id;
+	uint gpu_id;
 	Format format;
 
 };

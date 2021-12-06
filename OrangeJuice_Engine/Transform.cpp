@@ -132,7 +132,7 @@ bool Transform::LoadTransformation()
 
 	float3* corners = new float3[8];
 	parent->bbox->obb.GetCornerPoints(corners);
-	ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, gizmoMatrix.ptr(), NULL, NULL);
+	//ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, gizmoMatrix.ptr(), NULL, NULL);
 
 	if (ImGuizmo::IsUsing())
 	{
