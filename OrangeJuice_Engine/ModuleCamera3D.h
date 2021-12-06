@@ -58,7 +58,7 @@ public:
 	float cameraSpeed = 0.01;
 	bool write = false;
 
-	Camera* camera;
+	Camera* camera = nullptr;
 	AABB LookedBBox;
 
 	LineSegment ray;

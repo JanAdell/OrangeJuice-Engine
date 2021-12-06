@@ -318,47 +318,30 @@ void ModuleCamera3D::MousePicking()
 	// to select the closest gameobject that was hit
 	std::vector<MouseHit> hit;
 
-	ray = camFrustum->UnProjectLineSegment(mouseNormal.x, mouseNormal.y);
-
-	float rayDir = ray.Length();
-	GameObject* pickedObj = nullptr;
-
 	Timer whithoutOctree;
 	whithoutOctree.Start();
-	
-	if (!App->gui->activateOctree)
-	{
-		for (std::vector<GameObject*>::iterator iter = App->scene->gameObjects.begin(); iter != App->scene->gameObjects.end(); ++iter)
-		{
-			(*iter)->LookForRayCollision(ray, hit);
-		}
-		float time = whithoutOctree.Read();
-		LOG("Collect ray objects without octree %f", time);
-		////with octree
-	}
-	else
-	{
 
-		std::vector<GameObject*>objects_picked;
-		App->scene->octree->CollectObjects(ray, objects_picked);
-		for (std::vector<GameObject*>::iterator iter = objects_picked.begin(); iter != objects_picked.end(); ++iter)
-		{
-			(*iter)->LookForRayCollision(ray, hit);
-		}
-		float time = whithoutOctree.Read();
-		LOG("Collect ray objects with octree %f", time);
-	}
+	ray = camera->frustum.UnProjectLineSegment(mouseNormal.x, mouseNormal.y);
+
+	App->scene->octree->CollectObjects(ray, hit);
+	for (std::vector<MouseHit>::iterator iter = hit.begin(); iter != hit.end(); ++iter)
+		(*iter).object->LookForMeshCollision(ray, *iter);
+	
+	float time = whithoutOctree.Read();
+	LOG("Collect ray objects without octree %f", time);
+	////with octree
 
 	if (!hit.empty())
 	{
 		std::sort(hit.begin(), hit.end(), LesThanKey());
 		std::vector<MouseHit>::iterator it = hit.begin();
-		pickedObj = (*it).object;
-		if (pickedObj)
+		if ((*it).object)
 		{
-			App->scene->gameObjectSelect = pickedObj;
+			//Assign the closest one to object_selector
+			App->scene->gameObjectSelect = (*it).object;
 			App->scene->gameObjectSelect->showInspectorWindow = true;
 		}
+		hit.clear();
 	}
 
 }

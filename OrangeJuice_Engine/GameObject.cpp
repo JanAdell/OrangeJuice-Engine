@@ -215,8 +215,11 @@ void GameObject::GetProperties()
 			//this was a test, leaving it here because we may need similar something when we make selectable nodes
 			char a[100] = "";
 			memcpy(a, name.c_str(), name.size());
-			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue)) name.assign(a);
-
+			if (bool write = ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue)) name.assign(a);
+			
+			if (ImGui::IsItemActive()) App->camera->write = true;
+			else App->camera->write = false;
+			
 			ImGui::NewLine();
 			ImGui::Text("UUID: %i", UUID);
 			ImGui::NewLine();
@@ -574,17 +577,7 @@ bool GameObject::IsSelected()
 	return isSelected;
 }
 
-void GameObject::LookForRayCollision(LineSegment raySegment, std::vector<MouseHit>& hit)
-{
-	LookForMeshCollision(raySegment, hit);
-	for (int i = 0; i < children.size(); ++i)
-	{
-		children[i]->LookForRayCollision(raySegment, hit);
-
-	}
-}
-
-void GameObject::LookForMeshCollision(LineSegment raySegment, std::vector<MouseHit>& hit)
+void GameObject::LookForMeshCollision(LineSegment raySegment, MouseHit& hit)
 {
 	Transform* transform = dynamic_cast<Transform*>(GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	Geometry* mesh = dynamic_cast<Geometry*>(GetComponent(COMPONENT_TYPE::COMPONENT_MESH));
@@ -598,21 +591,18 @@ void GameObject::LookForMeshCollision(LineSegment raySegment, std::vector<MouseH
 	float4x4 invMatrix = transform->globalMatrix.Transposed().Inverted();
 	segLocalized = invMatrix * segLocalized;
 
-	for (int j = 0; j < (mesh)->numIndices;)
+	for (int j = 0; j < (mesh)->numIndices; j+=3)
 	{
 		Triangle triangle;
 
-		triangle.a.Set(&vertices[indices[j++] * 3]);
-		triangle.b.Set(&vertices[indices[j++] * 3]);
-		triangle.c.Set(&vertices[indices[j++] * 3]);
+		triangle.a.Set(&vertices[indices[j] * 3]);
+		triangle.b.Set(&vertices[indices[j+1] * 3]);
+		triangle.c.Set(&vertices[indices[j+2] * 3]);
 
 		float tmpDistance;
 		if (segLocalized.Intersects(triangle, &tmpDistance, nullptr))
 		{
-			MouseHit mHit;
-			mHit.distance = tmpDistance;
-			mHit.object = this;
-			hit.push_back(mHit);
+			hit.distance = tmpDistance;
 		}
 	}
 }

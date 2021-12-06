@@ -62,8 +62,7 @@ public:
 
 	Component* CreateCamera(float z_near, float z_far);
 
-	void LookForRayCollision(LineSegment raySegment, std::vector<MouseHit>& hit);
-	void LookForMeshCollision(LineSegment raySegment, std::vector<MouseHit>& hit);
+	void LookForMeshCollision(LineSegment raySegment, MouseHit& hit);
 
 	GameObject* GameObject::FindChildByID(uint other_uid) const;
 	void GameObject::SetParent(GameObject* new_parent);

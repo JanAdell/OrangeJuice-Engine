@@ -114,12 +114,12 @@ update_status ModuleScene::Update(float dt)
 
 		if (App->gui->activateOctree)
 		{
-			std::vector<GameObject*> draw_objects;
+			std::vector<MouseHit> draw_objects;
 			App->scene->octree->CollectObjects(App->camera->camera->frustum, draw_objects);
 
-			for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+			for (std::vector<MouseHit>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
 			{
-				(*iter)->Draw();
+				(*iter).object->Draw();
 			}
 			draw_objects.clear();
 			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)

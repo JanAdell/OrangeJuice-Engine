@@ -3,6 +3,8 @@
 
 #include "MathGeoLib/Geometry/AABB.h"
 #include "GameObject.h"
+#include "ModuleCamera3D.h"
+#include <vector>
 
 class Octree
 {
@@ -21,7 +23,7 @@ public:
 	void DeleteChildren();
 
 	template<typename TYPE>
-	void CollectObjects(const TYPE& primitive, std::vector<GameObject*>& objects);
+	void CollectObjects(const TYPE& primitive, std::vector<MouseHit>& objects);
 
 private:
 	std::vector<GameObject*> staticObjects;
@@ -37,13 +39,15 @@ private:
 };
 
 template<typename TYPE>
-void Octree::CollectObjects(const TYPE& primitive, std::vector<GameObject*>& objects)
+void Octree::CollectObjects(const TYPE& primitive, std::vector<MouseHit>& objects)
 {
 	for (std::vector<GameObject*>::iterator iter = staticObjects.begin(); iter != staticObjects.end(); ++iter)
 	{
 		if ((*iter)->bbox->aabb.Intersects(primitive))
 		{
-			objects.push_back(*iter);
+			MouseHit h;
+			h.object = *iter;
+			objects.push_back(h);
 		}
 	}
 	for (std::vector<Octree*>::iterator iter = children.begin(); iter != children.end(); ++iter)

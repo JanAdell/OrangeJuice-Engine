@@ -51,10 +51,8 @@ void Transform::Update()
 	globalMatrix.Decompose(pos, quatRotation, scale);
 	eulerAng = quatRotation.ToEulerXYZ();
 	if (transformNow)
-	{
-		RotateObjects(parent);
-		transformNow = false;
-	}
+		globalMatrix = rotMat;
+
 }
 
 void Transform::Disable()
@@ -95,8 +93,6 @@ bool Transform::LoadTransformation(Geometry* mesh)
 {
 	bool ret = false;
 
-	float newPos[3] = { pos[0], pos[1] ,pos[2] };
-
 	//scale
 	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
@@ -114,39 +110,45 @@ bool Transform::LoadTransformation(Geometry* mesh)
 		ret = true;
 	}
 
-	//static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-	//static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		//mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-		//mCurrentGizmoOperation = ImGuizmo::ROTATE;
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
 	if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
-		//mCurrentGizmoOperation = ImGuizmo::SCALE;
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
 
 	ImGuiIO& io = ImGui::GetIO();
-	//ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 	float4x4 view_matrix = App->camera->camera->frustum.ViewMatrix();
 	float4x4 proj_matrix = App->camera->camera->frustum.ProjectionMatrix();
 	view_matrix.Transpose();
 	proj_matrix.Transpose();
 	float4x4 trs_matrix = globalMatrix;
-	
-	float3* corners = new float3[8];
-	parent->bbox->obb.GetCornerPoints(corners);
-	//ImGuizmo::Manipulate(NULL, proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners, NULL);
-	
+
+	static math::float4x4 gizmoMatrix = globalMatrix;
+
+	//float3* corners = new float3[8];
+	//parent->bbox->obb.GetCornerPoints(corners);
+	ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, gizmoMatrix.ptr(), NULL, NULL);
+
 	if (ImGuizmo::IsUsing())
 	{
-		trs_matrix.Transpose();
-		trs_matrix.Decompose(pos, quatRotation, scale);
+		float3 new_pos;
+		float3 new_scale;
+		Quat new_q;
+		gizmoMatrix.Transposed().Decompose(new_pos, new_q, new_scale);
 
-		//if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
-		//if (mCurrentGizmoOperation == ImGuizmo::SCALE)
-		/*if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
+		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE) pos = new_pos;
+		if (mCurrentGizmoOperation == ImGuizmo::SCALE) scale = new_scale;
+		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 		{
+			rotMat = new_q.Conjugated();
 			float3 euler = math::RadToDeg(quatRotation.ToEulerXYZ());
 			eulerAng = -euler;
-		}*/
+		}
 
 		ret = true;
 	}
@@ -157,11 +159,9 @@ bool Transform::LoadTransformation(Geometry* mesh)
 		transformNow = true;
 
 		RotateObjects(parent);
-		App->scene->octree->Remove(parent);
-		App->scene->octree->Insert(parent);	
 	}
 
-return ret;
+	return ret;
 }
 
 void Transform::UnLoadTransformation()
@@ -307,12 +307,16 @@ Quat Transform::GetQuatRotation()
 
 void Transform::RotateObjects(GameObject* object_to_rotate)
 {
+	App->scene->octree->Remove(object_to_rotate);
+
+	object_to_rotate->TransformBBox(dynamic_cast<Transform*>(object_to_rotate->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix.Inverted());
 	for (std::vector<Component*>::iterator component_iterator = object_to_rotate->components.begin(); component_iterator != object_to_rotate->components.end(); ++component_iterator)
 	{
 		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 		{
 			Transform* mesh = dynamic_cast<Transform*>(*component_iterator);
-			mesh->globalMatrix = mesh->globalMatrix * rotMat;
+			transformNow = true;
+			mesh->rotMat = rotMat;
 		}
 	}
 	if (object_to_rotate->children.size() > 0)
@@ -322,8 +326,6 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 			RotateObjects(*it);
 		}
 	}
-	/*else
-	{
-		dynamic_cast<Geometry*>(object_to_rotate->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->CalculateParentBoundingBox(object_to_rotate);
-	}*/
+	object_to_rotate->TransformBBox(dynamic_cast<Transform*>(object_to_rotate->GetComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM))->globalMatrix);
+	App->scene->octree->Insert(object_to_rotate);
 }
