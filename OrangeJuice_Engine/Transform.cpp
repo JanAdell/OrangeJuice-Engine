@@ -92,18 +92,18 @@ void Transform::CalculateMatrix()
 bool Transform::LoadTransformation()
 {
 	bool ret = false;
-		
-	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+		//scale
+	if (ImGui::InputFloat3("Scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 			ret = true;
 	}
 		//position
-	if (ImGui::InputFloat3("position", (float*)&pos, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	if (ImGui::InputFloat3("Position", (float*)&pos, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 			ret = true;
 	}
 		//rotation
-	if (ImGui::InputFloat3("rotation", (float*)&eulerAng, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	if (ImGui::InputFloat3("Rotation", (float*)&eulerAng, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 			quatRotation = math::Quat::FromEulerXYZ(math::DegToRad(eulerAng).x, math::DegToRad(eulerAng).y, math::DegToRad(eulerAng).z);
 			ret = true;
