@@ -138,7 +138,6 @@ bool ModuleMesh::LoadFBXFile(const char* file_name)
 	else
 		LOG("Error loading scene %s", file_name);
 
-
 	return ret;
 }
 
