@@ -1,7 +1,7 @@
 # Orange Juice Engine
 Repository dedicated to the development and releases of our home brew engine, Orange Juice. This project is an assignment for the 3D Engines subject at the Videogame Design and Development degree (CITM, UPC). The engine is created with C++ and other major libraries such as OpenGL and ImGui.
 
-This project is developed by Oscar Reguera and Jan Adell. 
+This project is developed by Oscar Reguera, Jan Adell and Magdalena Ostrowska. 
 
 ## How to Use
 
